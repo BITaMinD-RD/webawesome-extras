@@ -61,22 +61,19 @@ combo.addEventListener('change', () => use(combo.value));
 - **Properties**: `choices`, `value`, `placeholder`, `searchPlaceholder` (`search-placeholder`), `emptyLabel` (`empty-label`: a first option «choose nothing»), `emptyText` (`empty-text`), `name`, `required`, `disabled`, `queryDelay`.
 - **Style**: `::part(select)`, `::part(search)`, `::part(option)` (also `empty` and `none`); the space below it is `--combobox-gap` (`--wa-space-m`).
 
-**A floating card** is `FloatingCard.js` (it imports `BackClose` from `../history/`, a module of webutils): a card next to what was clicked, for what is far from it in a long list.
-With a mouse it peeks (`peek(content, near)` shows it a moment later, `leave()` takes it away) and a click pins it (`show(content, near)`);
-clicking the same thing again, Escape, a click outside or its × close it. Without a mouse it goes in the middle with the page dimmed, and
-the phone's Back closes it. `replace(content)` changes what it says without moving it, `place()` puts it back next to its thing after what is
-inside has grown, and `onShow(card)` is called each time it has new content. Style: `.floating-card`, in `FloatingCard.STYLES`, with
-`--floating-card-shadow`, `--floating-card-peek-shadow`, `--floating-card-centered-shadow` and `--floating-card-backdrop`.
+**The floating card** is `<wax-floating-card>` (`WaxFloatingCard.js`, with `FloatingCardState.js` for its rules): a card next to what was clicked, for what is far from it in a long list. With a mouse it
+peeks (`peek(anchor)` shows it a moment later, `leave()` takes it away) and a click pins it (`toggle(anchor)`: the same thing again closes it); Escape, a click outside and its × close it. Without a mouse it goes in the
+middle with the page dimmed. It opens and closes like a `wa-dialog` (`open`, `show()`, `hide()`, and the events `wax-show`, `wax-after-show`, `wax-hide`, `wax-after-hide`, the first and the third cancellable;
+`wax-hide` says in `detail` what asked, `source` and `reason`) and knows nothing of the Back button: whoever wants Back to close it listens to those events (`BackClose.bind` in webutils).
 
+```html
+<wax-floating-card close-label="Cerrar"></wax-floating-card>   <!-- a child of the body: it is placed with the coordinates of the page -->
+```
 ```js
-const card = new FloatingCard({ closeLabel: 'Cerrar', onShow: el => fillWeather(el) });
-day.addEventListener('click', () => card.show(() => dayHtml(date), day));
+import './lib/webawesome-extras/WaxFloatingCard.js';
+card.addEventListener('wax-show', event => card.replaceChildren(dayView(event.detail.anchor)));   // the content goes in when it is going to show; preventDefault() if there is none
+day.addEventListener('click', () => card.toggle(day));
 ```
 
-The content is HTML, a node, or a function that is called when it is shown with a container (`.floating-card-body`, which takes no room) to paint
-into, so whoever draws with a library does it there and this knows nothing of it; a function may also give back a string or a node. If it
-comes to nothing (an empty string, nothing painted), nothing is shown.
-
-```js
-card.show(body => render(template(date), body), day);   // `render` is the library's
-```
+The content is its children, put by whoever opens it in the listener of `wax-show` (so what is slow to draw is only drawn when it shows). `card.place()` puts it back next to its thing after what is inside has grown.
+**Style**: `::part(card)`, `::part(close-button)`, `::part(backdrop)`; `--floating-card-shadow`, `--floating-card-peek-shadow`, `--floating-card-centered-shadow`, `--floating-card-backdrop` and `--floating-card-width`.

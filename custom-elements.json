@@ -326,6 +326,324 @@
     },
     {
       "kind": "javascript-module",
+      "path": "js/webawesome-extras/WaxFloatingCard.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A card that floats next to what was clicked: in a long list the thing it talks about may be far away, out of sight. With a mouse it can also peek: it shows a moment after the pointer\narrives (`peek`), goes when it leaves (`leave`), and stays once clicked (`show`); clicking the same thing again closes it (`toggle`). Without a mouse there is no \"next to\": it goes in the\nmiddle with the rest dimmed. Escape, a click outside and its × close it too.\n\nIt opens and closes like a `wa-dialog`: the `open` property, `show()` and `hide()`, and four events, `wax-show`, `wax-after-show`, `wax-hide` and `wax-after-hide`. `wax-show` and\n`wax-hide` can be cancelled (`preventDefault()` keeps it as it was). It knows nothing of what it shows: the content is its children, which whoever opens it fills in the listener of\n`wax-show` (and cancels it if there is nothing to say). It knows nothing of the Back button either: whoever wants Back to close it listens to its events.\n\n```html\n<wax-floating-card close-label=\"Cerrar\"></wax-floating-card>   <!-- a child of the body -->\n```\n```js\ncard.addEventListener('wax-show', event => {                      // the content, when it is going to show\n  card.replaceChildren(dayView(event.detail.anchor.dataset.day));\n});\nday.addEventListener('click', () => card.toggle(day));            // pinned, next to the day; the same day again closes it\nday.addEventListener('mouseenter', () => card.peek(day));         // with a mouse, after a moment\nday.addEventListener('mouseleave', () => card.leave());\n```\n\nIt is placed with the coordinates of the page, so it has to be a child of the `body` (or of an element that is not positioned).",
+          "name": "WaxFloatingCard",
+          "cssProperties": [
+            {
+              "description": "The shadow of a pinned card (`--wa-shadow-l`)",
+              "name": "--floating-card-shadow"
+            },
+            {
+              "description": "The shadow of one that only peeks (`--wa-shadow-m`)",
+              "name": "--floating-card-peek-shadow"
+            },
+            {
+              "description": "The shadow of one in the middle (`--wa-shadow-l`)",
+              "name": "--floating-card-centered-shadow"
+            },
+            {
+              "description": "The dimmed page behind a card in the middle (`rgba(0, 0, 0, .45)`)",
+              "name": "--floating-card-backdrop"
+            },
+            {
+              "description": "The width of the card (`400px`)",
+              "name": "--floating-card-width"
+            }
+          ],
+          "cssParts": [
+            {
+              "description": "The card: its border, its background, its shadow and its size",
+              "name": "card"
+            },
+            {
+              "description": "The × button, in the corner (hidden while it only peeks)",
+              "name": "close-button"
+            },
+            {
+              "description": "The dimmed page behind it, without a mouse",
+              "name": "backdrop"
+            }
+          ],
+          "slots": [
+            {
+              "description": "What it says. Whoever opens it puts it here, in the listener of `wax-show`",
+              "name": ""
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "anchor",
+              "return": {
+                "type": {
+                  "text": "Element | null"
+                }
+              },
+              "type": {
+                "text": "Element | null"
+              },
+              "description": "What it is next to; `show()` and `peek()` set it"
+            },
+            {
+              "kind": "method",
+              "name": "peek",
+              "parameters": [
+                {
+                  "name": "anchor",
+                  "description": "What it talks about",
+                  "type": {
+                    "text": "Element"
+                  }
+                }
+              ],
+              "description": "With a mouse, it peeks (shows without being pinned) a moment later; without one, nothing."
+            },
+            {
+              "kind": "method",
+              "name": "leave",
+              "description": "The pointer left: a card that only peeks goes, a moment later"
+            },
+            {
+              "kind": "method",
+              "name": "toggle",
+              "parameters": [
+                {
+                  "name": "anchor",
+                  "type": {
+                    "text": "Element"
+                  }
+                }
+              ],
+              "description": "Shows it pinned next to `anchor`, or hides it if it was pinned next to the same thing."
+            },
+            {
+              "kind": "method",
+              "name": "show",
+              "parameters": [
+                {
+                  "name": "anchor",
+                  "default": "this.#anchor",
+                  "description": "What it talks about; by default, the one it has",
+                  "optional": true,
+                  "type": {
+                    "text": "Element | null"
+                  }
+                },
+                {
+                  "name": "{ pinned = true }",
+                  "default": "{}"
+                },
+                {
+                  "name": "options",
+                  "optional": true,
+                  "type": {
+                    "text": "{pinned?: boolean}"
+                  }
+                }
+              ],
+              "description": "Shows it next to `anchor`. Pinned, it stays until it is closed. If it was open, it closes first (and either listener can cancel what it is asked).",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "hide",
+              "description": "Hides it.",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "place",
+              "description": "Puts it back next to its thing after what is inside has grown (something that came later from the network). In the middle, the CSS places it."
+            },
+            {
+              "kind": "field",
+              "name": "open",
+              "privacy": "public",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "It is shown",
+              "attribute": "open",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "peeking",
+              "privacy": "public",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "It only peeks",
+              "attribute": "peeking",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "centered",
+              "privacy": "public",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "It is in the middle with the rest dimmed",
+              "attribute": "centered",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "closeLabel",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "default": "'Close'",
+              "description": "What the close button is called (attribute `close-label`)",
+              "attribute": "close-label"
+            },
+            {
+              "kind": "field",
+              "name": "label",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "default": "''",
+              "description": "What the card is called for who does not see it",
+              "attribute": "label"
+            },
+            {
+              "kind": "field",
+              "name": "delay",
+              "privacy": "public",
+              "type": {
+                "text": "number"
+              },
+              "description": "Milliseconds the pointer has to stay before it peeks",
+              "attribute": "delay"
+            }
+          ],
+          "events": [
+            {
+              "name": "wax-after-show",
+              "type": {
+                "text": "CustomEvent"
+              },
+              "description": "It is shown and in its place, and the animation, if any, is over. `detail: { anchor }`"
+            },
+            {
+              "name": "wax-after-hide",
+              "type": {
+                "text": "CustomEvent"
+              },
+              "description": "It is hidden (it has no animation: it comes right after `wax-hide`)"
+            },
+            {
+              "description": "It is going to show. Cancellable: `preventDefault()` keeps it closed. The content goes in here. `detail: { anchor, pinned, centered }`",
+              "name": "wax-show"
+            },
+            {
+              "description": "It is going to hide. Cancellable: `preventDefault()` keeps it open. `detail: { source, reason }`: `source` is the element that asked (the close button, the backdrop, what was clicked outside, or the card itself) and `reason` is `escape`, `close-button`, `backdrop`, `outside`, `leave`, `replace` or `api`",
+              "name": "wax-hide"
+            }
+          ],
+          "attributes": [
+            {
+              "type": {
+                "text": "boolean"
+              },
+              "description": "It is shown",
+              "name": "open",
+              "default": "false",
+              "fieldName": "open"
+            },
+            {
+              "type": {
+                "text": "boolean"
+              },
+              "description": "It only peeks",
+              "name": "peeking",
+              "default": "false",
+              "fieldName": "peeking"
+            },
+            {
+              "type": {
+                "text": "boolean"
+              },
+              "description": "It is in the middle with the rest dimmed",
+              "name": "centered",
+              "default": "false",
+              "fieldName": "centered"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "What the close button is called (attribute `close-label`)",
+              "name": "close-label",
+              "default": "'Close'",
+              "fieldName": "closeLabel"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "What the card is called for who does not see it",
+              "name": "label",
+              "default": "''",
+              "fieldName": "label"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "Milliseconds the pointer has to stay before it peeks",
+              "name": "delay",
+              "fieldName": "delay"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "wax-floating-card",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "WaxFloatingCard",
+          "declaration": {
+            "name": "WaxFloatingCard",
+            "module": "js/webawesome-extras/WaxFloatingCard.js"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "wax-floating-card",
+          "declaration": {
+            "name": "WaxFloatingCard",
+            "module": "js/webawesome-extras/WaxFloatingCard.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "js/webawesome-extras/WaxItemList.js",
       "declarations": [
         {

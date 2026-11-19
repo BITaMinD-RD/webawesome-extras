@@ -4,7 +4,7 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 const ROOT = path.join(import.meta.dirname, '..');
-const ORDER = ['FloatingCard', 'AskEach'];
+const ORDER = ['AskEach'];
 
 let loaded = null;
 
