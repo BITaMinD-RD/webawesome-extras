@@ -2,26 +2,26 @@
 import { LitElement, html, nothing } from 'lit';
 import { FloatingCardState } from './floating-card.state.js';
 import styles from './floating-card.styles.js';
-import { WaxShowEvent } from '../../events/show.js';
-import { WaxAfterShowEvent } from '../../events/after-show.js';
-import { WaxHideEvent } from '../../events/hide.js';
-import { WaxAfterHideEvent } from '../../events/after-hide.js';
+import { WaShowEvent } from '@awesome.me/webawesome/dist/events/show.js';
+import { WaAfterShowEvent } from '@awesome.me/webawesome/dist/events/after-show.js';
+import { WaHideEvent } from '@awesome.me/webawesome/dist/events/hide.js';
+import { WaAfterHideEvent } from '@awesome.me/webawesome/dist/events/after-hide.js';
 
 /**
  * A card that floats next to what was clicked: in a long list the thing it talks about may be far away, out of sight. With a mouse it can also peek: it shows a moment after the pointer
  * arrives (`peek`), goes when it leaves (`leave`), and stays once clicked (`show`); clicking the same thing again closes it (`toggle`). Without a mouse there is no "next to": it goes in the
  * middle with the rest dimmed. Escape, a click outside and its × close it too.
  *
- * It opens and closes like a `wa-dialog`: the `open` property, `show()` and `hide()`, and four events, `wax-show`, `wax-after-show`, `wax-hide` and `wax-after-hide`. `wax-show` and
- * `wax-hide` can be cancelled (`preventDefault()` keeps it as it was). It knows nothing of what it shows: the content is its children, which whoever opens it fills in the listener of
- * `wax-show` (and cancels it if there is nothing to say). It knows nothing of the Back button either: whoever wants Back to close it listens to its events.
+ * It opens and closes like a `wa-dialog`: the `open` property, `show()` and `hide()`, and the four events of Web Awesome (`wa-show`, `wa-after-show`, `wa-hide` and `wa-after-hide`, its own
+ * classes). `wa-show` and `wa-hide` can be cancelled (`preventDefault()` keeps it as it was); at `wa-show` the element already has its `anchor` and its `centered`. It knows nothing of what it shows: the content is its children, which whoever opens it fills in the listener of
+ * `wa-show` (and cancels it if there is nothing to say). It knows nothing of the Back button either: whoever wants Back to close it listens to its events.
  *
  * ```html
  * <wax-floating-card close-label="Cerrar"></wax-floating-card>   <!-- a child of the body -->
  * ```
  * ```js
- * card.addEventListener('wax-show', event => {                      // the content, when it is going to show
- *   card.replaceChildren(dayView(event.detail.anchor.dataset.day));
+ * card.addEventListener('wa-show', event => {                       // the content, when it is going to show (the events of what is inside come up here too: look at event.target)
+ *   if (event.target === card) card.replaceChildren(dayView(card.anchor.dataset.day));
  * });
  * day.addEventListener('click', () => card.toggle(day));            // pinned, next to the day; the same day again closes it
  * day.addEventListener('mouseenter', () => card.peek(day));         // with a mouse, after a moment
@@ -47,12 +47,12 @@ import { WaxAfterHideEvent } from '../../events/after-hide.js';
  * @prop {string} label - What the card is called for who does not see it
  * @prop {number} delay - Milliseconds the pointer has to stay before it peeks
  *
- * @fires wax-show - It is going to show. Cancellable: `preventDefault()` keeps it closed. The content goes in here. `detail: { anchor, pinned, centered }`
- * @fires wax-after-show - It is shown and in its place, and the animation, if any, is over. `detail: { anchor }`
- * @fires wax-hide - It is going to hide. Cancellable: `preventDefault()` keeps it open. `detail: { source, reason }`: `source` is the element that asked (the close button, the backdrop, what was clicked outside, or the card itself) and `reason` is `escape`, `close-button`, `backdrop`, `outside`, `leave`, `replace` or `api`
- * @fires wax-after-hide - It is hidden (it has no animation: it comes right after `wax-hide`)
+ * @fires {WaShowEvent} wa-show - It is going to show. Cancellable: `preventDefault()` keeps it closed. The content goes in here; `anchor` and `centered` are already set
+ * @fires {WaAfterShowEvent} wa-after-show - It is shown and in its place
+ * @fires {WaHideEvent} wa-hide - It is going to hide. Cancellable: `preventDefault()` keeps it open. `detail: { source }`: the element that asked (the close button, the backdrop, what was clicked outside) or the card itself (Escape, `hide()`, the pointer leaving, another anchor)
+ * @fires {WaAfterHideEvent} wa-after-hide - It is hidden (it has no animation: it comes right after `wa-hide`)
  *
- * @slot - What it says. Whoever opens it puts it here, in the listener of `wax-show`
+ * @slot - What it says. Whoever opens it puts it here, in the listener of `wa-show`
  *
  * @csspart card - The card: its border, its background, its shadow and its size
  * @csspart close-button - The × button, in the corner (hidden while it only peeks)
@@ -95,12 +95,12 @@ export class WaxFloatingCard extends LitElement {
 
   /** @param {Event} event A click: outside the card, it closes it */
   #outside = event => {
-    if (!event.composedPath().includes(this)) this.#close('outside', /** @type {Element} */ (event.target));
+    if (!event.composedPath().includes(this)) this.#close(/** @type {Element} */ (event.target));
   };
 
   /** @param {KeyboardEvent} event */
   #escape = event => {
-    if (event.key === 'Escape') this.#close('escape');
+    if (event.key === 'Escape') this.#close();
   };
 
   constructor() {
@@ -138,9 +138,9 @@ export class WaxFloatingCard extends LitElement {
   }
 
   render() {
-    return html`${this.centered ? html`<div part="backdrop" @click=${(/** @type {Event} */ event) => this.#close('backdrop', /** @type {Element} */ (event.target))}></div>` : nothing}
+    return html`${this.centered ? html`<div part="backdrop" @click=${(/** @type {Event} */ event) => this.#close(/** @type {Element} */ (event.target))}></div>` : nothing}
       <div part="card" role="dialog" aria-label=${this.label || nothing}>
-        <button type="button" part="close-button" aria-label=${this.closeLabel} @click=${(/** @type {Event} */ event) => this.#close('close-button', /** @type {Element} */ (event.currentTarget))}>×</button>
+        <button type="button" part="close-button" aria-label=${this.closeLabel} @click=${(/** @type {Event} */ event) => this.#close(/** @type {Element} */ (event.currentTarget))}>×</button>
         <slot></slot>
       </div>`;
   }
@@ -150,7 +150,7 @@ export class WaxFloatingCard extends LitElement {
     if (changed.has('open') && changed.get('open') !== undefined) {
       // `open` set from outside, like the one of a `wa-dialog`: it shows or hides, and what was cancelled puts `open` back
       if (this.open && !this.#shown) this.show();
-      else if (!this.open && this.#shown) { this.open = true; this.#close('api'); }
+      else if (!this.open && this.#shown) { this.open = true; this.#close(); }
     }
     if (this.#shown) this.place();
   }
@@ -172,7 +172,7 @@ export class WaxFloatingCard extends LitElement {
   leave() {
     clearTimeout(this.#peeking);
     clearTimeout(this.#hiding);
-    if (this.#shown && !this.#pinned) this.#hiding = setTimeout(() => { if (!this.#pinned) this.#close('leave'); }, FloatingCardState.GRACE);
+    if (this.#shown && !this.#pinned) this.#hiding = setTimeout(() => { if (!this.#pinned) this.#close(); }, FloatingCardState.GRACE);
   }
 
   /**
@@ -190,27 +190,28 @@ export class WaxFloatingCard extends LitElement {
    *
    * @param {Element | null} [anchor] What it talks about; by default, the one it has
    * @param {{pinned?: boolean}} [options]
-   * @returns {boolean} Whether it is shown: `wax-show` or the `wax-hide` of the one it replaced were not cancelled
+   * @returns {boolean} Whether it is shown: `wa-show` or the `wa-hide` of the one it replaced were not cancelled
    */
   show(anchor = this.#anchor, { pinned = true } = {}) {
     clearTimeout(this.#peeking);
-    if (this.#shown && !this.#close('replace')) return false;
+    if (this.#shown && !this.#close()) return false;
     const centered = !FloatingCardState.hasMouse();
-    const event = new WaxShowEvent({ anchor, pinned, centered });
+    // What a listener of `wa-show` needs to know (what it is next to, if it goes in the middle) is on the element before the event, as the event of Web Awesome has no detail
+    this.#anchor = anchor;
+    this.centered = centered;
+    const event = new WaShowEvent();
     this.dispatchEvent(event);
-    if (event.defaultPrevented) { this.open = false; return false; }
+    if (event.defaultPrevented) { this.#anchor = null; this.centered = false; this.open = false; return false; }
     this.#shown = true;
     this.#pinned = pinned;
-    this.#anchor = anchor;
     this.peeking = !pinned;
-    this.centered = centered;
     this.open = true;
     if (centered) { this.style.removeProperty('top'); this.style.removeProperty('left'); }
     // After this click has finished: the click that opens it is not a click outside it
     this.#listening = setTimeout(() => document.addEventListener('click', this.#outside), 0);
     document.addEventListener('keydown', this.#escape);
     this.updateComplete.then(() => {
-      if (this.#shown) this.dispatchEvent(new WaxAfterShowEvent({ anchor }));
+      if (this.#shown) this.dispatchEvent(new WaAfterShowEvent());
     });
     return true;
   }
@@ -218,10 +219,10 @@ export class WaxFloatingCard extends LitElement {
   /**
    * Hides it.
    *
-   * @returns {boolean} Whether it is hidden: `wax-hide` was not cancelled
+   * @returns {boolean} Whether it is hidden: `wa-hide` was not cancelled
    */
   hide() {
-    return this.#close('api');
+    return this.#close();
   }
 
   /**
@@ -239,15 +240,14 @@ export class WaxFloatingCard extends LitElement {
   }
 
   /**
-   * @param {'escape' | 'close-button' | 'backdrop' | 'outside' | 'leave' | 'replace' | 'api'} reason
-   * @param {Element} [source] What asked; the card itself if nothing else
+   * @param {Element} [source] What asked (the close button, the backdrop, what was clicked outside); the card itself if nothing else (Escape, `hide()`, the pointer leaving, another anchor)
    * @returns {boolean} Whether it is hidden
    */
-  #close(reason, source = this) {
+  #close(source = this) {
     clearTimeout(this.#peeking);
     clearTimeout(this.#hiding);
     if (!this.#shown) return true;
-    const event = new WaxHideEvent({ source, reason });
+    const event = new WaHideEvent({ source });
     this.dispatchEvent(event);
     if (event.defaultPrevented) { this.open = true; return false; }
     this.#shown = false;
@@ -257,7 +257,7 @@ export class WaxFloatingCard extends LitElement {
     this.open = false;
     this.#unlisten();
     // It has no animation, so what comes after is right after: and a card that closes to open again (`replace`) finishes closing before it begins to open
-    this.dispatchEvent(new WaxAfterHideEvent());
+    this.dispatchEvent(new WaAfterHideEvent());
     return true;
   }
 

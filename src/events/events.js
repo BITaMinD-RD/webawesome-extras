@@ -1,7 +1,3 @@
-export { WaxShowEvent } from './show.js';
-export { WaxAfterShowEvent } from './after-show.js';
-export { WaxHideEvent } from './hide.js';
-export { WaxAfterHideEvent } from './after-hide.js';
 export { WaxSelectEvent } from './select.js';
 export { WaxMarkEvent } from './mark.js';
 export { WaxMoveEvent } from './move.js';

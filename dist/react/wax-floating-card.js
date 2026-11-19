@@ -8,9 +8,9 @@ export const WaxFloatingCard = createComponent({
   elementClass: Element,
   react: React,
   events: {
-    onWaxShow: 'wax-show',
-    onWaxAfterShow: 'wax-after-show',
-    onWaxHide: 'wax-hide',
-    onWaxAfterHide: 'wax-after-hide',
+    onWaShow: 'wa-show',
+    onWaAfterShow: 'wa-after-show',
+    onWaHide: 'wa-hide',
+    onWaAfterHide: 'wa-after-hide',
   },
 });

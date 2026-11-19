@@ -11,12 +11,12 @@ const make = async () => {
   </div>`);
   const card = page.querySelector('wax-floating-card');
   // The content goes in when it is going to show, like an application does
-  card.addEventListener('wax-show', event => { card.replaceChildren(Object.assign(document.createElement('p'), { textContent: `About ${event.detail.anchor?.id}` })); });
+  card.addEventListener('wa-show', event => { if (event.target === card) card.replaceChildren(Object.assign(document.createElement('p'), { textContent: `About ${card.anchor?.id}` })); });
   return { page, card, day: page.querySelector('#day'), other: page.querySelector('#other') };
 };
-const log = (card, names = ['wax-show', 'wax-after-show', 'wax-hide', 'wax-after-hide']) => {
+const log = (card, names = ['wa-show', 'wa-after-show', 'wa-hide', 'wa-after-hide']) => {
   const seen = [];
-  for (const name of names) card.addEventListener(name, event => seen.push(event.detail?.reason ? `${name}:${event.detail.reason}` : name));
+  for (const name of names) card.addEventListener(name, () => seen.push(name));
   return seen;
 };
 const part = (card, name) => card.shadowRoot.querySelector(`[part~=${name}]`);
@@ -34,7 +34,7 @@ describe('<wax-floating-card>', () => {
     const { card, day } = await make();
     const seen = log(card);
     expect(card.toggle(day)).to.equal(undefined);
-    await oneEvent(card, 'wax-after-show');
+    await oneEvent(card, 'wa-after-show');
     expect(card.open).to.equal(true);
     expect(card.hasAttribute('open')).to.equal(true);
     expect(card.textContent).to.equal('About day');
@@ -42,30 +42,30 @@ describe('<wax-floating-card>', () => {
     const near = day.getBoundingClientRect();
     expect(Math.round(box.top)).to.be.closeTo(Math.round(near.bottom + 6), 1, 'under its anchor');
     card.hide();
-    expect(seen).to.deep.equal(['wax-show', 'wax-after-show', 'wax-hide:api', 'wax-after-hide']);
+    expect(seen).to.deep.equal(['wa-show', 'wa-after-show', 'wa-hide', 'wa-after-hide']);
     expect(card.open).to.equal(false);
   });
 
-  it('keeps it closed if wax-show is cancelled (nothing to say), and open if wax-hide is cancelled', async () => {
+  it('keeps it closed if wa-show is cancelled (nothing to say), and open if wa-hide is cancelled', async () => {
     const { card, day } = await make();
     const stop = event => event.preventDefault();
-    card.addEventListener('wax-show', stop);
+    card.addEventListener('wa-show', stop);
     expect(card.show(day)).to.equal(false);
     expect(card.open).to.equal(false);
-    card.removeEventListener('wax-show', stop);
+    card.removeEventListener('wa-show', stop);
     card.show(day);
     expect(card.open).to.equal(true);
-    card.addEventListener('wax-hide', stop);
+    card.addEventListener('wa-hide', stop);
     expect(card.hide()).to.equal(false);
     expect(card.open).to.equal(true, 'it stays');
-    card.removeEventListener('wax-hide', stop);
+    card.removeEventListener('wa-hide', stop);
     expect(card.hide()).to.equal(true);
   });
 
-  it('says in wax-hide what asked: Escape, the close button, a click outside and the same thing again', async () => {
+  it('says in wa-hide, as a source, what asked: the card itself for Escape and hide(), the close button, what was clicked outside', async () => {
     const { card, day, other } = await make();
-    const reasons = [];
-    card.addEventListener('wax-hide', event => reasons.push([event.detail.reason, event.detail.source === card || event.detail.source instanceof Element]));
+    const sources = [];
+    card.addEventListener('wa-hide', event => sources.push(event.detail.source));
     card.toggle(day);
     await sendKeys({ press: 'Escape' });
     expect(card.open).to.equal(false);
@@ -79,8 +79,7 @@ describe('<wax-floating-card>', () => {
     card.toggle(day);
     card.toggle(day);
     expect(card.open).to.equal(false);
-    expect(reasons.map(([reason]) => reason)).to.deep.equal(['escape', 'close-button', 'outside', 'api']);
-    expect(reasons.every(([, isElement]) => isElement)).to.equal(true);
+    expect(sources).to.deep.equal([card, part(card, 'close-button'), other, card]);
   });
 
   it('does not close for a click inside it', async () => {
@@ -91,18 +90,18 @@ describe('<wax-floating-card>', () => {
     expect(card.open).to.equal(true);
   });
 
-  it('opens and closes with the open property, like a wa-dialog, and puts open back if wax-hide is cancelled', async () => {
+  it('opens and closes with the open property, like a wa-dialog, and puts open back if wa-hide is cancelled', async () => {
     const { card, day } = await make();
     card.anchor = day;
     card.open = true;
-    await oneEvent(card, 'wax-after-show');
+    await oneEvent(card, 'wa-after-show');
     expect(card.textContent).to.equal('About day');
     const stop = event => event.preventDefault();
-    card.addEventListener('wax-hide', stop);
+    card.addEventListener('wa-hide', stop);
     card.open = false;
     await card.updateComplete;
     expect(card.open).to.equal(true);
-    card.removeEventListener('wax-hide', stop);
+    card.removeEventListener('wa-hide', stop);
     card.open = false;
     await card.updateComplete;
     expect(card.open).to.equal(false);
@@ -110,11 +109,11 @@ describe('<wax-floating-card>', () => {
 
   it('replaces what it shows for another anchor: it closes and opens again', async () => {
     const { card, day, other } = await make();
-    const seen = log(card, ['wax-show', 'wax-hide', 'wax-after-hide']);
+    const seen = log(card, ['wa-show', 'wa-hide', 'wa-after-hide']);
     card.toggle(day);
     card.toggle(other);
     expect(card.textContent).to.equal('About other');
-    expect(seen).to.deep.equal(['wax-show', 'wax-hide:replace', 'wax-after-hide', 'wax-show']);
+    expect(seen).to.deep.equal(['wa-show', 'wa-hide', 'wa-after-hide', 'wa-show']);
   });
 
   it('peeks with a mouse after a moment, without the close button, and goes when the pointer leaves', async () => {
@@ -150,7 +149,7 @@ describe('<wax-floating-card>', () => {
     window.matchMedia = () => ({ matches: false });
     try {
       let centered;
-      card.addEventListener('wax-show', event => { centered = event.detail.centered; });
+      card.addEventListener('wa-show', () => { centered = card.centered; });
       card.peek(day);
       await aTimeout(60);
       expect(card.open).to.equal(false, 'peeking does nothing without a mouse');
@@ -159,10 +158,10 @@ describe('<wax-floating-card>', () => {
       expect(centered).to.equal(true);
       expect(card.centered).to.equal(true);
       expect(part(card, 'backdrop')).to.exist;
-      const reasons = [];
-      card.addEventListener('wax-hide', event => reasons.push(event.detail.reason));
+      const sources = [];
+      card.addEventListener('wa-hide', event => sources.push(event.detail.source));
       part(card, 'backdrop').click();
-      expect(reasons).to.deep.equal(['backdrop']);
+      expect(sources).to.deep.equal([part(card, 'backdrop')]);
       expect(card.open).to.equal(false);
     } finally {
       window.matchMedia = real;
@@ -172,7 +171,7 @@ describe('<wax-floating-card>', () => {
   it('is accessible', async () => {
     const { card, day } = await make();
     card.show(day);
-    await oneEvent(card, 'wax-after-show');
+    await oneEvent(card, 'wa-after-show');
     await expect(card).to.be.accessible();
   });
 });

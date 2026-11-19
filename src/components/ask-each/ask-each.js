@@ -6,16 +6,12 @@ import { AskEachState } from './ask-each.state.js';
 import styles from './ask-each.styles.js';
 import { WaxAllEvent } from '../../events/all.js';
 import { WaxAnswerEvent } from '../../events/answer.js';
-import { WaxShowEvent } from '../../events/show.js';
-import { WaxHideEvent } from '../../events/hide.js';
-import { WaxAfterHideEvent } from '../../events/after-hide.js';
-import { WaxAfterShowEvent } from '../../events/after-show.js';
 
 /**
  * The usual question when something has to be decided about several things («overwrite this file?»): it asks about each one in a dialog, with the progress («2 of 5»), and the answer can be
  * «yes to all» (or «no to all») for the rest, or cancelling, so that nothing happens. It knows nothing of what it asks: whoever uses it gives the verbs (`labels`) and how each thing is named
- * (`describe`). It is a `wa-dialog` inside, so it opens and closes like one: the `open` property, `show()` and `hide()`, `light-dismiss`, Escape, and the events `wax-show`, `wax-after-show`,
- * `wax-hide` and `wax-after-hide`, with `wax-show` and `wax-hide` cancellable. Enter is the first button (the positive verb). It knows nothing of the Back button: whoever wants Back to
+ * (`describe`). It is a `wa-dialog` inside, so it opens and closes like one: the `open` property, `show()` and `hide()`, `light-dismiss`, Escape, and the events of Web Awesome that
+ * its dialog fires, which come out of this element as they are (`wa-show`, `wa-after-show`, `wa-hide` and `wa-after-hide`, the first and the third cancellable). Enter is the first button (the positive verb). It knows nothing of the Back button: whoever wants Back to
  * cancel it listens to those events (`BackClose.bind` in webutils).
  *
  * ```html
@@ -41,10 +37,10 @@ import { WaxAfterShowEvent } from '../../events/after-show.js';
  * @prop {(item: any) => string} describe - How each thing is named in the question
  * @prop {{yes?: string, no?: string, yesAll?: string, noAll?: string, cancel?: string, progress?: string}} labels - The verbs of the buttons and the progress (`{n} de {total}`); the ones not given are Spanish
  *
- * @fires wax-show - It is going to open. Cancellable: `preventDefault()` keeps it closed and `ask()` gives null
- * @fires wax-after-show - It is open
- * @fires wax-hide - It is going to close. Cancellable while it is being dismissed (Escape, outside, its cross): `preventDefault()` keeps it open. `detail: { source, reason }`: `reason` is `answered`, `cancelled` (the button) or `dismissed`
- * @fires wax-after-hide - It is closed
+ * @fires {WaShowEvent} wa-show - It is going to open. Cancellable: `preventDefault()` keeps it closed and `ask()` gives null
+ * @fires {WaAfterShowEvent} wa-after-show - It is open
+ * @fires {WaHideEvent} wa-hide - It is going to close, because an answer ended the questions or it was dismissed (Escape, outside, its cross). Cancellable: `preventDefault()` keeps it open. `detail: { source }`
+ * @fires {WaAfterHideEvent} wa-after-hide - It is closed, and `ask()` has its answer
  * @fires wax-answer - A question was answered (or the whole thing cancelled). `detail: { index, item, action }`, `action` is `yes`, `no`, `yesAll`, `noAll` or `cancel`
  * @fires wax-all - «Yes to all» or «no to all» was answered: for whoever goes on answering the same to what is asked later. `detail: { value }`
  *
@@ -138,8 +134,7 @@ export class WaxAskEach extends LitElement {
     const total = this.#items.length;
     const item = this.#items[Math.min(this._index, total - 1)];
     return html`<wa-dialog part="dialog" exportparts="dialog:dialog-base, header, title, body, footer, close-button" label=${this.label} ?without-header=${!this.label} ?light-dismiss=${this.lightDismiss}
-        @wa-show=${(/** @type {Event} */ event) => this.#showing(event)} @wa-after-show=${(/** @type {Event} */ event) => this.#shown(event)}
-        @wa-hide=${(/** @type {CustomEvent} */ event) => this.#hiding(event)} @wa-after-hide=${(/** @type {Event} */ event) => this.#hidden(event)}
+        @wa-show=${(/** @type {Event} */ event) => this.#showing(event)} @wa-hide=${(/** @type {Event} */ event) => this.#hiding(event)} @wa-after-hide=${(/** @type {Event} */ event) => this.#hidden(event)}
         @keydown=${(/** @type {KeyboardEvent} */ event) => this.#key(event)}>
       <p part="progress" role="status">${run ? text.progress.replace('{n}', String(this._index + 1)).replace('{total}', String(total)) : ''}</p>
       <p part="question">${run ? `${this.question}${this.question ? ' ' : ''}${this.describe(item)}` : ''}</p>
@@ -178,49 +173,30 @@ export class WaxAskEach extends LitElement {
     this.#take('yes');
   }
 
-  /** @param {Event} event The dialog begins to open: whoever listens can cancel it */
+  /** @param {Event} event The dialog begins to open. Its `wa-show` goes out as it is (from this element, for whoever listens), and can be cancelled there: then it does not open and there are no answers */
   #showing(event) {
     if (event.target !== event.currentTarget) return;
-    event.stopPropagation();
-    const own = new WaxShowEvent();
-    this.dispatchEvent(own);
-    if (own.defaultPrevented) {
-      event.preventDefault();
+    // Whoever listens is called after this, in the same dispatch: when it returns, the event says if somebody cancelled it
+    queueMicrotask(() => {
+      if (!event.defaultPrevented) return;
       this.open = false;
       this.#settle(null);
-    }
+    });
   }
 
-  /** @param {CustomEvent} event The dialog begins to close, for the reason of `#reason` (it is `dismissed` unless a button decided it) */
+  /** @param {Event} event The dialog begins to close (its `wa-hide` goes out as it is, and can be cancelled there: then it stays open) */
   #hiding(event) {
     if (event.target !== event.currentTarget) return;
-    event.stopPropagation();
-    const finishing = this.#reason !== 'dismissed';
-    const own = new WaxHideEvent({ source: event.detail?.source ?? this, reason: this.#reason });
-    this.dispatchEvent(own);
-    // Once a button has decided, it closes: only a dismissal can be cancelled
-    if (own.defaultPrevented && !finishing) {
-      event.preventDefault();
-      this.open = true;
-      return;
-    }
-    this.#settle(this.#reason === 'answered' ? this.#run?.result ?? null : null);
+    queueMicrotask(() => { if (event.defaultPrevented) this.open = true; });
   }
 
-  /** @param {Event} event */
+  /** @param {Event} event The dialog is closed: whoever asked gets the answers, or null if it was cancelled or dismissed */
   #hidden(event) {
     if (event.target !== event.currentTarget) return;
-    event.stopPropagation();
     this.open = false;
+    const answers = this.#reason === 'answered' ? this.#run?.result ?? null : null;
     this.#run = null;
-    this.dispatchEvent(new WaxAfterHideEvent());
-  }
-
-  /** @param {Event} event */
-  #shown(event) {
-    if (event.target !== event.currentTarget) return;
-    event.stopPropagation();
-    this.dispatchEvent(new WaxAfterShowEvent());
+    this.#settle(answers);
   }
 
   /** @param {boolean[] | null} answers Gives the answer to whoever asked, once */

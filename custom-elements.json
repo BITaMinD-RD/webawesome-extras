@@ -8,7 +8,7 @@
       "declarations": [
         {
           "kind": "class",
-          "description": "The usual question when something has to be decided about several things («overwrite this file?»): it asks about each one in a dialog, with the progress («2 of 5»), and the answer can be\n«yes to all» (or «no to all») for the rest, or cancelling, so that nothing happens. It knows nothing of what it asks: whoever uses it gives the verbs (`labels`) and how each thing is named\n(`describe`). It is a `wa-dialog` inside, so it opens and closes like one: the `open` property, `show()` and `hide()`, `light-dismiss`, Escape, and the events `wax-show`, `wax-after-show`,\n`wax-hide` and `wax-after-hide`, with `wax-show` and `wax-hide` cancellable. Enter is the first button (the positive verb). It knows nothing of the Back button: whoever wants Back to\ncancel it listens to those events (`BackClose.bind` in webutils).\n\n```html\n<wax-ask-each label=\"Overwrite?\" question=\"Overwrite\"></wax-ask-each>\n```\n```js\naskEach.describe = file => `«${file.name}»`;\naskEach.labels = { yes: 'Overwrite', no: 'Skip', yesAll: 'Overwrite all', noAll: 'Skip all' };\nconst answers = await askEach.ask(files);   // an array of booleans in the order of the files (true is the positive verb), or null if it was cancelled\n```",
+          "description": "The usual question when something has to be decided about several things («overwrite this file?»): it asks about each one in a dialog, with the progress («2 of 5»), and the answer can be\n«yes to all» (or «no to all») for the rest, or cancelling, so that nothing happens. It knows nothing of what it asks: whoever uses it gives the verbs (`labels`) and how each thing is named\n(`describe`). It is a `wa-dialog` inside, so it opens and closes like one: the `open` property, `show()` and `hide()`, `light-dismiss`, Escape, and the events of Web Awesome that\nits dialog fires, which come out of this element as they are (`wa-show`, `wa-after-show`, `wa-hide` and `wa-after-hide`, the first and the third cancellable). Enter is the first button (the positive verb). It knows nothing of the Back button: whoever wants Back to\ncancel it listens to those events (`BackClose.bind` in webutils).\n\n```html\n<wax-ask-each label=\"Overwrite?\" question=\"Overwrite\"></wax-ask-each>\n```\n```js\naskEach.describe = file => `«${file.name}»`;\naskEach.labels = { yes: 'Overwrite', no: 'Skip', yesAll: 'Overwrite all', noAll: 'Skip all' };\nconst answers = await askEach.ask(files);   // an array of booleans in the order of the files (true is the positive verb), or null if it was cancelled\n```",
           "name": "WaxAskEach",
           "cssProperties": [
             {
@@ -141,20 +141,32 @@
           ],
           "events": [
             {
+              "type": {
+                "text": "WaShowEvent"
+              },
               "description": "It is going to open. Cancellable: `preventDefault()` keeps it closed and `ask()` gives null",
-              "name": "wax-show"
+              "name": "wa-show"
             },
             {
+              "type": {
+                "text": "WaAfterShowEvent"
+              },
               "description": "It is open",
-              "name": "wax-after-show"
+              "name": "wa-after-show"
             },
             {
-              "description": "It is going to close. Cancellable while it is being dismissed (Escape, outside, its cross): `preventDefault()` keeps it open. `detail: { source, reason }`: `reason` is `answered`, `cancelled` (the button) or `dismissed`",
-              "name": "wax-hide"
+              "type": {
+                "text": "WaHideEvent"
+              },
+              "description": "It is going to close, because an answer ended the questions or it was dismissed (Escape, outside, its cross). Cancellable: `preventDefault()` keeps it open. `detail: { source }`",
+              "name": "wa-hide"
             },
             {
-              "description": "It is closed",
-              "name": "wax-after-hide"
+              "type": {
+                "text": "WaAfterHideEvent"
+              },
+              "description": "It is closed, and `ask()` has its answer",
+              "name": "wa-after-hide"
             },
             {
               "description": "A question was answered (or the whole thing cancelled). `detail: { index, item, action }`, `action` is `yes`, `no`, `yesAll`, `noAll` or `cancel`",
@@ -575,7 +587,7 @@
       "declarations": [
         {
           "kind": "class",
-          "description": "A card that floats next to what was clicked: in a long list the thing it talks about may be far away, out of sight. With a mouse it can also peek: it shows a moment after the pointer\narrives (`peek`), goes when it leaves (`leave`), and stays once clicked (`show`); clicking the same thing again closes it (`toggle`). Without a mouse there is no \"next to\": it goes in the\nmiddle with the rest dimmed. Escape, a click outside and its × close it too.\n\nIt opens and closes like a `wa-dialog`: the `open` property, `show()` and `hide()`, and four events, `wax-show`, `wax-after-show`, `wax-hide` and `wax-after-hide`. `wax-show` and\n`wax-hide` can be cancelled (`preventDefault()` keeps it as it was). It knows nothing of what it shows: the content is its children, which whoever opens it fills in the listener of\n`wax-show` (and cancels it if there is nothing to say). It knows nothing of the Back button either: whoever wants Back to close it listens to its events.\n\n```html\n<wax-floating-card close-label=\"Cerrar\"></wax-floating-card>   <!-- a child of the body -->\n```\n```js\ncard.addEventListener('wax-show', event => {                      // the content, when it is going to show\n  card.replaceChildren(dayView(event.detail.anchor.dataset.day));\n});\nday.addEventListener('click', () => card.toggle(day));            // pinned, next to the day; the same day again closes it\nday.addEventListener('mouseenter', () => card.peek(day));         // with a mouse, after a moment\nday.addEventListener('mouseleave', () => card.leave());\n```\n\nIt is placed with the coordinates of the page, so it has to be a child of the `body` (or of an element that is not positioned).",
+          "description": "A card that floats next to what was clicked: in a long list the thing it talks about may be far away, out of sight. With a mouse it can also peek: it shows a moment after the pointer\narrives (`peek`), goes when it leaves (`leave`), and stays once clicked (`show`); clicking the same thing again closes it (`toggle`). Without a mouse there is no \"next to\": it goes in the\nmiddle with the rest dimmed. Escape, a click outside and its × close it too.\n\nIt opens and closes like a `wa-dialog`: the `open` property, `show()` and `hide()`, and the four events of Web Awesome (`wa-show`, `wa-after-show`, `wa-hide` and `wa-after-hide`, its own\nclasses). `wa-show` and `wa-hide` can be cancelled (`preventDefault()` keeps it as it was); at `wa-show` the element already has its `anchor` and its `centered`. It knows nothing of what it shows: the content is its children, which whoever opens it fills in the listener of\n`wa-show` (and cancels it if there is nothing to say). It knows nothing of the Back button either: whoever wants Back to close it listens to its events.\n\n```html\n<wax-floating-card close-label=\"Cerrar\"></wax-floating-card>   <!-- a child of the body -->\n```\n```js\ncard.addEventListener('wa-show', event => {                       // the content, when it is going to show (the events of what is inside come up here too: look at event.target)\n  if (event.target === card) card.replaceChildren(dayView(card.anchor.dataset.day));\n});\nday.addEventListener('click', () => card.toggle(day));            // pinned, next to the day; the same day again closes it\nday.addEventListener('mouseenter', () => card.peek(day));         // with a mouse, after a moment\nday.addEventListener('mouseleave', () => card.leave());\n```\n\nIt is placed with the coordinates of the page, so it has to be a child of the `body` (or of an element that is not positioned).",
           "name": "WaxFloatingCard",
           "cssProperties": [
             {
@@ -615,7 +627,7 @@
           ],
           "slots": [
             {
-              "description": "What it says. Whoever opens it puts it here, in the listener of `wax-show`",
+              "description": "What it says. Whoever opens it puts it here, in the listener of `wa-show`",
               "name": ""
             }
           ],
@@ -783,20 +795,32 @@
           ],
           "events": [
             {
-              "description": "It is going to show. Cancellable: `preventDefault()` keeps it closed. The content goes in here. `detail: { anchor, pinned, centered }`",
-              "name": "wax-show"
+              "type": {
+                "text": "WaShowEvent"
+              },
+              "description": "It is going to show. Cancellable: `preventDefault()` keeps it closed. The content goes in here; `anchor` and `centered` are already set",
+              "name": "wa-show"
             },
             {
-              "description": "It is shown and in its place, and the animation, if any, is over. `detail: { anchor }`",
-              "name": "wax-after-show"
+              "type": {
+                "text": "WaAfterShowEvent"
+              },
+              "description": "It is shown and in its place",
+              "name": "wa-after-show"
             },
             {
-              "description": "It is going to hide. Cancellable: `preventDefault()` keeps it open. `detail: { source, reason }`: `source` is the element that asked (the close button, the backdrop, what was clicked outside, or the card itself) and `reason` is `escape`, `close-button`, `backdrop`, `outside`, `leave`, `replace` or `api`",
-              "name": "wax-hide"
+              "type": {
+                "text": "WaHideEvent"
+              },
+              "description": "It is going to hide. Cancellable: `preventDefault()` keeps it open. `detail: { source }`: the element that asked (the close button, the backdrop, what was clicked outside) or the card itself (Escape, `hide()`, the pointer leaving, another anchor)",
+              "name": "wa-hide"
             },
             {
-              "description": "It is hidden (it has no animation: it comes right after `wax-hide`)",
-              "name": "wax-after-hide"
+              "type": {
+                "text": "WaAfterHideEvent"
+              },
+              "description": "It is hidden (it has no animation: it comes right after `wa-hide`)",
+              "name": "wa-after-hide"
             }
           ],
           "attributes": [

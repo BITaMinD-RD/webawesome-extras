@@ -3,7 +3,7 @@
  * writes custom-elements.json, the same description of attributes, properties, events, slots, parts and CSS custom properties that Web Awesome ships.
  * `npm run manifest` makes it; `scripts/react.mjs` makes the React wrappers from it.
  */
-/** The analyzer also finds the events that are dispatched (`new WaxShowEvent()`, with no name, or a variable): only the ones the JSDoc describes (`@fires`) are real */
+/** The analyzer also finds the events that are dispatched (`new WaxSelectEvent()`, with no name, or a variable): only the ones the JSDoc describes (`@fires`) are real */
 const onlyWaxEvents = {
   name: 'only-wax-events',
   packageLinkPhase({ customElementsManifest }) {

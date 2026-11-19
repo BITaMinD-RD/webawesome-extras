@@ -13,15 +13,15 @@ const make = async () => {
 };
 const button = (el, name) => el.shadowRoot.querySelector(`[part~="${name}"]`);
 const text = (el, name) => el.shadowRoot.querySelector(`[part="${name}"]`).textContent.trim();
-const log = (el, names = ['wax-show', 'wax-after-show', 'wax-hide', 'wax-after-hide']) => {
+const log = (el, names = ['wa-show', 'wa-after-show', 'wa-hide', 'wa-after-hide']) => {
   const seen = [];
-  for (const name of names) el.addEventListener(name, event => seen.push(event.detail?.reason ? `${name}:${event.detail.reason}` : name));
+  for (const name of names) el.addEventListener(name, () => seen.push(name));
   return seen;
 };
 /** Asks, and waits until the dialog is open and ready: gives the promise of the answers inside an object, so that waiting for the dialog does not wait for the answers */
 const ask = async (el, items = files) => {
   const answers = el.ask(items);
-  await oneEvent(el, 'wax-after-show');
+  await oneEvent(el, 'wa-after-show');
   return { answers };
 };
 
@@ -57,7 +57,6 @@ describe('<wax-ask-each>', () => {
     button(el, 'yes-all').click();
     expect(await answers).to.deep.equal([false, true, true]);
     expect(heard).to.deep.equal([true]);
-    await oneEvent(el, 'wax-after-hide');
     const { answers: more } = await ask(el, files);
     button(el, 'no-all').click();
     expect(await more).to.deep.equal([false, false, false]);
@@ -82,34 +81,30 @@ describe('<wax-ask-each>', () => {
     button(el, 'yes').click();
     button(el, 'cancel').click();
     expect(await answers).to.equal(null);
-    await oneEvent(el, 'wax-after-hide');
-    expect(seen).to.deep.equal(['wax-show', 'wax-after-show', 'wax-hide:cancelled', 'wax-after-hide']);
+    expect(seen).to.deep.equal(['wa-show', 'wa-after-show', 'wa-hide', 'wa-after-hide']);
     expect(el.open).to.equal(false);
   });
 
-  it('gives null on Escape, as a dismissal, and lets wax-hide cancel it while it is dismissed', async () => {
+  it('gives null on Escape, and lets wa-hide cancel the dismissal', async () => {
     const el = await make();
     const stop = event => event.preventDefault();
-    el.addEventListener('wax-hide', stop);
+    el.addEventListener('wa-hide', stop);
     const { answers } = await ask(el);
     await sendKeys({ press: 'Escape' });
     await aTimeout(300);
     expect(el.open).to.equal(true, 'cancelled: it stays');
-    el.removeEventListener('wax-hide', stop);
-    const seen = log(el, ['wax-hide', 'wax-after-hide']);
+    el.removeEventListener('wa-hide', stop);
+    const seen = log(el, ['wa-hide', 'wa-after-hide']);
     await sendKeys({ press: 'Escape' });
     expect(await answers).to.equal(null);
-    await oneEvent(el, 'wax-after-hide');
-    expect(seen).to.deep.equal(['wax-hide:dismissed', 'wax-after-hide']);
+    expect(seen).to.deep.equal(['wa-hide', 'wa-after-hide']);
   });
 
-  it('closes with the answers and says it was answered (a decision of a button is not cancellable)', async () => {
+  it('closes with the answers when the last one is answered', async () => {
     const el = await make();
-    el.addEventListener('wax-hide', event => event.preventDefault());
     const { answers } = await ask(el, [files[0]]);
     button(el, 'yes').click();
     expect(await answers).to.deep.equal([true]);
-    await oneEvent(el, 'wax-after-hide');
     expect(el.open).to.equal(false);
   });
 
@@ -125,15 +120,15 @@ describe('<wax-ask-each>', () => {
     expect(await el.ask([])).to.deep.equal([]);
     expect(el.open).to.equal(false);
     el.open = true;
-    await oneEvent(el, 'wax-after-show');
+    await oneEvent(el, 'wa-after-show');
     el.open = false;
-    await oneEvent(el, 'wax-after-hide');
+    await oneEvent(el, 'wa-after-hide');
     expect(el.open).to.equal(false);
   });
 
-  it('keeps it closed when wax-show is cancelled, and the answer is null', async () => {
+  it('keeps it closed when wa-show is cancelled, and the answer is null', async () => {
     const el = await make();
-    el.addEventListener('wax-show', event => event.preventDefault());
+    el.addEventListener('wa-show', event => event.preventDefault());
     expect(await el.ask(files)).to.equal(null);
     await aTimeout(100);
     expect(el.open).to.equal(false);
