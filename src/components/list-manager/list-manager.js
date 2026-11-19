@@ -29,11 +29,13 @@ import '../item-list/item-list.js';
  * @element wax-list-manager
  *
  * @attr {string} search-placeholder - What the search box says while it is empty
+ * @attr {string} search-label - What the search box is called for who does not see it (the placeholder if it is not given)
  * @attr {string} new-label - The text of the button
  * @attr {string} empty - What it says with nothing to show
  *
  * @prop {import('../item-list/item-list.js').ListItem[]} items - What is shown (without `html`: the markup of a line goes to the light DOM of the list, which here is its shadow). The chosen entry stays chosen if it is still there
  * @prop {string} searchPlaceholder - What the search box says while it is empty
+ * @prop {string} searchLabel - What the search box is called for who does not see it (attribute `search-label`)
  * @prop {string} newLabel - The text of the button
  * @prop {string} empty - What it says with nothing to show
  * @prop {string} query - What is typed in the search box (read only)
@@ -54,6 +56,7 @@ export class WaxListManager extends LitElement {
   static properties = {
     items: { attribute: false },
     searchPlaceholder: { type: String, attribute: 'search-placeholder' },
+    searchLabel: { type: String, attribute: 'search-label' },
     newLabel: { type: String, attribute: 'new-label' },
     empty: { type: String }
   };
@@ -67,6 +70,7 @@ export class WaxListManager extends LitElement {
     /** @type {import('../item-list/item-list.js').ListItem[]} */
     this.items = [];
     this.searchPlaceholder = '';
+    this.searchLabel = '';
     this.newLabel = '';
     this.empty = '';
   }
@@ -98,7 +102,7 @@ export class WaxListManager extends LitElement {
 
   render() {
     return html`<slot name="filters"></slot>
-      <wa-input part="search" type="search" value="" with-clear placeholder=${this.searchPlaceholder}
+      <wa-input part="search" type="search" value="" with-clear label=${this.searchLabel || this.searchPlaceholder} placeholder=${this.searchPlaceholder}
         @input=${(/** @type {Event} */ event) => this.#typed(event)} @change=${(/** @type {Event} */ event) => event.stopPropagation()}></wa-input>
       <div part="actions"><wa-button part="new-button" appearance="outlined" @click=${() => this.dispatchEvent(new WaxNewEvent())}>${this.newLabel}</wa-button></div>
       <wax-item-list part="items" exportparts="line, selected, marked, faded, icon, name, note, empty" .items=${this.items} empty=${this.empty}

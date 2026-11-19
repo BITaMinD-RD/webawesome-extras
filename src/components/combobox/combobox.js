@@ -27,6 +27,7 @@ import { WaxQueryEvent } from '../../events/query.js';
  *
  * @element wax-combobox
  *
+ * @attr {string} label - What the box is called, written above it (like the `label` of a `wa-select`); a box with no visible label needs its `<label>` or an `aria-label` around it
  * @attr {string} placeholder - The title, grey while nothing is chosen
  * @attr {string} search-placeholder - What the search box says while it is empty (`Buscar...`)
  * @attr {string} empty-label - If set, a first option «choose nothing» with this name (and it is the title if there is no `placeholder`)
@@ -38,6 +39,7 @@ import { WaxQueryEvent } from '../../events/query.js';
  *
  * @prop {{value: string, label: string}[]} choices - What is offered. What was chosen stays if it is still there
  * @prop {string} value - What is chosen, empty for nothing. Only one of the choices: anything else leaves nothing chosen. Set `choices` first
+ * @prop {string} label - What the box is called, written above it
  * @prop {string} placeholder - The title, grey while nothing is chosen
  * @prop {string} searchPlaceholder - What the search box says while it is empty (attribute `search-placeholder`)
  * @prop {string | undefined} emptyLabel - If set, a first option «choose nothing» with this name (attribute `empty-label`)
@@ -64,6 +66,7 @@ export class WaxCombobox extends LitElement {
   static properties = {
     choices: { attribute: false },
     value: { attribute: false },   // after `choices`: what is set before the element is defined is given back in this order, and a value that is not among the choices is dropped
+    label: { type: String },
     placeholder: { type: String },
     searchPlaceholder: { type: String, attribute: 'search-placeholder' },
     emptyLabel: { type: String, attribute: 'empty-label' },
@@ -92,6 +95,7 @@ export class WaxCombobox extends LitElement {
 
   constructor() {
     super();
+    this.label = '';
     this.placeholder = '';
     this.searchPlaceholder = 'Buscar...';
     /** @type {string | undefined} */
@@ -149,7 +153,7 @@ export class WaxCombobox extends LitElement {
   render() {
     const arranged = ComboboxState.arrange(this.#choices, this._query);
     const anyShown = arranged.some(item => item.shown);
-    return html`<wa-select part="select" placeholder=${this.placeholder || this.emptyLabel || ''} ?required=${this.required} ?disabled=${this.disabled}
+    return html`<wa-select part="select" label=${this.label} placeholder=${this.placeholder || this.emptyLabel || ''} ?required=${this.required} ?disabled=${this.disabled}
         @change=${(/** @type {Event} */ event) => this.#changed(event)} @wa-show=${(/** @type {Event} */ event) => this.#opened(event)}
         @wa-after-show=${(/** @type {Event} */ event) => { if (event.target === this.#select) this.#search?.focus?.(); }}
         @wa-after-hide=${(/** @type {Event} */ event) => { if (event.target === this.#select) this.#forget(); }}>

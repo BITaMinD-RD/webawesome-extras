@@ -23,7 +23,7 @@ export default css`
   li.selected { background: var(--item-selected, var(--wa-color-brand-fill-quiet)); box-shadow: inset 3px 0 0 var(--item-accent, var(--wa-color-brand-fill-loud)); }
   /* Marked with Ctrl + click */
   li.marked { outline: 2px dashed var(--item-accent, var(--wa-color-brand-fill-loud)); outline-offset: -2px; }
-  li.faded [part~="name"] { text-decoration: line-through; opacity: .6; }
+  li.faded [part~="name"] { text-decoration: line-through; opacity: .65; }
   /* Moving a line: its handle, and the line while it is dragged */
   [part~="handle"] { cursor: grab; touch-action: none; padding: 0 var(--wa-space-2xs); color: var(--item-muted, var(--wa-color-text-quiet)); user-select: none; }
   li.dragging { opacity: .6; background: var(--item-selected, var(--wa-color-brand-fill-quiet)); }
