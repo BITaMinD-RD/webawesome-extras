@@ -7,8 +7,10 @@ group and the slider group. They know nothing of what they are used for.
 <link rel="stylesheet" href="lib/controls-ui/controls.css">
 ```
 
-The look comes from variables that the page defines: `--font`, `--surface`, `--bg`, `--text`, `--border`, `--accent`, `--muted`, `--radius`,
-`--thumb`, `--track` and `--color` (the colour of one control).
+The look comes from **Web Awesome's design tokens**, so the theme of the page applies with nothing else to define: `--wa-color-surface-default`, `--wa-color-surface-lowered`,
+`--wa-color-surface-border`, `--wa-color-text-normal`, `--wa-color-text-quiet`, `--wa-color-brand-fill-loud` (the accent), `--wa-border-radius-m`, `--wa-font-size-xs|s|m`,
+`--wa-space-m`, `--wa-form-control-height`, `--wa-shadow-*`... The only variable of its own is `--color`, the colour of one control (a pill, a check). A page that has its own palette
+sets the `--wa-*` tokens (`:root { --wa-color-brand-fill-loud: var(--accent) }`), it does not set ours.
 
 A switch is `<span class="switch"><input type="checkbox"><span class="switch-track"></span></span>`.
 
@@ -30,7 +32,7 @@ list.setItems(sites.map(s => ({ key: s.id, icon: '🍺', name: s.name, note: `${
 - **Own controls**: a click on a link, button, input or label inside a line is theirs and does not select. `html` is where the application
   puts them; it listens to them itself (one delegated listener on the element, with `data-key` on the line).
 - Lines are focusable and Enter/Space select them. `ItemList.html(items, options)` gives the markup alone.
-- Style: `.item-list` in `controls.css`, tokens `--item-border`, `--item-hover`, `--item-selected`, `--item-accent`, `--item-muted`. `ListManager` puts the
+- Style: `.item-list` in `controls.css`, tokens `--item-border`, `--item-hover`, `--item-selected`, `--item-accent`, `--item-muted` (each one falls back to a `--wa-*` token). `ListManager` puts the
   filters, the search box and «New» above one.
 
 **Buttons** are `wa-button` of Web Awesome (`lib/webawesome`, loaded by the page). `Button.js` makes them from code: `Button.make(document, { text, type, title, label, primary, pill, disabled })`,

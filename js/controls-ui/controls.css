@@ -15,14 +15,14 @@ button, input, select, textarea {
 }
 
 .input {
-  height         : var(--control-h, 36px);   /* la misma altura que un boton y un combo */
+  height         : var(--wa-form-control-height);   /* la misma altura que un boton y un combo */
   width          : 100%;
 	padding        : 0 12px;
-	background     : var(--color-surface-default);
-	border         : 1px solid var(--color-surface-border);
-	border-radius  : var(--radius);
-	color          : var(--color-text-normal);
-	font-size      : var(--fs-m, 14px);
+	background     : var(--wa-color-surface-default);
+	border         : 1px solid var(--wa-color-surface-border);
+	border-radius  : var(--wa-border-radius-m);
+	color          : var(--wa-color-text-normal);
+	font-size      : var(--wa-font-size-s);
 	box-sizing     : border-box; /* ¡Indispensable! */
 	outline        : none;
 }
@@ -30,7 +30,7 @@ button, input, select, textarea {
 /* La separacion de siempre entre un control y lo que va debajo: la misma en todas partes.
    Dentro de un rotulo (<label>) el rotulo pone la suya, y las filas y los grupos de controles ponen la suya con `gap` */
 .input, .combo {
-	margin-bottom  : var(--control-gap, 12px);
+	margin-bottom  : var(--wa-space-m);
 }
 label > .input, label > .combo {
 	margin         : 4px 0 0;
@@ -40,8 +40,8 @@ label > .input, label > .combo {
 	display        : flex;
 	flex-wrap      : wrap;
 	align-items    : center;
-	gap            : var(--control-gap, 12px);
-	margin-bottom  : var(--control-gap, 12px);
+	gap            : var(--wa-space-m);
+	margin-bottom  : var(--wa-space-m);
 }
 .row > .input, .row > .combo, .row > wa-input, .row > wa-button {
 	margin         : 0;
@@ -50,7 +50,7 @@ label > .input, label > .combo {
 /* PILL
    ────
    La forma de la pildora de Web Awesome (`wa-tag pill`: su alto, su relleno, su borde y su redondeo, con sus mismas variables), pero es un elemento
-   nuestro: lleva el color de --color si lo trae quien la use, o el gris de --color-surface-border si no. El fondo y lo demas -tenido, marcada o no,
+   nuestro: lleva el color de --color si lo trae quien la use, o el gris de --wa-color-surface-border si no. El fondo y lo demas -tenido, marcada o no,
    tamaño de letra- es cosa de quien la use, no de esta clase. El alto es un minimo: si el contenido pide dos lineas, crece. */
 .pill {
   box-sizing    : border-box;
@@ -59,7 +59,7 @@ label > .input, label > .combo {
   gap           : 0.5em;
   min-height    : calc(var(--wa-form-control-height, 2.25em) * 0.8);
   padding       : 0 0.75em;
-  border        : var(--wa-border-width-s, 1px) var(--wa-border-style, solid) var(--color, var(--color-surface-border));
+  border        : var(--wa-border-width-s, 1px) var(--wa-border-style, solid) var(--color, var(--wa-color-surface-border));
   border-radius : var(--wa-border-radius-pill, 999px);
   line-height   : 1.2;
 }
@@ -75,9 +75,9 @@ label > .input, label > .combo {
 .check {
   position      : relative;
   cursor        : pointer;
-  background    : var(--color-surface-default);
-  border-color  : color-mix(in srgb, var(--color, var(--color-accent-fill-loud)) 35%, var(--color-surface-border));
-  color         : var(--color-text-quiet);
+  background    : var(--wa-color-surface-default);
+  border-color  : color-mix(in srgb, var(--color, var(--wa-color-brand-fill-loud)) 35%, var(--wa-color-surface-border));
+  color         : var(--wa-color-text-quiet);
   transition    : .15s;
 }
 /* El texto es de la pildora, no de donde este puesta: ni el color ni el tamaño de un `header span` o similar */
@@ -93,32 +93,32 @@ label > .input, label > .combo {
   opacity       : 0;
 }
 .check:has(input:checked) {
-  background    : color-mix(in srgb, var(--color, var(--color-accent-fill-loud)) 30%, var(--color-surface-default));
-  border-color  : var(--color, var(--color-accent-fill-loud));
+  background    : color-mix(in srgb, var(--color, var(--wa-color-brand-fill-loud)) 30%, var(--wa-color-surface-default));
+  border-color  : var(--color, var(--wa-color-brand-fill-loud));
   /* Negro o blanco, no el gris del tema: sobre el tinte de cada color el gris se apaga */
   color         : CanvasText;
 }
 .check:has(input:focus-visible) {
-  outline       : 2px solid var(--color, var(--color-accent-fill-loud));
+  outline       : 2px solid var(--color, var(--wa-color-brand-fill-loud));
   outline-offset: 2px;
 }
 
 .select {
     
-    font-size      : var(--fs-s, 12px);
+    font-size      : var(--wa-font-size-xs);
     text-transform : uppercase;
     width         : 100%;
-    background    : var(--color-surface-lowered);
-    color         : var(--color-accent-fill-loud);
-    border        : 1px solid var(--color-surface-border);
-    border-radius : var(--radius);
+    background    : var(--wa-color-surface-lowered);
+    color         : var(--wa-color-brand-fill-loud);
+    border        : 1px solid var(--wa-color-surface-border);
+    border-radius : var(--wa-border-radius-m);
     padding       : 7px 8px;
 
 
     background-repeat: no-repeat;
     background-position: right 8px center;
     background-size: 16px;
-    accent-color: var(--color-accent-fill-loud);
+    accent-color: var(--wa-color-brand-fill-loud);
   }
   
   .select:focus {
@@ -126,27 +126,27 @@ label > .input, label > .combo {
   outline: none;
   
   /* 2. Fuerza a mantener el borde original intacto */
-  border: 1px solid var(--color-text-quiet);
+  border: 1px solid var(--wa-color-text-quiet);
 }
   
   .select option {
-    background: var(--color-surface-lowered);
-    color: var(--color-text-normal);
-    font-size: var(--fs-s, 12px);
+    background: var(--wa-color-surface-lowered);
+    color: var(--wa-color-text-normal);
+    font-size: var(--wa-font-size-xs);
 }
 
 .select optgroup {
-    background: var(--color-surface-lowered);
-    color: var(--color-text-quiet);
+    background: var(--wa-color-surface-lowered);
+    color: var(--wa-color-text-quiet);
     font-weight: bold;
-    font-size: var(--fs-s, 12px);
+    font-size: var(--wa-font-size-xs);
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
 
 .select option:hover {
-    background  : var(--color-accent-fill-loud) !important ;
-    color       : var(--color-surface-lowered)     !important ;
+    background  : var(--wa-color-brand-fill-loud) !important ;
+    color       : var(--wa-color-surface-lowered)     !important ;
 }
 
 
@@ -164,7 +164,7 @@ label > .input, label > .combo {
 }
 /* La caja de busqueda es lo primero de la lista del select; el aviso de que nada encaja, lo ultimo */
 .combo .combo-search { margin : 4px; }
-.combo .combo-vacio { color : var(--color-text-quiet); }
+.combo .combo-vacio { color : var(--wa-color-text-quiet); }
 
 /* ==========================================================================
    LIST-MANAGER
@@ -175,7 +175,7 @@ label > .input, label > .combo {
   margin         : 0;
   max-height     : 70vh;
   overflow-y     : auto;
-  font-size      : var(--fs-s, 12px);
+  font-size      : var(--wa-font-size-xs);
 }
 @media (max-width: 640px) {
   .list-manager ul { max-height : 30vh; }
@@ -194,31 +194,31 @@ label > .input, label > .combo {
   gap: 2px 8px;
   align-items: baseline;
   padding: 4px;
-  border-bottom: 1px solid var(--item-border, rgba(128, 128, 128, .3));
+  border-bottom: 1px solid var(--item-border, var(--wa-color-neutral-border-quiet));
   cursor: pointer;
 }
-.item-line:hover { background: var(--item-hover, rgba(128, 128, 128, .12)); }
-.item-icon { font-size: var(--fs-l, 16px); }
+.item-line:hover { background: var(--item-hover, var(--wa-color-neutral-fill-quiet)); }
+.item-icon { font-size: var(--wa-font-size-m); }
 /* The name takes what is left of the line next to the icon, and breaks inside itself; the note and the rest go below if they do not fit */
 .item-name { flex: 1 1 8em; min-width: 0; overflow-wrap: anywhere; }
-.item-note { color: var(--item-muted, #888); font-size: var(--fs-s, 12px); }
-.item-empty { padding: 4px; color: var(--item-muted, #888); }
+.item-note { color: var(--item-muted, var(--wa-color-text-quiet)); font-size: var(--wa-font-size-xs); }
+.item-empty { padding: 4px; color: var(--item-muted, var(--wa-color-text-quiet)); }
 /* Chosen: the one lit on the map */
 .item-selected {
-  background: var(--item-selected, rgba(128, 128, 128, .2));
-  box-shadow: inset 3px 0 0 var(--item-accent, #c26d00);
+  background: var(--item-selected, var(--wa-color-brand-fill-quiet));
+  box-shadow: inset 3px 0 0 var(--item-accent, var(--wa-color-brand-fill-loud));
 }
 /* Marked with Ctrl + click */
-.item-marked { outline: 2px dashed var(--item-accent, #c26d00); outline-offset: -2px; }
+.item-marked { outline: 2px dashed var(--item-accent, var(--wa-color-brand-fill-loud)); outline-offset: -2px; }
 .item-faded .item-name { text-decoration: line-through; opacity: .6; }
 
 /* The detail of a place (PlaceDetail.js) */
 /* Moving a line: its handle, and the line while it is dragged */
-.item-handle { cursor: grab; touch-action: none; padding: 0 4px; color: var(--item-muted, #888); user-select: none; }
-.item-dragging { opacity: .6; background: var(--item-selected, rgba(128, 128, 128, .2)); }
+.item-handle { cursor: grab; touch-action: none; padding: 0 4px; color: var(--item-muted, var(--wa-color-text-quiet)); user-select: none; }
+.item-dragging { opacity: .6; background: var(--item-selected, var(--wa-color-brand-fill-quiet)); }
 /* Swiping a line: it follows the finger, and once slid its action shows at the end */
 .item-swipeable .item-line { touch-action: pan-y; transition: transform .15s; }
-.item-swipe { display: none; margin-left: auto; border: 0; border-radius: 4px; padding: 4px 10px; background: var(--item-danger, #c0392b); color: #fff; }
+.item-swipe { display: none; margin-left: auto; border: 0; border-radius: var(--wa-border-radius-s); padding: var(--wa-space-2xs) 10px; background: var(--item-danger, var(--wa-color-danger-fill-loud)); color: var(--wa-color-danger-on-loud); }
 .item-swiped .item-swipe { display: inline-block; }
 /* What can go wrong with one tap (removing) shows only when the line is under the mouse or has the focus; on a touch screen with swiping, not at all */
 .item-line .item-risky { visibility: hidden; }
@@ -238,24 +238,24 @@ label > .input, label > .combo {
   max-height: 70dvh;
   overflow: auto;
   padding: 12px 14px;
-  border: 1px solid var(--color-surface-border, #ccc);
-  border-radius: 14px;
-  background: var(--color-surface-default, #fff);
-  box-shadow: var(--floating-card-shadow, 0 6px 24px rgba(0, 0, 0, .18));
+  border: 1px solid var(--wa-color-surface-border);
+  border-radius: var(--wa-border-radius-l);
+  background: var(--wa-color-surface-default);
+  box-shadow: var(--floating-card-shadow, var(--wa-shadow-l));
 }
 /* Only peeking, it cannot be used until it is pinned with a click */
-.floating-card.peeking { box-shadow: var(--floating-card-peek-shadow, 0 4px 16px rgba(0, 0, 0, .14)); }
+.floating-card.peeking { box-shadow: var(--floating-card-peek-shadow, var(--wa-shadow-m)); }
 .floating-card.peeking .floating-card-close { display: none; }
 .floating-card-close {
   float: right;
   border: none;
   background: none;
-  color: var(--color-text-quiet, #777);
-  font-size: var(--fs-xl, 1.4em);
+  color: var(--wa-color-text-quiet);
+  font-size: var(--wa-font-size-l);
   line-height: 1;
   cursor: pointer;
 }
-.floating-card-close:hover { color: var(--color-text-normal, inherit); }
+.floating-card-close:hover { color: var(--wa-color-text-normal); }
 /* What a function paints goes in its own container, which takes no room of its own */
 .floating-card-body { display: contents; }
 /* Without a mouse: in the middle, and the rest dimmed */
@@ -274,6 +274,6 @@ label > .input, label > .combo {
   width: min(92vw, 560px);
   max-height: 80vh;
   max-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
-  border-radius: 16px;
-  box-shadow: var(--floating-card-centered-shadow, 0 10px 40px rgba(0, 0, 0, .35));
+  border-radius: var(--wa-border-radius-l);
+  box-shadow: var(--floating-card-centered-shadow, var(--wa-shadow-l));
 }
