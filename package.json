@@ -12,11 +12,15 @@
     "build": "npm run manifest && npm run react"
   },
   "peerDependencies": {
+    "@awesome.me/webawesome": "^3.0.0",
     "@lit/react": "^1.0.0",
     "lit": "^3.0.0",
     "react": ">=18"
   },
   "peerDependenciesMeta": {
+    "@awesome.me/webawesome": {
+      "optional": true
+    },
     "@lit/react": {
       "optional": true
     },

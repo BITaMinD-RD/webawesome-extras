@@ -1,13 +1,16 @@
 // @ts-check
 import { LitElement, html, css, nothing } from 'lit';
 import { repeat } from 'lit/directives/repeat.js';
+import '@awesome.me/webawesome/dist/components/select/select.js';
+import '@awesome.me/webawesome/dist/components/option/option.js';
+import '@awesome.me/webawesome/dist/components/input/input.js';
 import { ComboboxState } from './ComboboxState.js';
 
 /**
  * A box to choose from a list with a search box to filter it by typing: what a `<select>` with many options should be. It is a Web Awesome `wa-select` whose first child is a
  * search box (a `wa-input`): when it opens the focus goes to the box, typing hides the options that do not match, and the arrows pass from the box to the options that are seen. It is
  * used where a `<select>` would go: it has `value`, `disabled`, `name` and `required`, takes part in a form, and fires `change` when something is chosen. It chooses only among what it
- * has: what is typed is for searching, it is not kept. It knows nothing of what the choices are or of any language: everything comes by property. The page loads Web Awesome.
+ * has: what is typed is for searching, it is not kept. It knows nothing of what the choices are or of any language: everything comes by property. It imports the Web Awesome components it uses (`wa-select`, `wa-option`, `wa-input`).
  *
  * ```html
  * <wax-combobox placeholder="Pick one..." empty-text="Nothing matches"></wax-combobox>

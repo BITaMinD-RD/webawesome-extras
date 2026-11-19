@@ -1,6 +1,6 @@
 # webawesome-extras (the components)
 
-Components that look and work as if they were native Web Awesome ones. They know nothing of what they are used for. The page loads Web Awesome and Lit (see the README of the
+Components that look and work as if they were native Web Awesome ones. They know nothing of what they are used for. The page loads Web Awesome's theme and has an import map for Lit and for the Web Awesome components the elements use inside (see the README of the
 repository) and imports the module of each component it uses.
 
 There is no stylesheet to link: every component carries its styles in its shadow DOM. The look comes from **Web Awesome's design tokens** (`--wa-color-surface-default`, `--wa-border-radius-m`, `--wa-font-size-s`,

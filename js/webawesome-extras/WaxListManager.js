@@ -1,5 +1,7 @@
 // @ts-check
 import { LitElement, html, css } from 'lit';
+import '@awesome.me/webawesome/dist/components/input/input.js';
+import '@awesome.me/webawesome/dist/components/button/button.js';
 import { ListManagerState } from './ListManagerState.js';
 import './WaxItemList.js';
 

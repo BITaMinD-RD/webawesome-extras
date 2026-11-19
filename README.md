@@ -7,7 +7,9 @@ written the way Web Awesome writes its own, as ES modules without a build step.
 
 The page must load these two; **neither is copied into this repository**:
 
-- **Web Awesome 3.x** (its components, such as `wa-button` or `wa-input`, and its theme stylesheets, which define the `--wa-*` tokens).
+- **Web Awesome 3.x** (its theme stylesheets, which define the `--wa-*` tokens, and its components). Web Awesome's own autoloader only looks in the page, not inside the shadow of an element, so
+  an element of this repository that uses `wa-select`, `wa-dialog`... inside **imports them itself**, by their name in the package: `import '@awesome.me/webawesome/dist/components/select/select.js'`. The import map of the
+  page says where each one is (`{ "@awesome.me/webawesome/dist/components/select/select.js": "./lib/webawesome/dist/components/select/select.js" }`: the same file the autoloader loads, so nothing is loaded twice).
 - **Lit 3.x**, for the components of this repository. They import it as a bare specifier, `import { LitElement, html, css } from 'lit'`, so the
   page needs an import map that says where it is. Besides `lit`, the components import the directives they use by their usual path (`lit/directives/repeat.js`...);
   with a bundle that has them all, every name points at the same file:

@@ -1,5 +1,7 @@
 // @ts-check
 import { LitElement, html, css } from 'lit';
+import '@awesome.me/webawesome/dist/components/dialog/dialog.js';
+import '@awesome.me/webawesome/dist/components/button/button.js';
 import { AskEachState } from './AskEachState.js';
 
 /**
