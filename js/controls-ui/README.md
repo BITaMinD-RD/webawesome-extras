@@ -14,26 +14,33 @@ sets the `--wa-*` tokens (`:root { --wa-color-brand-fill-loud: var(--accent) }`)
 
 A switch is `<span class="switch"><input type="checkbox"><span class="switch-track"></span></span>`.
 
-**The list to choose from** is `ItemList.js`: a line per item with icon, name and a note, for entries, places or anything. It knows nothing about what the items
-are (teams, pitches, favourites): the application gives it items `{ key, name, icon, note, faded, html }` and hears what is chosen.
+**The list to choose from** is `<wax-item-list>` (`WaxItemList.js`, a Lit element): a line per item with icon, name and a note, for entries, places or anything. It knows nothing about
+what the items are (teams, pitches, favourites): the application gives it items `{ key, name, icon, note, faded, html }` and hears what is chosen. The page imports the module, which defines
+the element, and needs Lit 3 (see the README of the repository); `ItemListState.js` holds its rules without a DOM.
 
 ```html
-<link rel="stylesheet" href="lib/controls-ui/controls.css">
-<ul id="sites"></ul>
+<wax-item-list id="sites" empty="Nothing here"></wax-item-list>
 ```
 ```js
-import { ItemList } from './lib/controls-ui/ItemList.js';
-const list = new ItemList({ element, empty: 'Nothing here', onSelect: key => open(key), onMark: keys => { /* join them */ } });
-list.setItems(sites.map(s => ({ key: s.id, icon: '🍺', name: s.name, note: `${s.meters} m`, faded: s.hidden })));
+import './lib/controls-ui/WaxItemList.js';
+const list = document.getElementById('sites');
+list.items = sites.map(s => ({ key: s.id, icon: '🍺', name: s.name, note: `${s.meters} m`, faded: s.hidden }));
+list.addEventListener('wax-select', event => open(event.detail.key));
+list.addEventListener('wax-mark', event => { /* join event.detail.keys */ });
 ```
 
-- **Select**: click a line; click it again to clear (`onSelect(null)`). `select(key, { scroll })` does it from outside (the map was clicked).
-- **Mark**: Ctrl, Cmd or Shift + click, any number of lines; `onMark(keys)` and `list.marked`; `clearMarks()`.
-- **Own controls**: a click on a link, button, input or label inside a line is theirs and does not select. `html` is where the application
-  puts them; it listens to them itself (one delegated listener on the element, with `data-key` on the line).
-- Lines are focusable and Enter/Space select them. `ItemList.html(items, options)` gives the markup alone.
-- Style: `.item-list` in `controls.css`, tokens `--item-border`, `--item-hover`, `--item-selected`, `--item-accent`, `--item-muted` (each one falls back to a `--wa-*` token). `ListManager` puts the
-  filters, the search box and «New» above one.
+- **Properties**: `items` (set it again to redraw: what was selected or marked stays so if its key is still there), `selected` (a key, also an attribute), `empty` (the text with no items, also an
+  attribute), `movable` and `swipe-label` (below). `marked` is the set of marked keys.
+- **Select**: click a line; click it again to clear (`wax-select` with `detail.key` null). `list.select(key, { scroll })` does it from outside (the map was clicked) and tells nobody.
+- **Mark**: Ctrl, Cmd or Shift + click, any number of lines; `wax-mark` with `detail.keys`, the ones marked now; `list.marked`; `list.clearMarks()`.
+- **Move** (`movable`): a handle on each line, dragged or moved with the arrow keys; `wax-move` with `detail.keys` in the new order.
+- **Swipe** (`swipe-label="Remove"`): sliding a line sideways with the finger uncovers that action; pressing it fires `wax-swipe` with `detail.key`.
+- **Own controls**: a click on a link, button, input or label inside a line is theirs and does not select. They go in the page, not in the shadow of the list, so the page styles them and listens
+  to them: a child of the list with `slot="<key>"` (`<button slot="a1">`), or the `html` of the item, which the list puts there for you. A control with class `item-risky` (removing) shows only
+  when the line is under the mouse or has the focus.
+- **Style**: `::part(line)` (also `selected`, `marked`, `faded`, `dragging`), `::part(icon)`, `::part(name)`, `::part(note)`, `::part(empty)`, `::part(handle)`, `::part(swipe)`; tokens `--item-border`,
+  `--item-hover`, `--item-selected`, `--item-accent`, `--item-muted` and `--item-danger`, each one falling back to a `--wa-*` token. `ListManager` puts the filters, the search box and «New» above one
+  (`manager.list` is the element).
 
 **Buttons** are `wa-button` of Web Awesome (`lib/webawesome`, loaded by the page). `Button.js` makes them from code: `Button.make(document, { text, type, title, label, primary, pill, disabled })`,
 `Button.setPrimary(button, on)` to move the filled one (`variant="brand"`; the others are `appearance="outlined"`), and `Button.forwardLabels(root)`, which gives the `aria-label` of a `wa-button`

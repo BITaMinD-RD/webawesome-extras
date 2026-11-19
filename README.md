@@ -9,7 +9,9 @@ The page must load these two; **neither is copied into this repository**:
 
 - **Web Awesome 3.x** (its components, such as `wa-button` or `wa-input`, and its theme stylesheets, which define the `--wa-*` tokens).
 - **Lit 3.x**, for the components of this repository. They import it as a bare specifier, `import { LitElement, html, css } from 'lit'`, so the
-  page needs an import map that says where it is, for example `{ "imports": { "lit": "./contrib/lit/lit-all.min.js" } }`.
+  page needs an import map that says where it is. Besides `lit`, the components import the directives they use by their usual path (`lit/directives/repeat.js`...);
+  with a bundle that has them all, every name points at the same file:
+  `{ "imports": { "lit": "./contrib/lit/lit-all.min.js", "lit/directives/repeat.js": "./contrib/lit/lit-all.min.js" } }`.
 
 ## What lives where
 

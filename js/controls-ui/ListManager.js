@@ -1,6 +1,5 @@
 // @ts-check
 
-import { ItemList } from './ItemList.js';
 import { Button } from './Button.js';
 import { Input } from './Input.js';
 
@@ -14,13 +13,13 @@ import { Input } from './Input.js';
  *   parent.append(manager.element);
  *   manager.setItems([{ key: 'a', name: 'Uno', icon: '🏆', note: 'nota' }]);
  *
- * Importa `ItemList`, de esta misma libreria. Los estilos son `.list-manager` e `.item-list` de controls.css.
+ * Usa `<wax-item-list>`, de esta misma libreria: la pagina importa `WaxItemList.js` (aqui no se importa, para que esto se pueda cargar en Node). Los estilos son `.list-manager` de controls.css.
  */
 export class ListManager {
   /** @type {HTMLElement} */
   element;
 
-  /** @type {ItemList} */
+  /** @type {import('./WaxItemList.js').WaxItemList} */
   list;
 
   /** @type {HTMLInputElement} */
@@ -41,17 +40,17 @@ export class ListManager {
     row.className = 'row';
     row.append(button);
 
-    const ul = document.createElement('ul');
+    const list = /** @type {import('./WaxItemList.js').WaxItemList} */ (document.createElement('wax-item-list'));
+    list.empty = emptyText;
     this.element = document.createElement('div');
     this.element.className = 'list-manager';
-    this.element.append(...filters, this.search, row, ul);
+    this.element.append(...filters, this.search, row, list);
 
-    this.list = new ItemList({
-      element: ul, empty: emptyText,
-      onSelect: key => {
-        if (key) { this.#current = key; onSelect?.(key); }
-        else this.list.select(this.#current);   // volver a pulsar la elegida no la quita
-      }
+    this.list = list;
+    list.addEventListener('wax-select', event => {
+      const { key } = /** @type {CustomEvent<{key: string | null}>} */ (event).detail;
+      if (key) { this.#current = key; onSelect?.(key); }
+      else this.list.select(this.#current);   // volver a pulsar la elegida no la quita
     });
   }
 
@@ -60,9 +59,9 @@ export class ListManager {
     return this.search.value;
   }
 
-  /** @param {ListItem[]} items Lo que se enseña; la elegida sigue marcada si sigue estando */
+  /** @param {import('./WaxItemList.js').ListItem[]} items Lo que se enseña; la elegida sigue marcada si sigue estando */
   setItems(items) {
-    this.list.setItems(items);
+    this.list.items = items;
     this.list.select(this.#current);
   }
 

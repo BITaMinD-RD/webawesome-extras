@@ -171,60 +171,17 @@ label > .input, label > .combo {
    Los filtros, la caja de busqueda, el boton de nuevo y la lista de lo que hay
    (ListManager.js). El boton va siempre encima de la lista, por si es larga.
    ========================================================================== */
-.list-manager ul {
+.list-manager wax-item-list {
   margin         : 0;
   max-height     : 70vh;
   overflow-y     : auto;
   font-size      : var(--wa-font-size-xs);
 }
 @media (max-width: 640px) {
-  .list-manager ul { max-height : 30vh; }
+  .list-manager wax-item-list { max-height : 30vh; }
 }
 
-/* The list to choose from (ItemList.js): icon, name and a note per line. Pages theme it with --item-* tokens; the fallbacks are neutral. */
-.item-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  overflow-y: auto;
-}
-.item-line {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2px 8px;
-  align-items: baseline;
-  padding: 4px;
-  border-bottom: 1px solid var(--item-border, var(--wa-color-neutral-border-quiet));
-  cursor: pointer;
-}
-.item-line:hover { background: var(--item-hover, var(--wa-color-neutral-fill-quiet)); }
-.item-icon { font-size: var(--wa-font-size-m); }
-/* The name takes what is left of the line next to the icon, and breaks inside itself; the note and the rest go below if they do not fit */
-.item-name { flex: 1 1 8em; min-width: 0; overflow-wrap: anywhere; }
-.item-note { color: var(--item-muted, var(--wa-color-text-quiet)); font-size: var(--wa-font-size-xs); }
-.item-empty { padding: 4px; color: var(--item-muted, var(--wa-color-text-quiet)); }
-/* Chosen: the one lit on the map */
-.item-selected {
-  background: var(--item-selected, var(--wa-color-brand-fill-quiet));
-  box-shadow: inset 3px 0 0 var(--item-accent, var(--wa-color-brand-fill-loud));
-}
-/* Marked with Ctrl + click */
-.item-marked { outline: 2px dashed var(--item-accent, var(--wa-color-brand-fill-loud)); outline-offset: -2px; }
-.item-faded .item-name { text-decoration: line-through; opacity: .6; }
-
-/* The detail of a place (PlaceDetail.js) */
-/* Moving a line: its handle, and the line while it is dragged */
-.item-handle { cursor: grab; touch-action: none; padding: 0 4px; color: var(--item-muted, var(--wa-color-text-quiet)); user-select: none; }
-.item-dragging { opacity: .6; background: var(--item-selected, var(--wa-color-brand-fill-quiet)); }
-/* Swiping a line: it follows the finger, and once slid its action shows at the end */
-.item-swipeable .item-line { touch-action: pan-y; transition: transform .15s; }
-.item-swipe { display: none; margin-left: auto; border: 0; border-radius: var(--wa-border-radius-s); padding: var(--wa-space-2xs) 10px; background: var(--item-danger, var(--wa-color-danger-fill-loud)); color: var(--wa-color-danger-on-loud); }
-.item-swiped .item-swipe { display: inline-block; }
-/* What can go wrong with one tap (removing) shows only when the line is under the mouse or has the focus; on a touch screen with swiping, not at all */
-.item-line .item-risky { visibility: hidden; }
-.item-line:hover .item-risky, .item-line:focus-within .item-risky { visibility: visible; }
-@media (hover: none) { .item-swipeable .item-line .item-risky { display: none; } }
-
+/* The list to choose from is <wax-item-list> (WaxItemList.js): it brings its own styles, in its shadow */
 
 /* A card floating next to what was clicked (FloatingCard.js). Its shadows and the dimmed page can be set from outside: --floating-card-shadow,
    --floating-card-peek-shadow, --floating-card-centered-shadow, --floating-card-backdrop */

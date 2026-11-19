@@ -4,7 +4,7 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 const ROOT = path.join(import.meta.dirname, '..');
-const ORDER = ['Button', 'Input', 'Toggle', 'ComboBox', 'Dirty', 'BackClose', 'ItemList', 'FloatingCard', 'AskEach'];
+const ORDER = ['Button', 'Input', 'Toggle', 'ComboBox', 'Dirty', 'BackClose', 'FloatingCard', 'AskEach'];
 
 let loaded = null;
 
