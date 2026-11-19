@@ -1,18 +1,14 @@
-# webawesome-extras
+# webawesome-extras (the components)
 
-The generic controls of the screens, as one stylesheet, `controls.css`: `.input`, `.pill`, `.check`, `.switch`, `.select`, the checkbox
-group and the slider group. They know nothing of what they are used for.
+Components that look and work as if they were native Web Awesome ones. They know nothing of what they are used for. The page loads Web Awesome and Lit (see the README of the
+repository) and imports the module of each component it uses.
 
-```html
-<link rel="stylesheet" href="lib/webawesome-extras/controls.css">
-```
+There is no stylesheet to link: what a component needs in the page (a `wa-select` or a card it builds in the light DOM, the rule for the controls a line holds) it puts there itself,
+once, when it is first made (`DocumentStyles.js`). The look comes from **Web Awesome's design tokens** (`--wa-color-surface-default`, `--wa-border-radius-m`, `--wa-font-size-s`,
+`--wa-space-m`, `--wa-form-control-height`, `--wa-shadow-*`...), so the theme of the page applies with nothing else to define. A page that has its own palette sets the `--wa-*` tokens.
 
-The look comes from **Web Awesome's design tokens**, so the theme of the page applies with nothing else to define: `--wa-color-surface-default`, `--wa-color-surface-lowered`,
-`--wa-color-surface-border`, `--wa-color-text-normal`, `--wa-color-text-quiet`, `--wa-color-brand-fill-loud` (the accent), `--wa-border-radius-m`, `--wa-font-size-xs|s|m`,
-`--wa-space-m`, `--wa-form-control-height`, `--wa-shadow-*`... The only variable of its own is `--color`, the colour of one control (a pill, a check). A page that has its own palette
-sets the `--wa-*` tokens (`:root { --wa-color-brand-fill-loud: var(--accent) }`), it does not set ours.
-
-A switch is `<span class="switch"><input type="checkbox"><span class="switch-track"></span></span>`.
+Buttons, boxes, switches and checkboxes are Web Awesome's own (`wa-button`, `wa-input`, `wa-textarea`, `wa-time-input`, `wa-switch`, `wa-checkbox`, `wa-toast`): there is nothing here to make
+them. The behaviours that went with them (`Dirty`, `Typing.isTyping`, `ButtonLabel`, `BackClose`) are in [webutils](../../../webutils).
 
 **The list to choose from** is `<wax-item-list>` (`WaxItemList.js`, a Lit element): a line per item with icon, name and a note, for entries, places or anything. It knows nothing about
 what the items are (teams, pitches, favourites): the application gives it items `{ key, name, icon, note, faded, html }` and hears what is chosen. The page imports the module, which defines
@@ -40,32 +36,23 @@ list.addEventListener('wax-mark', event => { /* join event.detail.keys */ });
   when the line is under the mouse or has the focus.
 - **Style**: `::part(line)` (also `selected`, `marked`, `faded`, `dragging`), `::part(icon)`, `::part(name)`, `::part(note)`, `::part(empty)`, `::part(handle)`, `::part(swipe)`; tokens `--item-border`,
   `--item-hover`, `--item-selected`, `--item-accent`, `--item-muted` and `--item-danger`, each one falling back to a `--wa-*` token. `ListManager` puts the filters, the search box and «New» above one
-  (`manager.list` is the element).
+  (`manager.list` is the element); it is a control of its own, not app logic, and will become `<wax-list-manager>`.
 
-**Buttons** are `wa-button` of Web Awesome (`lib/webawesome`, loaded by the page). `Button.js` makes them from code: `Button.make(document, { text, type, title, label, primary, pill, disabled })`,
-`Button.setPrimary(button, on)` to move the filled one (`variant="brand"`; the others are `appearance="outlined"`), and `Button.forwardLabels(root)`, which gives the `aria-label` of a `wa-button`
-to the real button inside it (the one a screen reader reads). A `wa-button` with `hidden` needs `wa-button[hidden] { display: none }` (see `style/webawesome.css`).
-
-**Boxes** are `wa-input` and `wa-textarea` of Web Awesome. `Input.make(document, { type, value, placeholder, label, inputmode, rows, className, clearable, step })` makes them from code (`type: 'textarea'` for several
-lines; `type: 'time'` is a `wa-time-input`, hours and minutes apart with a list to pick from, always 24-hour, `HH:mm` as its value, and `step` in seconds between the times of its list). Differences with a box of the browser that the code has to know: an empty one gives `null` (not `''`) unless it was born with a value, which `Input.make` always gives, and in the HTML a
-`wa-input` needs `value=""`; what is written to `value` is not turned into text (a `41.39` stays a number); and until the component is loaded `value` does not exist, so the page waits for
-`wa-input`, `wa-textarea` and `wa-button` (`customElements.whenDefined`) before starting. `list="..."` (a `datalist`) does not work: the datalist is outside the shadow of the box.
+**Good to know about Web Awesome's controls** (the ones the components here use): an empty `wa-input` gives `null` (not `''`) unless it was born with a value, and in the HTML it needs
+`value=""`; what is written to `value` is not turned into text (a `41.39` stays a number); until the component is loaded `value` does not exist, so a page waits for `wa-input`,
+`wa-textarea` and `wa-button` (`customElements.whenDefined`) before starting; `list="..."` (a `datalist`) does not work, because the datalist is outside the shadow of the box;
+a `wa-button` with `hidden` needs `wa-button[hidden] { display: none }`; and `aria-label` on a `wa-button` does not reach the real button inside it (`ButtonLabel` in webutils does).
 
 **ComboBox** is a `wa-select` with a search box as the first child of its list: the focus goes to the box when it opens, typing hides the options that do not match, the arrows pass from
 the box to the options that are seen and Enter in the box chooses the first one. Same API as before (`value`, `disabled`, `setChoices`, `change`, `name`, `required`, `placeholder`,
-`emptyLabel`, `emptyText`, and `searchPlaceholder` for the box); `element` is the `wa-select`, so the page that uses it needs Web Awesome (it imports `Input.js` itself) (see `micro/mapa-tiempo`). It
+`emptyLabel`, `emptyText`, and `searchPlaceholder` for the box); `element` is the `wa-select`, so the page that uses it needs Web Awesome (see `micro/mapa-tiempo`). It
 chooses among what it is given: what is typed is for searching, it is not kept.
-
-**Switches and checkboxes** are `wa-switch` (a setting) and `wa-checkbox` (marking something in a list). `Toggle.make(document, { text, checked, checkbox, title, name, className })` makes them from
-code. Read and write them with `checked` (a `wa-switch` has no `type`, so a reader that decides by `type === 'checkbox'` gets it wrong), they tell with `change`, and the text is what they
-hold. In `Ajustes` the text is on the left and the switch on the right: `wa-switch::part(base)` turned with `flex-direction: row-reverse`. The chips of a list (`.pill.check`, the teams of the
-header) are still ours: Web Awesome has no toggle chip.
 
 **A floating card** is `FloatingCard.js` (it imports `BackClose` from `../history/`, a module of webutils): a card next to what was clicked, for what is far from it in a long list.
 With a mouse it peeks (`peek(content, near)` shows it a moment later, `leave()` takes it away) and a click pins it (`show(content, near)`);
 clicking the same thing again, Escape, a click outside or its × close it. Without a mouse it goes in the middle with the page dimmed, and
 the phone's Back closes it. `replace(content)` changes what it says without moving it, `place()` puts it back next to its thing after what is
-inside has grown, and `onShow(card)` is called each time it has new content. Style: `.floating-card` in `controls.css`, with
+inside has grown, and `onShow(card)` is called each time it has new content. Style: `.floating-card`, in `FloatingCard.STYLES`, with
 `--floating-card-shadow`, `--floating-card-peek-shadow`, `--floating-card-centered-shadow` and `--floating-card-backdrop`.
 
 ```js

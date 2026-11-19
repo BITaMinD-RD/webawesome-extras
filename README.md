@@ -15,11 +15,17 @@ The page must load these two; **neither is copied into this repository**:
 
 ## What lives where
 
-| folder | what it is |
+| path | what it is |
 |---|---|
-| [`js/webawesome-extras/`](js/webawesome-extras/) | The controls and widgets: `controls.css` (input, pill, check, select, combo...), the helpers that make Web Awesome controls from code (`Button`, `Input`, `Toggle`, `ComboBox`), `FloatingCard`, `AskEach`, `ListManager` and the list component `<wax-item-list>`. See its [README](js/webawesome-extras/README.md) |
+| [`js/webawesome-extras/`](js/webawesome-extras/) | The components, one file each, and their tests: `<wax-item-list>` (`WaxItemList.js`, with `ItemListState.js` for its rules) and, still plain classes that will become `wax-*` elements, `ComboBox`, `FloatingCard`, `AskEach` and `ListManager`. See its [README](js/webawesome-extras/README.md) |
+| [`custom-elements.json`](custom-elements.json) | The manifest of the elements (attributes, properties, events, slots, parts, CSS custom properties), generated from the code and its JSDoc with `@custom-elements-manifest/analyzer`, like Web Awesome's |
+| [`dist/react/`](dist/react/) | One React wrapper per `wax-*` element (`wax-item-list.js`), generated from the manifest with `@lit/react`: the events `wax-select`... are the props `onWaxSelect`... A React application takes these; the other applications take only `js/webawesome-extras/` |
+| [`scripts/`](scripts/) | `react.mjs` and `ReactWrappers.js`, the generator of the wrappers, and the test that fails if the manifest or the wrappers are stale |
+| `js/history/`, `js/vendor/`, `js/tools/` | Generated copies of [webutils](../webutils) that the components import (`BackClose`) and the tool that makes them; not edited by hand |
 
-`text` (tolerant search) and `vendor` (the tool that makes generated copies) are in [webutils](../webutils), not here.
+What is **not** here: buttons, boxes and switches are Web Awesome's own (`wa-button`, `wa-input`, `wa-switch`...) and the application builds them; `Dirty`, `Typing`, `ButtonLabel`
+(behaviours of forms) and `BackClose` (history) are in [webutils](../webutils), as are `text` (tolerant search) and `vendor` (the tool that makes generated copies). The loose CSS classes
+(`.input`, `.row`, `.pill`, `.check`...) belong to each application's own stylesheet. This repository has components and nothing else.
 
 ## The pattern for a component
 
@@ -35,18 +41,22 @@ Components follow Web Awesome's way:
 - the module **defines the element when it is imported** (`customElements.define('wax-item-list', WaxItemList)`, guarded so importing it twice is harmless);
   that is the autoloader for now. The page imports the file of each component it uses.
 
-## Tests
+## Tests and tooling
 
-Each folder has its own tests, with no network and no dependencies:
+The components have no network and no dependencies in their tests; the manifest and the wrappers need the dev tooling:
 
-    cd js/webawesome-extras && node --test test/*.test.js
+    cd js/webawesome-extras && node --test test/*.test.js   # the components
+    cd js/tools && node --test test/*.test.js               # the generated copies are not edited by hand
+    npm install                                             # once: the analyzer, @lit/react, lit and react (dev only; node_modules is not committed)
+    npm test                                                # all of the above plus the check that custom-elements.json and dist/react are not stale
+    npm run build                                           # after changing a component: writes custom-elements.json and dist/react
 
 Lit elements need a DOM, which Node does not have, so the tests cover the DOM-free logic of each component (the files without Lit); what the element
-shows is checked in a browser.
+shows is checked in a browser. A new element goes in a file `Wax<Name>.js`: the manifest picks up the files with that name.
 
 ## How an application brings it in
 
-Every file lives in exactly one repository. An application that uses a folder of this one carries a **generated copy**, never edited by hand, made with
+Every file lives in exactly one repository. An application that uses the folder `js/webawesome-extras` carries a **generated copy** (`lib/webawesome-extras`, only the JavaScript: not the manifest or the React wrappers), never edited by hand, made with
 `webutils/js/vendor/Vendor.js` (see the README of [webutils](../webutils)): the copy has a `MANIFEST.json` with the commit it comes from and the hash of each file,
 and a test of the application fails if it differs.
 
