@@ -11,7 +11,8 @@
     "test:browser": "wtr",
     "manifest": "cem analyze --config custom-elements-manifest.config.mjs",
     "react": "node scripts/react.mjs",
-    "build": "npm run manifest && npm run react"
+    "docs": "node scripts/docs.mjs",
+    "build": "npm run manifest && npm run react && npm run docs"
   },
   "peerDependencies": {
     "@awesome.me/webawesome": "^3.0.0",
@@ -38,6 +39,7 @@
     "@web/test-runner": "^1.0.1",
     "@web/test-runner-playwright": "^1.0.2",
     "lit": "^3.3.3",
+    "marked": "^11.2.0",
     "react": "^19.3.1"
   },
   "customElements": "node_modules/.cache/cem-check/custom-elements.json"
