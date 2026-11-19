@@ -2,6 +2,7 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { repeat } from 'lit/directives/repeat.js';
 import { ItemListState } from './ItemListState.js';
+import { installStyles } from './DocumentStyles.js';
 
 /**
  * @typedef {Object} ListItem
@@ -109,7 +110,7 @@ export class WaxItemList extends LitElement {
       background: var(--item-danger, var(--wa-color-danger-fill-loud)); color: var(--wa-color-danger-on-loud); font: inherit;
     }
     li.swiped [part~="swipe"] { display: inline-block; }
-    /* What can go wrong with one tap (removing: a control with class item-risky, see controls.css) shows only when the line is under the mouse or has the focus;
+    /* What can go wrong with one tap (removing: a control with class item-risky, see the end of this file) shows only when the line is under the mouse or has the focus;
        on a touch screen with swiping, not at all. The slot says it through custom properties, which the slotted controls inherit */
     slot { --item-risky-visibility: hidden; }
     li:hover slot, li:focus-within slot { --item-risky-visibility: visible; }
@@ -356,3 +357,14 @@ export class WaxItemList extends LitElement {
 }
 
 if (!customElements.get('wax-item-list')) customElements.define('wax-item-list', WaxItemList);
+
+// What goes in a line is the page's, so the rule for a risky control (removing, say) cannot live in the shadow: the list shows it only when the line is under the mouse
+// or has the focus, and not at all where lines can be swiped, and says it with two custom properties that the slot sets and the control inherits; out of a list the
+// control is always there
+installStyles(globalThis.document, 'wax-item-list', `
+.item-risky {
+  visibility    : var(--item-risky-visibility, visible);
+  width         : var(--item-risky-width, auto);
+  min-width     : var(--item-risky-width, auto);
+}
+`);

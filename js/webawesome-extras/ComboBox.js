@@ -1,5 +1,7 @@
 // @ts-check
 
+import { installStyles } from './DocumentStyles.js';
+
 /**
  * Un cuadro donde se elige de una lista con un buscador para filtrarla escribiendo: lo que un `<select>` con muchas opciones deberia ser. Es un `wa-select` de Web
  * Awesome (lib/webawesome) cuyo primer hijo es una caja de busqueda (un `wa-input`): al abrirlo el foco va a la caja, escribir esconde las opciones que no encajan y las
@@ -10,9 +12,21 @@
  *   const combo = new ComboBox({ document, choices: [{ value: 'a', label: 'Uno' }], placeholder: 'Elige uno...', onChange: v => ... });
  *   parent.append(combo.element);
  *
- * Necesita Web Awesome cargado. Los estilos son `.combo` de controls.css y los de `wa-select`.
+ * Necesita Web Awesome cargado. Los estilos son los de `wa-select` y `ComboBox.STYLES` (la clase `combo`), que se ponen en la pagina al crear el primero.
  */
 export class ComboBox {
+  /** Sus estilos: el `wa-select` con su clase `combo`, la caja de busqueda como primer hijo de su lista y el aviso de que nada encaja, lo ultimo. El titulo es el placeholder del select */
+  static STYLES = `
+.combo {
+  display        : block;
+  min-width      : 0;
+  margin-bottom  : var(--wa-space-m);   /* la separacion de siempre entre un control y lo que va debajo; dentro de un rotulo (<label>) el rotulo pone la suya */
+  --wa-form-control-required-content : '';   /* sigue siendo required para el formulario, pero sin el asterisco de Web Awesome */
+}
+label > .combo { margin : 4px 0 0; }
+.combo .combo-search { margin : 4px; }
+.combo .combo-vacio { color : var(--wa-color-text-quiet); }
+`;
   /** @type {HTMLElement} El `wa-select`: lo que se pone en la pagina */
   element;
 
@@ -51,6 +65,7 @@ export class ComboBox {
     this.#value = options.value ?? '';
 
     const doc = this.#document;
+    installStyles(doc, 'combo-box', ComboBox.STYLES);
     // Los atributos y no las propiedades: el componente puede no haberse cargado todavia
     this.element = doc.createElement('wa-select');
     this.element.setAttribute('class', 'combo');

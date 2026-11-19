@@ -1,5 +1,7 @@
 // @ts-check
 
+import { installStyles } from './DocumentStyles.js';
+
 /**
  * El bloque que se repite en las pantallas de editar: los filtros (si los hay), la caja de busqueda, el boton de «Nuevo» y, debajo, la lista de
  * lo que hay, donde se elige una entrada (volver a pulsar la elegida no la quita). El boton va siempre encima de la lista, por si es larga. No sabe
@@ -10,9 +12,29 @@
  *   parent.append(manager.element);
  *   manager.setItems([{ key: 'a', name: 'Uno', icon: '🏆', note: 'nota' }]);
  *
- * Usa `<wax-item-list>`, de esta misma libreria: la pagina importa `WaxItemList.js` (aqui no se importa, para que esto se pueda cargar en Node). Los estilos son `.list-manager` de controls.css.
+ * Usa `<wax-item-list>`, de esta misma libreria: la pagina importa `WaxItemList.js` (aqui no se importa, para que esto se pueda cargar en Node). Los estilos los pone el mismo (`ListManager.STYLES`).
  */
 export class ListManager {
+  /** Sus estilos: la lista no crece mas de lo que cabe y el boton de nuevo va en una fila con su separacion de siempre */
+  static STYLES = `
+.list-manager-new {
+  display        : flex;
+  flex-wrap      : wrap;
+  align-items    : center;
+  gap            : var(--wa-space-m);
+  margin-bottom  : var(--wa-space-m);
+}
+.list-manager-new > wa-button { margin : 0; }
+.list-manager wax-item-list {
+  margin         : 0;
+  max-height     : 70vh;
+  overflow-y     : auto;
+  font-size      : var(--wa-font-size-xs);
+}
+@media (max-width: 640px) {
+  .list-manager wax-item-list { max-height : 30vh; }
+}
+`;
   /** @type {HTMLElement} */
   element;
 
@@ -28,6 +50,7 @@ export class ListManager {
 
   /** @param {ListManager.Options} options */
   constructor({ document = globalThis.document, searchPlaceholder = '', newLabel, emptyText = '', filters = [], onSelect, onNew, onQuery }) {
+    installStyles(document, 'list-manager', ListManager.STYLES);
     // Los atributos y no las propiedades: el componente puede no haberse cargado todavia. El valor, tambien como propiedad, y nunca sin valor: vacia da `null` y no `''`
     this.search = /** @type {HTMLInputElement} */ (/** @type {unknown} */ (document.createElement('wa-input')));
     this.search.setAttribute('type', 'search');
@@ -42,7 +65,7 @@ export class ListManager {
     button.textContent = newLabel;
     button.addEventListener('click', () => onNew?.());
     const row = document.createElement('div');
-    row.className = 'row';
+    row.className = 'list-manager-new';
     row.append(button);
 
     const list = /** @type {import('./WaxItemList.js').WaxItemList} */ (document.createElement('wax-item-list'));

@@ -1,6 +1,7 @@
 // @ts-check
 
 import { BackClose } from '../history/BackClose.js';
+import { installStyles } from './DocumentStyles.js';
 
 /**
  * A card that floats next to what was clicked: in a long list the thing it talks about may be far away, out of sight. With a mouse it can
@@ -14,13 +15,65 @@ import { BackClose } from '../history/BackClose.js';
  *
  * Classes: `.floating-card` (and the `className` given), `.peeking` while it only peeks, `.centered` without a mouse, the close button
  * `.floating-card-close`, the container given to a function `.floating-card-body` (it takes no room: `display: contents`), and the dimmed
- * page behind `.floating-card-backdrop` (controls.css).
+ * page behind `.floating-card-backdrop` (`FloatingCard.STYLES`).
  *
  * @typedef {string | Node | ((body: HTMLElement) => string | Node | void)} FloatingCard.Content What goes inside. A function is called when it
  *   is shown, with a container to paint into; it can also give back a string or a node instead. If it comes to nothing (an empty string, or
  *   nothing painted), nothing is shown.
  */
 export class FloatingCard {
+  /** Its styles. Its shadows and the dimmed page can be set from outside: --floating-card-shadow, --floating-card-peek-shadow, --floating-card-centered-shadow, --floating-card-backdrop */
+  static STYLES = `
+.floating-card {
+  position: absolute;
+  box-sizing: border-box;
+  z-index: 30;
+  width: 400px;
+  max-width: 92vw;
+  max-height: 70vh;
+  max-height: 70dvh;
+  overflow: auto;
+  padding: 12px 14px;
+  border: 1px solid var(--wa-color-surface-border);
+  border-radius: var(--wa-border-radius-l);
+  background: var(--wa-color-surface-default);
+  box-shadow: var(--floating-card-shadow, var(--wa-shadow-l));
+}
+/* Only peeking, it cannot be used until it is pinned with a click */
+.floating-card.peeking { box-shadow: var(--floating-card-peek-shadow, var(--wa-shadow-m)); }
+.floating-card.peeking .floating-card-close { display: none; }
+.floating-card-close {
+  float: right;
+  border: none;
+  background: none;
+  color: var(--wa-color-text-quiet);
+  font-size: var(--wa-font-size-l);
+  line-height: 1;
+  cursor: pointer;
+}
+.floating-card-close:hover { color: var(--wa-color-text-normal); }
+/* What a function paints goes in its own container, which takes no room of its own */
+.floating-card-body { display: contents; }
+/* Without a mouse: in the middle, and the rest dimmed */
+.floating-card-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 29;
+  background: var(--floating-card-backdrop, rgba(0, 0, 0, .45));
+  backdrop-filter: blur(2px);
+}
+.floating-card.centered {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(92vw, 560px);
+  max-height: 80vh;
+  max-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  border-radius: var(--wa-border-radius-l);
+  box-shadow: var(--floating-card-centered-shadow, var(--wa-shadow-l));
+}
+`;
   /** Milliseconds the pointer has to stay before it peeks */
   static DELAY = 400;
 
@@ -66,6 +119,7 @@ export class FloatingCard {
    */
   constructor({ document = globalThis.document, className = '', closeLabel = 'Close', delay = FloatingCard.DELAY, onShow } = {}) {
     this.#options = { document, className, closeLabel, delay, onShow };
+    installStyles(document, 'floating-card', FloatingCard.STYLES);
     this.close = this.close.bind(this);
   }
 
