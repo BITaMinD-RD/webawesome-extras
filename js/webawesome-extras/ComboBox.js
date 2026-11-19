@@ -1,10 +1,8 @@
 // @ts-check
 
-import { Input } from './Input.js';
-
 /**
  * Un cuadro donde se elige de una lista con un buscador para filtrarla escribiendo: lo que un `<select>` con muchas opciones deberia ser. Es un `wa-select` de Web
- * Awesome (lib/webawesome) cuyo primer hijo es una caja de busqueda (Input.js): al abrirlo el foco va a la caja, escribir esconde las opciones que no encajan y las
+ * Awesome (lib/webawesome) cuyo primer hijo es una caja de busqueda (un `wa-input`): al abrirlo el foco va a la caja, escribir esconde las opciones que no encajan y las
  * flechas pasan de la caja a las opciones que se ven. Se usa donde iria un `<select>`: tiene `value` (leer y poner), `disabled`, `hidden`, `name` y `required`, y manda
  * `change` cuando se elige algo. El titulo es el `placeholder`. No sabe de que son las opciones ni de que idioma: todo le llega por parametro. Solo elige entre lo que
  * hay: lo escrito en la caja es para buscar, no se queda como valor.
@@ -12,7 +10,7 @@ import { Input } from './Input.js';
  *   const combo = new ComboBox({ document, choices: [{ value: 'a', label: 'Uno' }], placeholder: 'Elige uno...', onChange: v => ... });
  *   parent.append(combo.element);
  *
- * Necesita Web Awesome cargado e importa `Input.js`. Los estilos son `.combo` de controls.css y los de `wa-select`.
+ * Necesita Web Awesome cargado. Los estilos son `.combo` de controls.css y los de `wa-select`.
  */
 export class ComboBox {
   /** @type {HTMLElement} El `wa-select`: lo que se pone en la pagina */
@@ -61,7 +59,14 @@ export class ComboBox {
     if (options.name) this.element.setAttribute('name', options.name);
     Object.defineProperty(this.element, 'combo', { value: this });
 
-    this.search = Input.make(doc, { type: 'search', placeholder: options.searchPlaceholder ?? 'Buscar...', clearable: true, className: 'combo-search' });
+    this.search = doc.createElement('wa-input');
+    this.search.setAttribute('type', 'search');
+    // El valor, como atributo y como propiedad: si el componente aun no esta cargado, `value` se lee igual; y nunca sin valor, que vacia da `null` y no `''`
+    this.search.setAttribute('value', '');
+    /** @type {any} */ (this.search).value = '';
+    this.search.setAttribute('placeholder', options.searchPlaceholder ?? 'Buscar...');
+    this.search.setAttribute('with-clear', '');
+    this.search.setAttribute('class', 'combo-search');
     this.search.setAttribute('autocomplete', 'off');
     // Lo que pasa en la caja es de la caja: sin esto, sus `input` y `change` suben hasta quien escucha el combo y creeria que se ha elegido algo
     for (const type of ['input', 'change']) this.search.addEventListener(type, event => event.stopPropagation());

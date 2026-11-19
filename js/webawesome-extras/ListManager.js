@@ -1,8 +1,5 @@
 // @ts-check
 
-import { Button } from './Button.js';
-import { Input } from './Input.js';
-
 /**
  * El bloque que se repite en las pantallas de editar: los filtros (si los hay), la caja de busqueda, el boton de «Nuevo» y, debajo, la lista de
  * lo que hay, donde se elige una entrada (volver a pulsar la elegida no la quita). El boton va siempre encima de la lista, por si es larga. No sabe
@@ -31,10 +28,18 @@ export class ListManager {
 
   /** @param {ListManager.Options} options */
   constructor({ document = globalThis.document, searchPlaceholder = '', newLabel, emptyText = '', filters = [], onSelect, onNew, onQuery }) {
-    this.search = /** @type {HTMLInputElement} */ (/** @type {unknown} */ (Input.make(document, { type: 'search', placeholder: searchPlaceholder, clearable: true })));
+    // Los atributos y no las propiedades: el componente puede no haberse cargado todavia. El valor, tambien como propiedad, y nunca sin valor: vacia da `null` y no `''`
+    this.search = /** @type {HTMLInputElement} */ (/** @type {unknown} */ (document.createElement('wa-input')));
+    this.search.setAttribute('type', 'search');
+    this.search.setAttribute('value', '');
+    this.search.value = '';
+    this.search.setAttribute('placeholder', searchPlaceholder);
+    this.search.setAttribute('with-clear', '');
     this.search.addEventListener('input', () => onQuery?.());
 
-    const button = Button.make(document, { text: newLabel });
+    const button = document.createElement('wa-button');
+    button.setAttribute('appearance', 'outlined');
+    button.textContent = newLabel;
     button.addEventListener('click', () => onNew?.());
     const row = document.createElement('div');
     row.className = 'row';
