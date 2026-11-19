@@ -41,6 +41,11 @@ import { installStyles } from './DocumentStyles.js';
  * @attr {string} swipe-label - The text of the action that a slid line uncovers; with it, lines can be slid
  *
  * @prop {ListItem[]} items - The lines. What was selected or marked stays so if its key is still there
+ * @prop {Set<string>} marked - The keys marked with Ctrl, Cmd or Shift + click (read only; `clearMarks()` empties it)
+ * @prop {string | null} selected - The key of the selected line; `select(key, { scroll })` sets it without firing `wax-select`
+ * @prop {string} empty - What it says with no items
+ * @prop {boolean} movable - Lines have a handle to reorder them
+ * @prop {string} swipeLabel - The text of the action that a slid line uncovers (attribute `swipe-label`)
  *
  * @fires wax-select - A line was clicked (or Enter or Space on it). `detail: { key }`, `key` null when the selection was cleared. Not fired by `select()`
  * @fires wax-mark - A line was marked or unmarked with Ctrl, Cmd or Shift + click. `detail: { keys }`, all the marked ones
@@ -127,11 +132,17 @@ export class WaxItemList extends LitElement {
 
   constructor() {
     super();
+    /** @type {string | null} */
     this.selected = null;
+    /** @type {string} */
     this.empty = '';
+    /** @type {boolean} */
     this.movable = false;
+    /** @type {string} */
     this.swipeLabel = '';
+    /** @internal @type {string | null} The line slid sideways, whose action shows */
     this._swiped = null;
+    /** @internal @type {string | null} The line being dragged */
     this._dragging = null;
     this.addEventListener('keydown', event => this.#keydown(event));
   }

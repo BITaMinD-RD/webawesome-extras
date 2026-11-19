@@ -1,0 +1,34 @@
+{
+  "name": "webawesome-extras",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Components that look and work as if they were native Web Awesome ones: custom elements wax-*, built with Lit, styled with --wa-* tokens",
+  "license": "GPL-3.0-or-later",
+  "scripts": {
+    "test": "node --test js/webawesome-extras/test/*.test.js js/tools/test/*.test.js scripts/test/*.test.js",
+    "manifest": "cem analyze --config custom-elements-manifest.config.mjs",
+    "react": "node scripts/react.mjs",
+    "build": "npm run manifest && npm run react"
+  },
+  "peerDependencies": {
+    "@lit/react": "^1.0.0",
+    "lit": "^3.0.0",
+    "react": ">=18"
+  },
+  "peerDependenciesMeta": {
+    "@lit/react": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@custom-elements-manifest/analyzer": "^0.11.0",
+    "@lit/react": "^1.0.8",
+    "lit": "^3.3.3",
+    "react": "^19.3.1"
+  },
+  "customElements": "node_modules/.cache/cem-check/custom-elements.json"
+}

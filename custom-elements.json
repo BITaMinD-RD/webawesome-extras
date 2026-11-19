@@ -1,0 +1,287 @@
+{
+  "schemaVersion": "1.0.0",
+  "readme": "",
+  "modules": [
+    {
+      "kind": "javascript-module",
+      "path": "js/webawesome-extras/WaxItemList.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "The usual list to choose from: icon, name and a note per line. One line is selected at a time (click it again to clear), and with Ctrl, Cmd or Shift + click\nlines are marked, any number, for the application to do something with them (join them). It knows nothing about what the items are.\n\n```html\n<wax-item-list empty=\"Nothing here\"></wax-item-list>\n```\n```js\nlist.items = sites.map(s => ({ key: s.id, icon: '🍺', name: s.name, note: `${s.meters} m`, faded: s.hidden }));\nlist.addEventListener('wax-select', event => open(event.detail.key));   // key is null when the selection is cleared\nlist.addEventListener('wax-mark', event => join(event.detail.keys));\n```\n\nTwo things a list can also do, if asked:\n- **Move** (`movable`): each line has a handle, dragged with mouse or finger, or moved with the arrow keys when it has the focus; the list gives back the keys in their\n  new order (`wax-move`).\n- **Swipe** (`swipe-label`): sliding a line sideways with the finger uncovers one action (Remove, Seen) instead of doing it straight away (`wax-swipe`).",
+          "name": "WaxItemList",
+          "cssProperties": [
+            {
+              "description": "The line between lines (default `--wa-color-neutral-border-quiet`)",
+              "name": "--item-border"
+            },
+            {
+              "description": "A line under the pointer (`--wa-color-neutral-fill-quiet`)",
+              "name": "--item-hover"
+            },
+            {
+              "description": "The selected line (`--wa-color-brand-fill-quiet`)",
+              "name": "--item-selected"
+            },
+            {
+              "description": "The mark of the selected and marked lines (`--wa-color-brand-fill-loud`)",
+              "name": "--item-accent"
+            },
+            {
+              "description": "Notes and the empty text (`--wa-color-text-quiet`)",
+              "name": "--item-muted"
+            },
+            {
+              "description": "The swipe action (`--wa-color-danger-fill-loud`)",
+              "name": "--item-danger"
+            }
+          ],
+          "cssParts": [
+            {
+              "description": "The `ul`",
+              "name": "list"
+            },
+            {
+              "description": "One line. Also `selected`, `marked`, `faded` and `dragging` while they are so",
+              "name": "line"
+            },
+            {
+              "description": "What moves a line",
+              "name": "handle"
+            },
+            {
+              "description": "The icon",
+              "name": "icon"
+            },
+            {
+              "description": "The name",
+              "name": "name"
+            },
+            {
+              "description": "The note",
+              "name": "note"
+            },
+            {
+              "description": "The text of an empty list",
+              "name": "empty"
+            },
+            {
+              "description": "The action a slid line uncovers",
+              "name": "swipe"
+            }
+          ],
+          "slots": [
+            {
+              "type": {
+                "text": "key"
+              },
+              "description": "Own controls at the end of a line: a child with `slot=\"<key of the item>\"`. (An item's `html` is put there for you.) One with class `item-risky` shows only when the line is under the mouse or has the focus",
+              "name": ""
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "OWN",
+              "type": {
+                "text": "string"
+              },
+              "static": true,
+              "default": "'a, button, input, label, select, textarea, wa-button, wa-input, wa-select, [part~=\"handle\"]'",
+              "description": "Clicks on these inside a line belong to them, not to the list"
+            },
+            {
+              "kind": "field",
+              "name": "items",
+              "return": {
+                "type": {
+                  "text": "ListItem[]"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "value",
+                  "type": {
+                    "text": "ListItem[]"
+                  }
+                }
+              ],
+              "type": {
+                "text": "ListItem[]"
+              },
+              "description": "The lines. What was selected or marked stays so if its key is still there"
+            },
+            {
+              "kind": "field",
+              "name": "marked",
+              "return": {
+                "type": {
+                  "text": "Set<string>"
+                }
+              },
+              "readonly": true,
+              "type": {
+                "text": "Set<string>"
+              },
+              "description": "The keys marked with Ctrl, Cmd or Shift + click (read only; `clearMarks()` empties it)"
+            },
+            {
+              "kind": "method",
+              "name": "select",
+              "parameters": [
+                {
+                  "name": "key",
+                  "type": {
+                    "text": "string | null"
+                  }
+                },
+                {
+                  "name": "{ scroll = false }",
+                  "default": "{}"
+                },
+                {
+                  "name": "options",
+                  "optional": true,
+                  "type": {
+                    "text": "{scroll?: boolean}"
+                  }
+                }
+              ],
+              "description": "Selects an item without telling anybody (the map chose it): `scroll` brings it into view."
+            },
+            {
+              "kind": "method",
+              "name": "clearMarks",
+              "description": "Clears the marks, without telling anybody"
+            },
+            {
+              "kind": "field",
+              "name": "selected",
+              "privacy": "public",
+              "type": {
+                "text": "string | null"
+              },
+              "default": "null",
+              "description": "The key of the selected line; `select(key, { scroll })` sets it without firing `wax-select`",
+              "attribute": "selected",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "empty",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "default": "''",
+              "description": "What it says with no items",
+              "attribute": "empty"
+            },
+            {
+              "kind": "field",
+              "name": "movable",
+              "privacy": "public",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Lines have a handle to reorder them",
+              "attribute": "movable"
+            },
+            {
+              "kind": "field",
+              "name": "swipeLabel",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "default": "''",
+              "description": "The text of the action that a slid line uncovers (attribute `swipe-label`)",
+              "attribute": "swipe-label"
+            }
+          ],
+          "events": [
+            {
+              "description": "A line was clicked (or Enter or Space on it). `detail: { key }`, `key` null when the selection was cleared. Not fired by `select()`",
+              "name": "wax-select"
+            },
+            {
+              "description": "A line was marked or unmarked with Ctrl, Cmd or Shift + click. `detail: { keys }`, all the marked ones",
+              "name": "wax-mark"
+            },
+            {
+              "description": "A line was moved (`movable`). `detail: { keys }`, all of them in their new order",
+              "name": "wax-move"
+            },
+            {
+              "description": "The action of a slid line was pressed (`swipe-label`). `detail: { key }`",
+              "name": "wax-swipe"
+            }
+          ],
+          "attributes": [
+            {
+              "type": {
+                "text": "string | null"
+              },
+              "description": "The key of the selected line; `select(key, { scroll })` sets it without firing `wax-select`",
+              "name": "selected",
+              "default": "null",
+              "fieldName": "selected"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "What it says with no items",
+              "name": "empty",
+              "default": "''",
+              "fieldName": "empty"
+            },
+            {
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Lines have a handle to reorder them",
+              "name": "movable",
+              "default": "false",
+              "fieldName": "movable"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "The text of the action that a slid line uncovers (attribute `swipe-label`)",
+              "name": "swipe-label",
+              "default": "''",
+              "fieldName": "swipeLabel"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "wax-item-list",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "WaxItemList",
+          "declaration": {
+            "name": "WaxItemList",
+            "module": "js/webawesome-extras/WaxItemList.js"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "wax-item-list",
+          "declaration": {
+            "name": "WaxItemList",
+            "module": "js/webawesome-extras/WaxItemList.js"
+          }
+        }
+      ]
+    }
+  ]
+}
