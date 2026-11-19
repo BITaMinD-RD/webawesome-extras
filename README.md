@@ -17,9 +17,8 @@ The page must load these two; **neither is copied into this repository**:
 
 | folder | what it is |
 |---|---|
-| [`js/controls-ui/`](js/controls-ui/) | The controls and widgets: `controls.css` (input, pill, check, select, combo...), the helpers that make Web Awesome controls from code (`Button`, `Input`, `Toggle`, `ComboBox`), `FloatingCard`, `AskEach`, `ListManager` and the list component `<wax-item-list>`. See its [README](js/controls-ui/README.md) |
+| [`js/webawesome-extras/`](js/webawesome-extras/) | The controls and widgets: `controls.css` (input, pill, check, select, combo...), the helpers that make Web Awesome controls from code (`Button`, `Input`, `Toggle`, `ComboBox`), `FloatingCard`, `AskEach`, `ListManager` and the list component `<wax-item-list>`. See its [README](js/webawesome-extras/README.md) |
 
-The folder keeps the name `controls-ui` for now so that every consumer keeps importing `../controls-ui/`; renaming it will be one step later.
 `text` (tolerant search) and `vendor` (the tool that makes generated copies) are in [webutils](../webutils), not here.
 
 ## The pattern for a component
@@ -40,7 +39,7 @@ Components follow Web Awesome's way:
 
 Each folder has its own tests, with no network and no dependencies:
 
-    cd js/controls-ui && node --test test/*.test.js
+    cd js/webawesome-extras && node --test test/*.test.js
 
 Lit elements need a DOM, which Node does not have, so the tests cover the DOM-free logic of each component (the files without Lit); what the element
 shows is checked in a browser.

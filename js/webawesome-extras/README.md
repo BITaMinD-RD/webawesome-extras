@@ -1,10 +1,10 @@
-# controls-ui
+# webawesome-extras
 
 The generic controls of the screens, as one stylesheet, `controls.css`: `.input`, `.pill`, `.check`, `.switch`, `.select`, the checkbox
 group and the slider group. They know nothing of what they are used for.
 
 ```html
-<link rel="stylesheet" href="lib/controls-ui/controls.css">
+<link rel="stylesheet" href="lib/webawesome-extras/controls.css">
 ```
 
 The look comes from **Web Awesome's design tokens**, so the theme of the page applies with nothing else to define: `--wa-color-surface-default`, `--wa-color-surface-lowered`,
@@ -22,7 +22,7 @@ the element, and needs Lit 3 (see the README of the repository); `ItemListState.
 <wax-item-list id="sites" empty="Nothing here"></wax-item-list>
 ```
 ```js
-import './lib/controls-ui/WaxItemList.js';
+import './lib/webawesome-extras/WaxItemList.js';
 const list = document.getElementById('sites');
 list.items = sites.map(s => ({ key: s.id, icon: '🍺', name: s.name, note: `${s.meters} m`, faded: s.hidden }));
 list.addEventListener('wax-select', event => open(event.detail.key));
