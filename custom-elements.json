@@ -1224,7 +1224,7 @@
               "type": {
                 "text": "string"
               },
-              "description": "What is typed in the search box (read only)"
+              "description": "What is typed in the search box"
             },
             {
               "kind": "method",
@@ -1248,7 +1248,7 @@
                 "text": "ListItem[]"
               },
               "default": "[]",
-              "description": "What is shown (without `html`: the markup of a line goes to the light DOM of the list, which here is its shadow). The chosen entry stays chosen if it is still there"
+              "description": "What is shown, each one a `ListItem` of `<wax-item-list>` (without `html`: the markup of a line goes to the light DOM of the list, which here is its shadow). The chosen entry stays chosen if it is still there"
             },
             {
               "kind": "field",

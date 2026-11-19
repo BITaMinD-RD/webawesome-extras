@@ -33,12 +33,12 @@ import '../item-list/item-list.js';
  * @attr {string} new-label - The text of the button
  * @attr {string} empty - What it says with nothing to show
  *
- * @prop {import('../item-list/item-list.js').ListItem[]} items - What is shown (without `html`: the markup of a line goes to the light DOM of the list, which here is its shadow). The chosen entry stays chosen if it is still there
+ * @prop {import('../item-list/item-list.js').ListItem[]} items - What is shown, each one a `ListItem` of `<wax-item-list>` (without `html`: the markup of a line goes to the light DOM of the list, which here is its shadow). The chosen entry stays chosen if it is still there
  * @prop {string} searchPlaceholder - What the search box says while it is empty
  * @prop {string} searchLabel - What the search box is called for who does not see it (attribute `search-label`)
  * @prop {string} newLabel - The text of the button
  * @prop {string} empty - What it says with nothing to show
- * @prop {string} query - What is typed in the search box (read only)
+ * @prop {string} query - What is typed in the search box
  *
  * @fires wax-select - An entry was chosen by the user. `detail: { key }`. Not fired by `select()`
  * @fires wax-new - The «New» button was pressed
