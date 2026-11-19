@@ -94,7 +94,7 @@ export class WaxAskEach extends LitElement {
   }
 
   /**
-   * Asks about each thing in turn.
+   * Asks about each thing in turn, in a dialog, and resolves when it has closed with what was answered for each one: booleans in the order of the items (`true` is the positive verb), `null` if it was cancelled, `[]` if there was nothing to ask.
    *
    * @template T
    * @param {T[]} items What is asked about

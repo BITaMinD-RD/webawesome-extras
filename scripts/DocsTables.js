@@ -23,7 +23,7 @@ const table = (header, rows) => [`| ${header.join(' | ')} |`, `|${header.map(() 
 
 /**
  * @typedef {{name: string, description?: string, type?: {text: string}, default?: string, attribute?: string, kind?: string, static?: boolean, readonly?: boolean,
- *   privacy?: string, parameters?: {name: string, optional?: boolean, type?: {text: string}}[], return?: {type?: {text: string}}}} Member
+ *   privacy?: string, parameters?: {name: string, description?: string, optional?: boolean, type?: {text: string}}[], return?: {type?: {text: string}}}} Member
  * @typedef {{name: string, tagName?: string, customElement?: boolean, description?: string, members?: Member[], events?: {name: string, description?: string, type?: {text: string}}[],
  *   slots?: {name: string, description?: string}[], cssParts?: {name: string, description?: string}[], cssProperties?: {name: string, description?: string}[]}} Declaration
  */
@@ -40,7 +40,7 @@ const signature = method => {
 
 /** @param {Member} method @returns {string} */
 const argumentsOf = method => (method.parameters ?? []).filter(parameter => !parameter.name.startsWith('{') && parameter.type)
-  .map(parameter => `${code(`${parameter.name}${parameter.optional ? '?' : ''}: ${parameter.type?.text}`)}`).join('<br>');
+  .map(parameter => code(`${parameter.name}${parameter.optional ? '?' : ''}: ${parameter.type?.text}`) + (parameter.description ? ` ${cell(parameter.description)}` : '')).join('<br>');
 
 /**
  * @param {Declaration} element

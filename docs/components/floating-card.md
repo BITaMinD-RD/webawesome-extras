@@ -217,10 +217,10 @@ The tables are generated from `custom-elements.json` by `npm run docs`; do not e
 
 | Method | Description | Arguments | Returns |
 |---|---|---|---|
-| `peek(anchor)` | With a mouse, it peeks (shows without being pinned) a moment later; without one, nothing. | `anchor: Element` |  |
+| `peek(anchor)` | With a mouse, it peeks (shows without being pinned) a moment later; without one, nothing. | `anchor: Element` What it talks about |  |
 | `leave()` | The pointer left: a card that only peeks goes, a moment later |  |  |
 | `toggle(anchor)` | Shows it pinned next to `anchor`, or hides it if it was pinned next to the same thing. | `anchor: Element` |  |
-| `show(anchor?, options?)` | Shows it next to `anchor`. Pinned, it stays until it is closed. If it was open, it closes first (and either listener can cancel what it is asked). | `anchor?: Element \| null`<br>`options?: {pinned?: boolean}` | `boolean` |
+| `show(anchor?, options?)` | Shows it next to `anchor`. Pinned, it stays until it is closed. If it was open, it closes first (and either listener can cancel what it is asked). | `anchor?: Element \| null` What it talks about; by default, the one it has<br>`options?: {pinned?: boolean}` | `boolean` |
 | `hide()` | Hides it. |  | `boolean` |
 | `place()` | Puts it back next to its thing after what is inside has grown (something that came later from the network). In the middle, the CSS places it. |  |  |
 
