@@ -4,6 +4,328 @@
   "modules": [
     {
       "kind": "javascript-module",
+      "path": "js/webawesome-extras/WaxCombobox.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A box to choose from a list with a search box to filter it by typing: what a `<select>` with many options should be. It is a Web Awesome `wa-select` whose first child is a\nsearch box (a `wa-input`): when it opens the focus goes to the box, typing hides the options that do not match, and the arrows pass from the box to the options that are seen. It is\nused where a `<select>` would go: it has `value`, `disabled`, `name` and `required`, takes part in a form, and fires `change` when something is chosen. It chooses only among what it\nhas: what is typed is for searching, it is not kept. It knows nothing of what the choices are or of any language: everything comes by property. The page loads Web Awesome.\n\n```html\n<wax-combobox placeholder=\"Pick one...\" empty-text=\"Nothing matches\"></wax-combobox>\n```\n```js\ncombo.choices = [{ value: 'es', label: 'España' }, { value: 'fr', label: 'Francia' }];   // before the value: a value that is not among the choices is dropped\ncombo.value = 'es';\ncombo.addEventListener('change', () => use(combo.value));\n```\n\nIf the choices are not all there and have to be fetched as the user types, listen to `wax-query` and give the new `choices`.",
+          "name": "WaxCombobox",
+          "cssProperties": [
+            {
+              "description": "The space below it (`--wa-space-m`: the usual one between a control and what goes below it)",
+              "name": "--combobox-gap"
+            }
+          ],
+          "cssParts": [
+            {
+              "description": "The `wa-select`",
+              "name": "select"
+            },
+            {
+              "description": "The search box",
+              "name": "search"
+            },
+            {
+              "description": "One option. Also `empty`, for the «choose nothing» one, and `none`, for the notice that nothing matches",
+              "name": "option"
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "formAssociated",
+              "type": {
+                "text": "boolean"
+              },
+              "static": true,
+              "default": "true"
+            },
+            {
+              "kind": "field",
+              "name": "shadowRootOptions",
+              "type": {
+                "text": "object"
+              },
+              "static": true,
+              "default": "{ ...LitElement.shadowRootOptions, delegatesFocus: true }"
+            },
+            {
+              "kind": "field",
+              "name": "name",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "return": {
+                "type": {
+                  "text": "string"
+                }
+              },
+              "parameters": [
+                {
+                  "description": "The attribute at once, not when the element is next drawn: a form looks for its fields by `[name]` as soon as they are made",
+                  "name": "name",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "The name of the field in a form",
+              "attribute": "name"
+            },
+            {
+              "kind": "field",
+              "name": "choices",
+              "privacy": "public",
+              "return": {
+                "type": {
+                  "text": "{value: string, label: string}[]"
+                }
+              },
+              "type": {
+                "text": "{value: string, label: string}[]"
+              },
+              "description": "What is offered. What was chosen stays if it is still there"
+            },
+            {
+              "kind": "field",
+              "name": "value",
+              "privacy": "public",
+              "return": {
+                "type": {
+                  "text": "string"
+                }
+              },
+              "type": {
+                "text": "string"
+              },
+              "description": "What is chosen, empty for nothing. Only one of the choices: anything else leaves nothing chosen. Set `choices` first"
+            },
+            {
+              "kind": "method",
+              "name": "formDisabledCallback",
+              "parameters": [
+                {
+                  "name": "disabled",
+                  "type": {
+                    "text": "boolean"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "formResetCallback"
+            },
+            {
+              "kind": "field",
+              "name": "placeholder",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "default": "''",
+              "description": "The title, grey while nothing is chosen",
+              "attribute": "placeholder"
+            },
+            {
+              "kind": "field",
+              "name": "searchPlaceholder",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "default": "'Buscar...'",
+              "description": "What the search box says while it is empty (attribute `search-placeholder`)",
+              "attribute": "search-placeholder"
+            },
+            {
+              "kind": "field",
+              "name": "emptyLabel",
+              "privacy": "public",
+              "type": {
+                "text": "string | undefined"
+              },
+              "default": "undefined",
+              "description": "If set, a first option «choose nothing» with this name (attribute `empty-label`)",
+              "attribute": "empty-label"
+            },
+            {
+              "kind": "field",
+              "name": "emptyText",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "default": "''",
+              "description": "What it says if what was typed matches nothing (attribute `empty-text`)",
+              "attribute": "empty-text"
+            },
+            {
+              "kind": "field",
+              "name": "required",
+              "privacy": "public",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "The form is not sent without a choice",
+              "attribute": "required",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "disabled",
+              "privacy": "public",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "It cannot be used yet",
+              "attribute": "disabled",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "queryDelay",
+              "privacy": "public",
+              "type": {
+                "text": "number"
+              },
+              "default": "300",
+              "description": "Milliseconds without typing before `wax-query` (attribute `query-delay`)",
+              "attribute": "query-delay"
+            }
+          ],
+          "events": [
+            {
+              "name": "wax-query",
+              "type": {
+                "text": "CustomEvent"
+              },
+              "description": "The user typed in the search box and stopped (`query-delay`), or the search was forgotten (`query` is empty): for whoever has to fetch the choices that match. `detail: { query }`"
+            },
+            {
+              "description": "Something was chosen, with the mouse, the keys or Enter in the search box (like the `change` of a `wa-select`; the typing in the search box is not announced)",
+              "name": "change"
+            }
+          ],
+          "attributes": [
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "The title, grey while nothing is chosen",
+              "name": "placeholder",
+              "default": "''",
+              "fieldName": "placeholder"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "What the search box says while it is empty (attribute `search-placeholder`)",
+              "name": "search-placeholder",
+              "default": "'Buscar...'",
+              "fieldName": "searchPlaceholder"
+            },
+            {
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "If set, a first option «choose nothing» with this name (attribute `empty-label`)",
+              "name": "empty-label",
+              "default": "undefined",
+              "fieldName": "emptyLabel"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "What it says if what was typed matches nothing (attribute `empty-text`)",
+              "name": "empty-text",
+              "default": "''",
+              "fieldName": "emptyText"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "The name of the field in a form",
+              "name": "name",
+              "return": {
+                "type": {
+                  "text": "string"
+                }
+              },
+              "parameters": [
+                {
+                  "description": "The attribute at once, not when the element is next drawn: a form looks for its fields by `[name]` as soon as they are made",
+                  "name": "name",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "fieldName": "name"
+            },
+            {
+              "type": {
+                "text": "boolean"
+              },
+              "description": "The form is not sent without a choice",
+              "name": "required",
+              "default": "false",
+              "fieldName": "required"
+            },
+            {
+              "type": {
+                "text": "boolean"
+              },
+              "description": "It cannot be used yet",
+              "name": "disabled",
+              "default": "false",
+              "fieldName": "disabled"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "Milliseconds without typing before `wax-query` (attribute `query-delay`)",
+              "name": "query-delay",
+              "default": "300",
+              "fieldName": "queryDelay"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "wax-combobox",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "WaxCombobox",
+          "declaration": {
+            "name": "WaxCombobox",
+            "module": "js/webawesome-extras/WaxCombobox.js"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "wax-combobox",
+          "declaration": {
+            "name": "WaxCombobox",
+            "module": "js/webawesome-extras/WaxCombobox.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "js/webawesome-extras/WaxItemList.js",
       "declarations": [
         {

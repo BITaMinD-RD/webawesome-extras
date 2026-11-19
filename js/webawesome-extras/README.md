@@ -44,10 +44,22 @@ list.addEventListener('wax-mark', event => { /* join event.detail.keys */ });
 `wa-textarea` and `wa-button` (`customElements.whenDefined`) before starting; `list="..."` (a `datalist`) does not work, because the datalist is outside the shadow of the box;
 a `wa-button` with `hidden` needs `wa-button[hidden] { display: none }`; and `aria-label` on a `wa-button` does not reach the real button inside it (`ButtonLabel` in webutils does).
 
-**ComboBox** is a `wa-select` with a search box as the first child of its list: the focus goes to the box when it opens, typing hides the options that do not match, the arrows pass from
-the box to the options that are seen and Enter in the box chooses the first one. Same API as before (`value`, `disabled`, `setChoices`, `change`, `name`, `required`, `placeholder`,
-`emptyLabel`, `emptyText`, and `searchPlaceholder` for the box); `element` is the `wa-select`, so the page that uses it needs Web Awesome (see `micro/mapa-tiempo`). It
-chooses among what it is given: what is typed is for searching, it is not kept.
+**The combobox** is `<wax-combobox>` (`WaxCombobox.js`, with `ComboboxState.js` for its rules): a `wa-select` with a search box as the first child of its list. The focus goes to the box when it opens,
+typing hides the options that do not match, the arrows pass from the box to the options that are seen and Enter in the box chooses the first one. It takes part in a form (`name`, `required`) and fires
+`change` like a `wa-select`. It chooses among what it is given: what is typed is for searching, it is not kept. If the choices have to be fetched as the user types, `wax-query` says what was typed.
+
+```html
+<wax-combobox placeholder="Pick one..." empty-text="Nothing matches"></wax-combobox>
+```
+```js
+import './lib/webawesome-extras/WaxCombobox.js';
+combo.choices = [{ value: 'es', label: 'España' }, { value: 'fr', label: 'Francia' }];   // before the value: a value that is not among the choices is dropped
+combo.value = 'es';
+combo.addEventListener('change', () => use(combo.value));
+```
+
+- **Properties**: `choices`, `value`, `placeholder`, `searchPlaceholder` (`search-placeholder`), `emptyLabel` (`empty-label`: a first option «choose nothing»), `emptyText` (`empty-text`), `name`, `required`, `disabled`, `queryDelay`.
+- **Style**: `::part(select)`, `::part(search)`, `::part(option)` (also `empty` and `none`); the space below it is `--combobox-gap` (`--wa-space-m`).
 
 **A floating card** is `FloatingCard.js` (it imports `BackClose` from `../history/`, a module of webutils): a card next to what was clicked, for what is far from it in a long list.
 With a mouse it peeks (`peek(content, near)` shows it a moment later, `leave()` takes it away) and a click pins it (`show(content, near)`);
