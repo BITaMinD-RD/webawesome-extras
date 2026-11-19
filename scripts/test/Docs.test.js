@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { END, START, elementsOf, referenceOf, withReference } from '../DocsTables.js';
 import { extractExamples, tagsOf } from '../../docs/site/examples.js';
 
@@ -57,8 +57,42 @@ test('the reference tables of every page are what scripts/docs.mjs makes from th
   }
 });
 
-test('every page in docs/components is the page of an element of the manifest (and the other way round, once the pages are all written)', () => {
+test('every element of the manifest has its page in docs/components, and every page there belongs to an element', () => {
   const files = readdirSync(join(ROOT, 'docs', 'components')).filter(name => name.endsWith('.md')).sort();
   const wanted = elementsOf(manifest).map(element => `${element.tagName.replace(/^wax-/, '')}.md`).sort();
-  for (const file of files) assert.ok(wanted.includes(file), `docs/components/${file} is not the page of any element`);
+  assert.deepEqual(files, wanted);
+  for (const element of elementsOf(manifest)) {
+    const text = readFileSync(pageOf(element), 'utf8');
+    assert.ok(text.includes(START) && text.includes(END), `${pageOf(element)} needs the markers of its reference`);
+  }
+});
+
+test('docs/pages.json lists every Markdown page of docs/ once, and only those', () => {
+  const listed = JSON.parse(readFileSync(join(ROOT, 'docs', 'pages.json'), 'utf8')).flatMap(section => section.pages.map(page => page.path)).sort();
+  const found = [...readdirSync(join(ROOT, 'docs')).filter(name => name.endsWith('.md')), ...readdirSync(join(ROOT, 'docs', 'components')).map(name => `components/${name}`).filter(name => name.endsWith('.md'))].sort();
+  assert.deepEqual(listed, found);
+});
+
+test('the links between pages point at pages and anchors that exist', () => {
+  const pages = JSON.parse(readFileSync(join(ROOT, 'docs', 'pages.json'), 'utf8')).flatMap(section => section.pages.map(page => page.path));
+  const slug = heading => heading.toLowerCase().replace(/[^a-z0-9 -]/g, '').trim().replace(/ /g, '-');
+  const anchorsOf = path => [...readFileSync(join(ROOT, 'docs', path), 'utf8').matchAll(/^#{1,6}\s+(.+)$/gm)].map(match => slug(match[1]));
+  for (const page of pages) {
+    const text = readFileSync(join(ROOT, 'docs', page), 'utf8').replace(/```[\s\S]*?```/g, '');
+    for (const [, target, anchor] of text.matchAll(/\]\(((?!https?:)[^)#\s]*)(?:#([^)\s]*))?\)/g)) {
+      const path = target ? join(dirname(page), target).replace(/\\/g, '/') : page;
+      assert.ok(pages.includes(path), `${page} links to ${target}, which is not a page`);
+      if (anchor) assert.ok(anchorsOf(path).includes(anchor), `${page} links to #${anchor}, which is not a heading of ${path}`);
+    }
+  }
+});
+
+test('the events page lists every event of the manifest and every typed event class, and the theming page every custom property', () => {
+  const events = readFileSync(join(ROOT, 'docs', 'events.md'), 'utf8');
+  const theming = readFileSync(join(ROOT, 'docs', 'theming.md'), 'utf8');
+  for (const element of elementsOf(manifest)) {
+    for (const event of element.events ?? []) assert.ok(events.includes(`\`${event.name}\``), `docs/events.md does not mention ${event.name}`);
+    for (const property of element.cssProperties ?? []) assert.ok(theming.includes(`\`${property.name}\``), `docs/theming.md does not mention ${property.name}`);
+  }
+  for (const [, name] of readFileSync(join(ROOT, 'src', 'events', 'events.js'), 'utf8').matchAll(/export \{ (\w+) \}/g)) assert.ok(events.includes(`\`${name}\``), `docs/events.md does not mention ${name}`);
 });

@@ -1,27 +1,22 @@
 [
   {
+    "title": "Getting started",
+    "pages": [
+      { "title": "Overview", "path": "index.md" },
+      { "title": "Installation and usage", "path": "installation.md" },
+      { "title": "Events", "path": "events.md" },
+      { "title": "Theming", "path": "theming.md" },
+      { "title": "React", "path": "react.md" }
+    ]
+  },
+  {
     "title": "Components",
     "pages": [
-      {
-        "title": "Item list",
-        "path": "components/item-list.md"
-      },
-      {
-        "title": "Combobox",
-        "path": "components/combobox.md"
-      },
-      {
-        "title": "Floating card",
-        "path": "components/floating-card.md"
-      },
-      {
-        "title": "Ask each",
-        "path": "components/ask-each.md"
-      },
-      {
-        "title": "List manager",
-        "path": "components/list-manager.md"
-      }
+      { "title": "Item list", "path": "components/item-list.md" },
+      { "title": "Combobox", "path": "components/combobox.md" },
+      { "title": "Floating card", "path": "components/floating-card.md" },
+      { "title": "Ask each", "path": "components/ask-each.md" },
+      { "title": "List manager", "path": "components/list-manager.md" }
     ]
   }
 ]
