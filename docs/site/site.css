@@ -1,0 +1,63 @@
+/* The site uses the tokens of Web Awesome's theme, like the elements it documents */
+:root { --nav-width: 16rem; --header-height: 3.25rem; }
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--wa-color-surface-default); color: var(--wa-color-text-normal);
+  font-family: var(--wa-font-family-body); font-size: var(--wa-font-size-m); line-height: var(--wa-line-height-normal);
+}
+a { color: var(--wa-color-brand-on-quiet, var(--wa-color-brand-fill-loud)); }
+
+.site-header {
+  position: sticky; top: 0; z-index: 10; height: var(--header-height); display: flex; align-items: center; gap: var(--wa-space-m); padding: 0 var(--wa-space-l);
+  background: var(--wa-color-surface-raised); border-bottom: var(--wa-border-width-s) var(--wa-border-style) var(--wa-color-surface-border);
+}
+.site-title { font-weight: var(--wa-font-weight-bold); font-size: var(--wa-font-size-l); color: inherit; text-decoration: none; margin-right: auto; }
+.site-menu, .site-theme {
+  background: none; border: var(--wa-border-width-s) var(--wa-border-style) var(--wa-color-surface-border); border-radius: var(--wa-border-radius-m);
+  color: inherit; font: inherit; padding: var(--wa-space-2xs) var(--wa-space-s); cursor: pointer;
+}
+.site-menu { display: none; }
+
+.site-layout { display: flex; align-items: flex-start; }
+.site-nav {
+  position: sticky; top: var(--header-height); flex: 0 0 var(--nav-width); width: var(--nav-width); height: calc(100vh - var(--header-height)); overflow-y: auto;
+  padding: var(--wa-space-l); border-right: var(--wa-border-width-s) var(--wa-border-style) var(--wa-color-surface-border);
+}
+.site-nav h2 { margin: var(--wa-space-m) 0 var(--wa-space-xs); font-size: var(--wa-font-size-s); text-transform: uppercase; letter-spacing: 0.05em; color: var(--wa-color-text-quiet); }
+.site-nav ul { list-style: none; margin: 0; padding: 0; }
+.site-nav a { display: block; padding: var(--wa-space-2xs) var(--wa-space-s); border-radius: var(--wa-border-radius-m); color: inherit; text-decoration: none; }
+.site-nav a:hover { background: var(--wa-color-neutral-fill-quiet); }
+.site-nav a[aria-current="page"] { background: var(--wa-color-brand-fill-quiet); font-weight: var(--wa-font-weight-semibold); }
+
+.site-content { flex: 1; min-width: 0; max-width: 56rem; padding: var(--wa-space-xl) var(--wa-space-2xl) var(--wa-space-3xl); outline: none; }
+.site-content h1 { margin-top: 0; }
+.site-content h2 { margin-top: var(--wa-space-2xl); padding-bottom: var(--wa-space-xs); border-bottom: var(--wa-border-width-s) var(--wa-border-style) var(--wa-color-surface-border); }
+.site-content h3 { margin-top: var(--wa-space-xl); }
+.site-content .anchor { margin-left: var(--wa-space-xs); opacity: 0; text-decoration: none; font-weight: normal; }
+.site-content :is(h1, h2, h3, h4):hover .anchor, .site-content .anchor:focus { opacity: 1; }
+.site-content code { font-family: var(--wa-font-family-code); font-size: 0.9em; background: var(--wa-color-neutral-fill-quiet); padding: 0.1em 0.3em; border-radius: var(--wa-border-radius-s); }
+.site-content pre { margin: 0; }
+.site-content pre.code { overflow-x: auto; padding: var(--wa-space-m); background: var(--wa-color-neutral-fill-quiet); border-radius: var(--wa-border-radius-m); }
+.site-content pre code { background: none; padding: 0; font-size: var(--wa-font-size-s); }
+
+.table-scroll { overflow-x: auto; margin-block: var(--wa-space-m); }
+table { border-collapse: collapse; width: 100%; font-size: var(--wa-font-size-s); }
+th, td { text-align: left; vertical-align: top; padding: var(--wa-space-xs) var(--wa-space-s); border-bottom: var(--wa-border-width-s) var(--wa-border-style) var(--wa-color-surface-border); }
+th { background: var(--wa-color-neutral-fill-quiet); white-space: nowrap; }
+
+/* An example: the result above and its code below, like the pages of Web Awesome. The result is NOT positioned, because the floating card is placed with the coordinates of the page */
+.example { margin-block: var(--wa-space-m); border: var(--wa-border-width-s) var(--wa-border-style) var(--wa-color-surface-border); border-radius: var(--wa-border-radius-m); }
+.example-result { padding: var(--wa-space-l); }
+.example-result > :first-child { margin-top: 0; }
+.example-result > :last-child { margin-bottom: 0; }
+.example-code { border-top: var(--wa-border-width-s) var(--wa-border-style) var(--wa-color-surface-border); }
+.example-code summary { cursor: pointer; padding: var(--wa-space-xs) var(--wa-space-m); color: var(--wa-color-text-quiet); font-size: var(--wa-font-size-s); }
+.example-code pre.code { border-radius: 0 0 var(--wa-border-radius-m) var(--wa-border-radius-m); }
+.example-error { color: var(--wa-color-danger-on-quiet, var(--wa-color-danger-fill-loud)); }
+
+@media (max-width: 52rem) {
+  .site-menu { display: block; }
+  .site-nav { position: fixed; top: var(--header-height); left: 0; z-index: 9; background: var(--wa-color-surface-default); transform: translateX(-100%); transition: transform 0.15s; }
+  .site-nav.open { transform: none; }
+  .site-content { padding: var(--wa-space-l) var(--wa-space-m) var(--wa-space-2xl); }
+}

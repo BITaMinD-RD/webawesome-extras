@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en" class="wa-theme-default">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>webawesome-extras</title>
+
+  <!--
+    The documentation site of webawesome-extras: static files, no build. Serve the ROOT of the repository with any static server (`npx http-server`, `python3 -m http.server`)
+    and open /docs/. Web Awesome, Lit and the elements are loaded from node_modules and src, as an application would load them from its own lib/ folder.
+  -->
+  <link rel="stylesheet" href="../node_modules/@awesome.me/webawesome/dist/styles/layers.css">
+  <link rel="stylesheet" href="../node_modules/@awesome.me/webawesome/dist/styles/color/variants.css">
+  <link rel="stylesheet" href="../node_modules/@awesome.me/webawesome/dist/styles/themes/default.css">
+  <link rel="stylesheet" href="site/site.css">
+
+  <script type="importmap">
+    {
+      "imports": {
+        "lit": "../node_modules/lit/index.js",
+        "lit/": "../node_modules/lit/",
+        "lit-html": "../node_modules/lit-html/lit-html.js",
+        "lit-html/": "../node_modules/lit-html/",
+        "lit-element/": "../node_modules/lit-element/",
+        "@lit/reactive-element": "../node_modules/@lit/reactive-element/reactive-element.js",
+        "@lit/reactive-element/": "../node_modules/@lit/reactive-element/",
+        "@lit/context": "../node_modules/@lit/context/index.js",
+        "@lit/context/": "../node_modules/@lit/context/",
+        "@floating-ui/dom": "../node_modules/@floating-ui/dom/dist/floating-ui.dom.esm.js",
+        "@floating-ui/core": "../node_modules/@floating-ui/core/dist/floating-ui.core.esm.js",
+        "@floating-ui/utils": "../node_modules/@floating-ui/utils/dist/floating-ui.utils.esm.js",
+        "@floating-ui/utils/dom": "../node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.esm.js",
+        "composed-offset-position": "../node_modules/composed-offset-position/dist/composed-offset-position.esm.js",
+        "@shoelace-style/localize": "../node_modules/@shoelace-style/localize/dist/index.js",
+        "@shoelace-style/animations": "../node_modules/@shoelace-style/animations/dist/index.js",
+        "@ctrl/tinycolor": "../node_modules/@ctrl/tinycolor/dist/module/public_api.js",
+        "nanoid": "../node_modules/nanoid/index.browser.js",
+        "marked": "../node_modules/marked/lib/marked.esm.js",
+        "@awesome.me/webawesome/dist/": "../node_modules/@awesome.me/webawesome/dist/"
+      }
+    }
+  </script>
+
+  <!-- The two loaders: the elements of the page and of the examples are defined when they appear -->
+  <script type="module" data-webawesome="../node_modules/@awesome.me/webawesome/dist" src="../node_modules/@awesome.me/webawesome/dist/webawesome.loader.js"></script>
+  <script type="module" data-webawesome-extras="../src" src="../src/webawesome-extras.loader.js"></script>
+  <script type="module" src="site/site.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <button id="menu-button" class="site-menu" aria-label="Menu" aria-expanded="false" aria-controls="site-nav">&#9776;</button>
+    <a class="site-title" href="#/index.md">webawesome-extras</a>
+    <button id="theme-button" class="site-theme" aria-label="Switch between the light and the dark theme">&#9681;</button>
+  </header>
+  <div class="site-layout">
+    <nav id="site-nav" class="site-nav" aria-label="Documentation"></nav>
+    <main id="site-content" class="site-content" tabindex="-1">Loading...</main>
+  </div>
+</body>
+</html>
