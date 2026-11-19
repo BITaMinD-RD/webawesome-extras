@@ -342,22 +342,6 @@
               "description": "What is chosen, empty for nothing. Only one of the choices: anything else leaves nothing chosen. Set `choices` first"
             },
             {
-              "kind": "method",
-              "name": "formDisabledCallback",
-              "parameters": [
-                {
-                  "name": "disabled",
-                  "type": {
-                    "text": "boolean"
-                  }
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "formResetCallback"
-            },
-            {
               "kind": "field",
               "name": "label",
               "privacy": "public",

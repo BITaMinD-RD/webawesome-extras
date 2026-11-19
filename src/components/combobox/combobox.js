@@ -236,11 +236,21 @@ export class WaxCombobox extends LitElement {
     select.open = false;
   }
 
-  /** @param {boolean} disabled */
+  /**
+   * Called by the form when it (or its fieldset) is disabled.
+   *
+   * @internal
+   * @param {boolean} disabled
+   */
   formDisabledCallback(disabled) {
     this.disabled = disabled;
   }
 
+  /**
+   * Called by the form when it is reset: nothing is chosen.
+   *
+   * @internal
+   */
   formResetCallback() {
     this.value = '';
   }

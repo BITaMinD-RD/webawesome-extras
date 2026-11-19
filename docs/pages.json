@@ -2,7 +2,14 @@
   {
     "title": "Components",
     "pages": [
-      { "title": "Item list", "path": "components/item-list.md" }
+      {
+        "title": "Item list",
+        "path": "components/item-list.md"
+      },
+      {
+        "title": "Combobox",
+        "path": "components/combobox.md"
+      }
     ]
   }
 ]
