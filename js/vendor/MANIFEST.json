@@ -1,0 +1,9 @@
+{
+  "source": "webutils",
+  "path": "js/vendor",
+  "commit": "8723669a4db7425f469ea3cd89b66e4c1e0e1271",
+  "files": {
+    "Vendor.js": "7f38603018ca31761b3edf5a46c676d75826d13db20a2cee0a2bff2e45b437b6",
+    "package.json": "23e11f557a1f0673c46b33490516930a0bdb4dc9a9b08946c61f716c0628a8cc"
+  }
+}

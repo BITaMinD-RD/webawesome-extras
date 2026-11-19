@@ -1,0 +1,9 @@
+{
+  "source": "webutils",
+  "path": "js/history",
+  "commit": "8723669a4db7425f469ea3cd89b66e4c1e0e1271",
+  "files": {
+    "BackClose.js": "83d77789c0d86fbdfda891c1e09d4cf9f8bbe3114adf9cdfc9ea7d241c621e9c",
+    "package.json": "c9dd8c82d53b5614e59194bdd65f0dd96a4526ad5cf14c348cae671118d42836"
+  }
+}

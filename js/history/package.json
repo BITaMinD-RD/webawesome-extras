@@ -1,0 +1,11 @@
+{
+  "name": "history",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Behaviours of the browser history: the Back button closes what is open on top of the page (BackClose)",
+  "license": "GPL-3.0-or-later",
+  "scripts": {
+    "test": "node --test test/*.test.js"
+  }
+}
