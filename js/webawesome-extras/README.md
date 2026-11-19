@@ -61,7 +61,7 @@ code. Read and write them with `checked` (a `wa-switch` has no `type`, so a read
 hold. In `Ajustes` the text is on the left and the switch on the right: `wa-switch::part(base)` turned with `flex-direction: row-reverse`. The chips of a list (`.pill.check`, the teams of the
 header) are still ours: Web Awesome has no toggle chip.
 
-**A floating card** is `FloatingCard.js` (it imports `BackClose.js`): a card next to what was clicked, for what is far from it in a long list.
+**A floating card** is `FloatingCard.js` (it imports `BackClose` from `../history/`, a module of webutils): a card next to what was clicked, for what is far from it in a long list.
 With a mouse it peeks (`peek(content, near)` shows it a moment later, `leave()` takes it away) and a click pins it (`show(content, near)`);
 clicking the same thing again, Escape, a click outside or its × close it. Without a mouse it goes in the middle with the page dimmed, and
 the phone's Back closes it. `replace(content)` changes what it says without moving it, `place()` puts it back next to its thing after what is

@@ -11,7 +11,7 @@
  *   // answers: boolean[] en el orden de items, o null si se cancelo
  */
 
-import { BackClose } from './BackClose.js';
+import { BackClose } from '../history/BackClose.js';
 
 export class AskEach {
     /** Los verbos de los botones; «Cancelar» es fijo */

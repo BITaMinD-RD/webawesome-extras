@@ -1,6 +1,6 @@
 // @ts-check
 
-import { BackClose } from './BackClose.js';
+import { BackClose } from '../history/BackClose.js';
 
 /**
  * A card that floats next to what was clicked: in a long list the thing it talks about may be far away, out of sight. With a mouse it can

@@ -2,8 +2,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { load } from './load.js';
+import { BackClose } from '../../history/BackClose.js';
 
-const { FloatingCard, BackClose } = await load();
+const { FloatingCard } = await load();
 
 /** Lo poco del DOM que usa: elementos con clases, hijos y escuchas, un body, y una ventana con o sin raton */
 const fakeDocument = ({ mouse = true } = {}) => {
