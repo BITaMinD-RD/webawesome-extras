@@ -83,11 +83,16 @@ Components follow Web Awesome's way:
 
 ## Tests and tooling
 
-The rules of each component have Node tests; the elements have browser tests (see below); the manifest and the wrappers need the dev tooling:
+Like Web Awesome: the **elements** are tested in real browsers with [Web Test Runner](https://modern-web.dev/docs/test-runner/overview/) and `@open-wc/testing`, in Chromium, Firefox and WebKit (Playwright); the **rules** of each
+element (the `*.state.js` classes, which need no DOM) with `node --test`. Next to each element there is a `<name>.test.js` that mounts it with `fixture(html...)`, drives clicks and keys, waits for events with `oneEvent`
+and checks `expect(el).to.be.accessible()` (axe).
 
-    npm install                       # once: the analyzer, @lit/react, lit and react (dev only; node_modules is not committed)
-    npm test                          # the Node tests, and the check that custom-elements.json and dist/react are not stale
+    npm install                       # once: the analyzer, @lit/react, lit, react, Web Awesome, Web Test Runner and @open-wc/testing (dev only; node_modules is not committed)
+    PLAYWRIGHT_BROWSERS_PATH=$PWD/node_modules/.playwright npx playwright install chromium firefox webkit    # once: the browsers, inside node_modules too
+    npm test                          # the Node tests of the rules and of the generated files (npm run test:node), then the browser tests (npm run test:browser)
     npm run build                     # after changing a component: writes custom-elements.json and dist/react
+
+The Node tests also fail if `custom-elements.json` or `dist/react` is stale. `web-test-runner.config.mjs` runs one test file at a time (the ones that type need the focus of the page).
 
 ## How an application brings it in
 
