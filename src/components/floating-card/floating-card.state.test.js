@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { FloatingCardState } from '../FloatingCardState.js';
+import { FloatingCardState } from './floating-card.state.js';
 
 test('FloatingCardState.hasMouse: asks the window each time', () => {
   let mouse = true;

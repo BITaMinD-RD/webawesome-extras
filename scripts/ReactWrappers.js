@@ -3,7 +3,7 @@
 /**
  * Makes the React wrappers of the components from custom-elements.json, the way Web Awesome ships its own: one file per `wax-*` element, in `dist/react/`, that
  * exports a React component made with `createComponent` of `@lit/react`. The events `wax-select` become the props `onWaxSelect`; the attributes and properties
- * of the element are props as they are. The wrapper imports the element from `js/webawesome-extras/`, so a React application that has this package gets both.
+ * of the element are props as they are. The wrapper imports the element from `src/components/`, so a React application that has this package gets both.
  *
  * Pure: it gives back the files (name and text) and does not write them; `scripts/react.mjs` writes them and a test compares them with what is committed.
  */

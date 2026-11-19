@@ -2,7 +2,7 @@
 
 /**
  * What `<wax-item-list>` decides without a DOM: which keys are marked, what a click does, how keys are reordered when a line is moved, when a slide
- * uncovers the action of a line. The element (`WaxItemList.js`) only draws and listens; the rules are here, so they run in Node and are tested there.
+ * uncovers the action of a line. The element (`item-list.js`) only draws and listens; the rules are here, so they run in Node and are tested there.
  */
 export class ItemListState {
   /** The keys marked with Ctrl, Cmd or Shift + click, in the order they were marked

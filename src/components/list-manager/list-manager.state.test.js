@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { ListManagerState } from '../ListManagerState.js';
+import { ListManagerState } from './list-manager.state.js';
 
 test('ListManagerState.chosen: a line chosen is announced and remembered; the list clearing it announces nothing and the chosen one stays', () => {
   const state = new ListManagerState();

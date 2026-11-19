@@ -16,7 +16,7 @@ test('classNameOf and propOfEvent: wax-item-list is WaxItemList and the event wa
 test('reactWrappers: a file per custom element that maps its events to props, and an index; classes that are not elements get none', () => {
   const files = reactWrappers({
     modules: [{
-      path: 'js/webawesome-extras/WaxThing.js',
+      path: 'src/components/thing/thing.js',
       declarations: [
         { kind: 'class', name: 'WaxThing', tagName: 'wax-thing', customElement: true, events: [{ name: 'wax-open' }, { name: 'wax-close' }] },
         { kind: 'class', name: 'Helper' }
@@ -25,7 +25,7 @@ test('reactWrappers: a file per custom element that maps its events to props, an
   });
   assert.deepEqual([...files.keys()].sort(), ['index.js', 'wax-thing.js']);
   const wrapper = files.get('wax-thing.js');
-  assert.match(wrapper, /import \{ WaxThing as Element \} from '\.\.\/\.\.\/js\/webawesome-extras\/WaxThing\.js';/);
+  assert.match(wrapper, /import \{ WaxThing as Element \} from '\.\.\/\.\.\/src\/components\/thing\/thing\.js';/);
   assert.match(wrapper, /tagName: 'wax-thing'/);
   assert.match(wrapper, /onWaxOpen: 'wax-open'/);
   assert.match(wrapper, /onWaxClose: 'wax-close'/);

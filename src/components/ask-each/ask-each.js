@@ -1,8 +1,15 @@
 // @ts-check
-import { LitElement, html, css } from 'lit';
+import { LitElement, html } from 'lit';
 import '@awesome.me/webawesome/dist/components/dialog/dialog.js';
 import '@awesome.me/webawesome/dist/components/button/button.js';
-import { AskEachState } from './AskEachState.js';
+import { AskEachState } from './ask-each.state.js';
+import styles from './ask-each.styles.js';
+import { WaxAllEvent } from '../../events/all.js';
+import { WaxAnswerEvent } from '../../events/answer.js';
+import { WaxShowEvent } from '../../events/show.js';
+import { WaxHideEvent } from '../../events/hide.js';
+import { WaxAfterHideEvent } from '../../events/after-hide.js';
+import { WaxAfterShowEvent } from '../../events/after-show.js';
 
 /**
  * The usual question when something has to be decided about several things («overwrite this file?»): it asks about each one in a dialog, with the progress («2 of 5»), and the answer can be
@@ -62,11 +69,7 @@ export class WaxAskEach extends LitElement {
     _index: { state: true }
   };
 
-  static styles = css`
-    :host { display: contents; }
-    wa-dialog { --width: var(--ask-each-width, 31rem); }
-    [part~="progress"] { margin: 10px 0 0; font-size: var(--wa-font-size-s); color: var(--wa-color-text-quiet); }
-  `;
+  static styles = styles;
 
   /** @type {any[]} */
   #items = [];
@@ -135,7 +138,7 @@ export class WaxAskEach extends LitElement {
     const total = this.#items.length;
     const item = this.#items[Math.min(this._index, total - 1)];
     return html`<wa-dialog part="dialog" exportparts="dialog:dialog-base, header, title, body, footer, close-button" label=${this.label} ?without-header=${!this.label} ?light-dismiss=${this.lightDismiss}
-        @wa-show=${(/** @type {Event} */ event) => this.#showing(event)} @wa-after-show=${(/** @type {Event} */ event) => this.#forward(event, 'wax-after-show')}
+        @wa-show=${(/** @type {Event} */ event) => this.#showing(event)} @wa-after-show=${(/** @type {Event} */ event) => this.#shown(event)}
         @wa-hide=${(/** @type {CustomEvent} */ event) => this.#hiding(event)} @wa-after-hide=${(/** @type {Event} */ event) => this.#hidden(event)}
         @keydown=${(/** @type {KeyboardEvent} */ event) => this.#key(event)}>
       <p part="progress" role="status">${run ? text.progress.replace('{n}', String(this._index + 1)).replace('{total}', String(total)) : ''}</p>
@@ -160,9 +163,9 @@ export class WaxAskEach extends LitElement {
     const run = this.#run;
     if (!run || run.done) return;
     const index = run.index;
-    if (action === 'yesAll' || action === 'noAll') this.#emit('wax-all', { value: action === 'yesAll' });
+    if (action === 'yesAll' || action === 'noAll') this.dispatchEvent(new WaxAllEvent({ value: action === 'yesAll' }));
     const done = run.answer(action);
-    this.#emit('wax-answer', { index, item: this.#items[index], action });
+    this.dispatchEvent(new WaxAnswerEvent({ index, item: this.#items[index], action }));
     if (!done) { this._index = run.index; return; }
     this.#reason = action === 'cancel' ? 'cancelled' : 'answered';
     this.open = false;
@@ -179,7 +182,7 @@ export class WaxAskEach extends LitElement {
   #showing(event) {
     if (event.target !== event.currentTarget) return;
     event.stopPropagation();
-    const own = new CustomEvent('wax-show', { bubbles: true, composed: true, cancelable: true });
+    const own = new WaxShowEvent();
     this.dispatchEvent(own);
     if (own.defaultPrevented) {
       event.preventDefault();
@@ -193,9 +196,10 @@ export class WaxAskEach extends LitElement {
     if (event.target !== event.currentTarget) return;
     event.stopPropagation();
     const finishing = this.#reason !== 'dismissed';
-    const own = new CustomEvent('wax-hide', { detail: { source: event.detail?.source ?? this, reason: this.#reason }, bubbles: true, composed: true, cancelable: !finishing });
+    const own = new WaxHideEvent({ source: event.detail?.source ?? this, reason: this.#reason });
     this.dispatchEvent(own);
-    if (own.defaultPrevented) {
+    // Once a button has decided, it closes: only a dismissal can be cancelled
+    if (own.defaultPrevented && !finishing) {
       event.preventDefault();
       this.open = true;
       return;
@@ -209,14 +213,14 @@ export class WaxAskEach extends LitElement {
     event.stopPropagation();
     this.open = false;
     this.#run = null;
-    this.dispatchEvent(new CustomEvent('wax-after-hide', { bubbles: true, composed: true }));
+    this.dispatchEvent(new WaxAfterHideEvent());
   }
 
-  /** @param {Event} event @param {string} name */
-  #forward(event, name) {
+  /** @param {Event} event */
+  #shown(event) {
     if (event.target !== event.currentTarget) return;
     event.stopPropagation();
-    this.dispatchEvent(new CustomEvent(name, { bubbles: true, composed: true }));
+    this.dispatchEvent(new WaxAfterShowEvent());
   }
 
   /** @param {boolean[] | null} answers Gives the answer to whoever asked, once */
@@ -224,11 +228,6 @@ export class WaxAskEach extends LitElement {
     const resolve = this.#resolve;
     this.#resolve = null;
     resolve?.(answers);
-  }
-
-  /** @param {string} name @param {object} detail */
-  #emit(name, detail) {
-    this.dispatchEvent(new CustomEvent(name, { detail, bubbles: true, composed: true }));
   }
 }
 

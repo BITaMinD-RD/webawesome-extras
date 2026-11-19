@@ -4,7 +4,7 @@
   "modules": [
     {
       "kind": "javascript-module",
-      "path": "js/webawesome-extras/WaxAskEach.js",
+      "path": "src/components/ask-each/ask-each.js",
       "declarations": [
         {
           "kind": "class",
@@ -141,13 +141,6 @@
           ],
           "events": [
             {
-              "name": "wax-after-hide",
-              "type": {
-                "text": "CustomEvent"
-              },
-              "description": "It is closed"
-            },
-            {
               "description": "It is going to open. Cancellable: `preventDefault()` keeps it closed and `ask()` gives null",
               "name": "wax-show"
             },
@@ -158,6 +151,10 @@
             {
               "description": "It is going to close. Cancellable while it is being dismissed (Escape, outside, its cross): `preventDefault()` keeps it open. `detail: { source, reason }`: `reason` is `answered`, `cancelled` (the button) or `dismissed`",
               "name": "wax-hide"
+            },
+            {
+              "description": "It is closed",
+              "name": "wax-after-hide"
             },
             {
               "description": "A question was answered (or the whole thing cancelled). `detail: { index, item, action }`, `action` is `yes`, `no`, `yesAll`, `noAll` or `cancel`",
@@ -220,7 +217,7 @@
           "name": "WaxAskEach",
           "declaration": {
             "name": "WaxAskEach",
-            "module": "js/webawesome-extras/WaxAskEach.js"
+            "module": "src/components/ask-each/ask-each.js"
           }
         },
         {
@@ -228,14 +225,14 @@
           "name": "wax-ask-each",
           "declaration": {
             "name": "WaxAskEach",
-            "module": "js/webawesome-extras/WaxAskEach.js"
+            "module": "src/components/ask-each/ask-each.js"
           }
         }
       ]
     },
     {
       "kind": "javascript-module",
-      "path": "js/webawesome-extras/WaxCombobox.js",
+      "path": "src/components/combobox/combobox.js",
       "declarations": [
         {
           "kind": "class",
@@ -430,15 +427,12 @@
           ],
           "events": [
             {
-              "name": "wax-query",
-              "type": {
-                "text": "CustomEvent"
-              },
-              "description": "The user typed in the search box and stopped (`query-delay`), or the search was forgotten (`query` is empty): for whoever has to fetch the choices that match. `detail: { query }`"
-            },
-            {
               "description": "Something was chosen, with the mouse, the keys or Enter in the search box (like the `change` of a `wa-select`; the typing in the search box is not announced)",
               "name": "change"
+            },
+            {
+              "description": "The user typed in the search box and stopped (`query-delay`), or the search was forgotten (`query` is empty): for whoever has to fetch the choices that match. `detail: { query }`",
+              "name": "wax-query"
             }
           ],
           "attributes": [
@@ -542,7 +536,7 @@
           "name": "WaxCombobox",
           "declaration": {
             "name": "WaxCombobox",
-            "module": "js/webawesome-extras/WaxCombobox.js"
+            "module": "src/components/combobox/combobox.js"
           }
         },
         {
@@ -550,14 +544,14 @@
           "name": "wax-combobox",
           "declaration": {
             "name": "WaxCombobox",
-            "module": "js/webawesome-extras/WaxCombobox.js"
+            "module": "src/components/combobox/combobox.js"
           }
         }
       ]
     },
     {
       "kind": "javascript-module",
-      "path": "js/webawesome-extras/WaxFloatingCard.js",
+      "path": "src/components/floating-card/floating-card.js",
       "declarations": [
         {
           "kind": "class",
@@ -769,26 +763,20 @@
           ],
           "events": [
             {
-              "name": "wax-after-show",
-              "type": {
-                "text": "CustomEvent"
-              },
-              "description": "It is shown and in its place, and the animation, if any, is over. `detail: { anchor }`"
-            },
-            {
-              "name": "wax-after-hide",
-              "type": {
-                "text": "CustomEvent"
-              },
-              "description": "It is hidden (it has no animation: it comes right after `wax-hide`)"
-            },
-            {
               "description": "It is going to show. Cancellable: `preventDefault()` keeps it closed. The content goes in here. `detail: { anchor, pinned, centered }`",
               "name": "wax-show"
             },
             {
+              "description": "It is shown and in its place, and the animation, if any, is over. `detail: { anchor }`",
+              "name": "wax-after-show"
+            },
+            {
               "description": "It is going to hide. Cancellable: `preventDefault()` keeps it open. `detail: { source, reason }`: `source` is the element that asked (the close button, the backdrop, what was clicked outside, or the card itself) and `reason` is `escape`, `close-button`, `backdrop`, `outside`, `leave`, `replace` or `api`",
               "name": "wax-hide"
+            },
+            {
+              "description": "It is hidden (it has no animation: it comes right after `wax-hide`)",
+              "name": "wax-after-hide"
             }
           ],
           "attributes": [
@@ -860,7 +848,7 @@
           "name": "WaxFloatingCard",
           "declaration": {
             "name": "WaxFloatingCard",
-            "module": "js/webawesome-extras/WaxFloatingCard.js"
+            "module": "src/components/floating-card/floating-card.js"
           }
         },
         {
@@ -868,14 +856,14 @@
           "name": "wax-floating-card",
           "declaration": {
             "name": "WaxFloatingCard",
-            "module": "js/webawesome-extras/WaxFloatingCard.js"
+            "module": "src/components/floating-card/floating-card.js"
           }
         }
       ]
     },
     {
       "kind": "javascript-module",
-      "path": "js/webawesome-extras/WaxItemList.js",
+      "path": "src/components/item-list/item-list.js",
       "declarations": [
         {
           "kind": "class",
@@ -1149,7 +1137,7 @@
           "name": "WaxItemList",
           "declaration": {
             "name": "WaxItemList",
-            "module": "js/webawesome-extras/WaxItemList.js"
+            "module": "src/components/item-list/item-list.js"
           }
         },
         {
@@ -1157,14 +1145,14 @@
           "name": "wax-item-list",
           "declaration": {
             "name": "WaxItemList",
-            "module": "js/webawesome-extras/WaxItemList.js"
+            "module": "src/components/item-list/item-list.js"
           }
         }
       ]
     },
     {
       "kind": "javascript-module",
-      "path": "js/webawesome-extras/WaxListManager.js",
+      "path": "src/components/list-manager/list-manager.js",
       "declarations": [
         {
           "kind": "class",
@@ -1328,7 +1316,7 @@
           "name": "WaxListManager",
           "declaration": {
             "name": "WaxListManager",
-            "module": "js/webawesome-extras/WaxListManager.js"
+            "module": "src/components/list-manager/list-manager.js"
           }
         },
         {
@@ -1336,7 +1324,7 @@
           "name": "wax-list-manager",
           "declaration": {
             "name": "WaxListManager",
-            "module": "js/webawesome-extras/WaxListManager.js"
+            "module": "src/components/list-manager/list-manager.js"
           }
         }
       ]

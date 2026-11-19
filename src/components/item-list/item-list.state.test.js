@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { ItemListState } from '../ItemListState.js';
+import { ItemListState } from './item-list.state.js';
 
 test('ItemListState.click: a plain click selects, the same one again clears; with a modifier it marks and unmarks, in the order marked', () => {
   const state = new ItemListState();

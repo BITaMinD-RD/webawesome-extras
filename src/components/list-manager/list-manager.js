@@ -1,9 +1,13 @@
 // @ts-check
-import { LitElement, html, css } from 'lit';
+import { LitElement, html } from 'lit';
 import '@awesome.me/webawesome/dist/components/input/input.js';
 import '@awesome.me/webawesome/dist/components/button/button.js';
-import { ListManagerState } from './ListManagerState.js';
-import './WaxItemList.js';
+import { ListManagerState } from './list-manager.state.js';
+import styles from './list-manager.styles.js';
+import { WaxNewEvent } from '../../events/new.js';
+import { WaxQueryEvent } from '../../events/query.js';
+import { WaxSelectEvent } from '../../events/select.js';
+import '../item-list/item-list.js';
 
 /**
  * The block that repeats in the screens that edit things: the filters (if any), the search box, the «New» button and, below, the list of what there is, where one entry is chosen (clicking
@@ -28,7 +32,7 @@ import './WaxItemList.js';
  * @attr {string} new-label - The text of the button
  * @attr {string} empty - What it says with nothing to show
  *
- * @prop {import('./WaxItemList.js').ListItem[]} items - What is shown (without `html`: the markup of a line goes to the light DOM of the list, which here is its shadow). The chosen entry stays chosen if it is still there
+ * @prop {import('../item-list/item-list.js').ListItem[]} items - What is shown (without `html`: the markup of a line goes to the light DOM of the list, which here is its shadow). The chosen entry stays chosen if it is still there
  * @prop {string} searchPlaceholder - What the search box says while it is empty
  * @prop {string} newLabel - The text of the button
  * @prop {string} empty - What it says with nothing to show
@@ -54,22 +58,13 @@ export class WaxListManager extends LitElement {
     empty: { type: String }
   };
 
-  static styles = css`
-    :host { display: block; }
-    :host([hidden]) { display: none; }
-    [part~="actions"] { display: flex; flex-wrap: wrap; align-items: center; gap: var(--wa-space-m); margin-bottom: var(--wa-space-m); }
-    [part~="new-button"] { margin: 0; }
-    [part~="items"] { margin: 0; max-height: 70vh; overflow-y: auto; font-size: var(--wa-font-size-xs); }
-    @media (max-width: 640px) {
-      [part~="items"] { max-height: 30vh; }
-    }
-  `;
+  static styles = styles;
 
   #state = new ListManagerState();
 
   constructor() {
     super();
-    /** @type {import('./WaxItemList.js').ListItem[]} */
+    /** @type {import('../item-list/item-list.js').ListItem[]} */
     this.items = [];
     this.searchPlaceholder = '';
     this.newLabel = '';
@@ -81,7 +76,7 @@ export class WaxListManager extends LitElement {
     return this.renderRoot.querySelector('wa-input');
   }
 
-  /** @returns {import('./WaxItemList.js').WaxItemList | null} */
+  /** @returns {import('../item-list/item-list.js').WaxItemList | null} */
   get #list() {
     return this.renderRoot.querySelector('wax-item-list');
   }
@@ -105,7 +100,7 @@ export class WaxListManager extends LitElement {
     return html`<slot name="filters"></slot>
       <wa-input part="search" type="search" value="" with-clear placeholder=${this.searchPlaceholder}
         @input=${(/** @type {Event} */ event) => this.#typed(event)} @change=${(/** @type {Event} */ event) => event.stopPropagation()}></wa-input>
-      <div part="actions"><wa-button part="new-button" appearance="outlined" @click=${() => this.#emit('wax-new', {})}>${this.newLabel}</wa-button></div>
+      <div part="actions"><wa-button part="new-button" appearance="outlined" @click=${() => this.dispatchEvent(new WaxNewEvent())}>${this.newLabel}</wa-button></div>
       <wax-item-list part="items" exportparts="line, selected, marked, faded, icon, name, note, empty" .items=${this.items} empty=${this.empty}
         @wax-select=${(/** @type {CustomEvent} */ event) => this.#chosen(event)}></wax-item-list>`;
   }
@@ -122,7 +117,7 @@ export class WaxListManager extends LitElement {
   /** @param {Event} event */
   #typed(event) {
     event.stopPropagation();   // what is typed is the box's: whoever listens here hears `wax-query`
-    this.#emit('wax-query', { query: this.query });
+    this.dispatchEvent(new WaxQueryEvent({ query: this.query }));
   }
 
   /** @param {CustomEvent} event A line of the list was clicked: the list clears the chosen one when it is clicked again, and here it stays */
@@ -130,12 +125,7 @@ export class WaxListManager extends LitElement {
     event.stopPropagation();
     const key = this.#state.chosen(event.detail.key);
     if (key === null) this.#list?.select(this.#state.current);
-    else this.#emit('wax-select', { key });
-  }
-
-  /** @param {string} name @param {object} detail */
-  #emit(name, detail) {
-    this.dispatchEvent(new CustomEvent(name, { detail, bubbles: true, composed: true }));
+    else this.dispatchEvent(new WaxSelectEvent({ key }));
   }
 }
 

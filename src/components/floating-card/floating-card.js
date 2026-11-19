@@ -1,6 +1,11 @@
 // @ts-check
-import { LitElement, html, css, nothing } from 'lit';
-import { FloatingCardState } from './FloatingCardState.js';
+import { LitElement, html, nothing } from 'lit';
+import { FloatingCardState } from './floating-card.state.js';
+import styles from './floating-card.styles.js';
+import { WaxShowEvent } from '../../events/show.js';
+import { WaxAfterShowEvent } from '../../events/after-show.js';
+import { WaxHideEvent } from '../../events/hide.js';
+import { WaxAfterHideEvent } from '../../events/after-hide.js';
 
 /**
  * A card that floats next to what was clicked: in a long list the thing it talks about may be far away, out of sight. With a mouse it can also peek: it shows a moment after the pointer
@@ -69,49 +74,7 @@ export class WaxFloatingCard extends LitElement {
     delay: { type: Number }
   };
 
-  static styles = css`
-    :host { display: none; position: absolute; z-index: 30; width: max-content; }
-    :host([open]) { display: block; }
-    :host([hidden]) { display: none; }
-    [part~="card"] {
-      position: relative; z-index: 1;
-      box-sizing: border-box;
-      width: var(--floating-card-width, 400px);
-      max-width: 92vw;
-      max-height: 70vh;
-      max-height: 70dvh;
-      overflow: auto;
-      padding: 12px 14px;
-      border: var(--wa-border-width-s, 1px) var(--wa-border-style, solid) var(--wa-color-surface-border);
-      border-radius: var(--wa-border-radius-l);
-      background: var(--wa-color-surface-default);
-      box-shadow: var(--floating-card-shadow, var(--wa-shadow-l));
-    }
-    /* Only peeking, it cannot be used until it is pinned with a click */
-    :host([peeking]) [part~="card"] { box-shadow: var(--floating-card-peek-shadow, var(--wa-shadow-m)); }
-    :host([peeking]) [part~="close-button"] { display: none; }
-    [part~="close-button"] {
-      float: right;
-      border: none;
-      background: none;
-      color: var(--wa-color-text-quiet);
-      font-size: var(--wa-font-size-l);
-      line-height: 1;
-      cursor: pointer;
-    }
-    [part~="close-button"]:hover { color: var(--wa-color-text-normal); }
-    [part~="close-button"]:focus-visible { outline: var(--wa-focus-ring); }
-    /* Without a mouse: in the middle, and the rest dimmed */
-    :host([centered]) { position: fixed; inset: 0; width: auto; }
-    :host([centered][open]) { display: grid; place-items: center; }
-    [part~="backdrop"] { position: absolute; inset: 0; background: var(--floating-card-backdrop, rgba(0, 0, 0, .45)); backdrop-filter: blur(2px); }
-    :host([centered]) [part~="card"] {
-      width: min(92vw, 560px);
-      max-height: 80vh;
-      max-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
-      box-shadow: var(--floating-card-centered-shadow, var(--wa-shadow-l));
-    }
-  `;
+  static styles = styles;
 
   /** Whether it is really shown: `open` says what is asked, this what is so (like the dialog inside a `wa-dialog`) */
   #shown = false;
@@ -233,7 +196,7 @@ export class WaxFloatingCard extends LitElement {
     clearTimeout(this.#peeking);
     if (this.#shown && !this.#close('replace')) return false;
     const centered = !FloatingCardState.hasMouse();
-    const event = new CustomEvent('wax-show', { detail: { anchor, pinned, centered }, bubbles: true, composed: true, cancelable: true });
+    const event = new WaxShowEvent({ anchor, pinned, centered });
     this.dispatchEvent(event);
     if (event.defaultPrevented) { this.open = false; return false; }
     this.#shown = true;
@@ -247,7 +210,7 @@ export class WaxFloatingCard extends LitElement {
     this.#listening = setTimeout(() => document.addEventListener('click', this.#outside), 0);
     document.addEventListener('keydown', this.#escape);
     this.updateComplete.then(() => {
-      if (this.#shown) this.dispatchEvent(new CustomEvent('wax-after-show', { detail: { anchor }, bubbles: true, composed: true }));
+      if (this.#shown) this.dispatchEvent(new WaxAfterShowEvent({ anchor }));
     });
     return true;
   }
@@ -284,7 +247,7 @@ export class WaxFloatingCard extends LitElement {
     clearTimeout(this.#peeking);
     clearTimeout(this.#hiding);
     if (!this.#shown) return true;
-    const event = new CustomEvent('wax-hide', { detail: { source, reason }, bubbles: true, composed: true, cancelable: true });
+    const event = new WaxHideEvent({ source, reason });
     this.dispatchEvent(event);
     if (event.defaultPrevented) { this.open = true; return false; }
     this.#shown = false;
@@ -294,7 +257,7 @@ export class WaxFloatingCard extends LitElement {
     this.open = false;
     this.#unlisten();
     // It has no animation, so what comes after is right after: and a card that closes to open again (`replace`) finishes closing before it begins to open
-    this.dispatchEvent(new CustomEvent('wax-after-hide', { bubbles: true, composed: true }));
+    this.dispatchEvent(new WaxAfterHideEvent());
     return true;
   }
 

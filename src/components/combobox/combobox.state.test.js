@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { ComboboxState } from '../ComboboxState.js';
+import { ComboboxState } from './combobox.state.js';
 
 const choices = [
   { value: 'es', label: 'España' }, { value: 'fr', label: 'Francia' }, { value: 'de', label: 'Alemania' }, { value: 'ar', label: 'Arabia Saudí' }

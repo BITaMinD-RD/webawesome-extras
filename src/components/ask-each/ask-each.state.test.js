@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { AskEachState } from '../AskEachState.js';
+import { AskEachState } from './ask-each.state.js';
 
 test('AskEachState: cada contestacion avanza una pregunta y al final da lo contestado en orden', () => {
   const run = new AskEachState(3);

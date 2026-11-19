@@ -1,10 +1,12 @@
 // @ts-check
-import { LitElement, html, css, nothing } from 'lit';
+import { LitElement, html, nothing } from 'lit';
 import { repeat } from 'lit/directives/repeat.js';
 import '@awesome.me/webawesome/dist/components/select/select.js';
 import '@awesome.me/webawesome/dist/components/option/option.js';
 import '@awesome.me/webawesome/dist/components/input/input.js';
-import { ComboboxState } from './ComboboxState.js';
+import { ComboboxState } from './combobox.state.js';
+import styles from './combobox.styles.js';
+import { WaxQueryEvent } from '../../events/query.js';
 
 /**
  * A box to choose from a list with a search box to filter it by typing: what a `<select>` with many options should be. It is a Web Awesome `wa-select` whose first child is a
@@ -73,12 +75,7 @@ export class WaxCombobox extends LitElement {
     _query: { state: true }
   };
 
-  static styles = css`
-    :host { display: block; min-width: 0; margin-bottom: var(--combobox-gap, var(--wa-space-m)); --wa-form-control-required-content: ''; }
-    :host([hidden]) { display: none; }
-    [part~="search"] { margin: var(--wa-space-3xs); }
-    [part~="none"] { color: var(--wa-color-text-quiet); }
-  `;
+  static styles = styles;
 
   #internals = this.attachInternals();
 
@@ -216,7 +213,7 @@ export class WaxCombobox extends LitElement {
       const wanted = query.trim();
       if (wanted === this.#asked) return;
       this.#asked = wanted;
-      this.dispatchEvent(new CustomEvent('wax-query', { detail: { query: wanted }, bubbles: true, composed: true }));
+      this.dispatchEvent(new WaxQueryEvent({ query: wanted }));
     }, this.queryDelay);
   }
 

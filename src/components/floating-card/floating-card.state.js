@@ -2,7 +2,7 @@
 
 /**
  * What `<wax-floating-card>` decides without a DOM: whether there is a mouse to peek with, whether showing the card again closes it, and where the card goes next to the
- * thing it talks about. The element (`WaxFloatingCard.js`) only draws, listens and sets the timers; the rules are here, so they run in Node and are tested there.
+ * thing it talks about. The element (`floating-card.js`) only draws, listens and sets the timers; the rules are here, so they run in Node and are tested there.
  */
 export class FloatingCardState {
   /** Milliseconds the pointer has to stay before the card peeks */

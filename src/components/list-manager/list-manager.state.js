@@ -2,7 +2,7 @@
 
 /**
  * What `<wax-list-manager>` decides without a DOM: which entry is chosen, and that clicking the chosen one again does not clear it (a list of entries to edit always has the one
- * being edited marked, unlike a plain `<wax-item-list>`, where a second click clears the selection). The element (`WaxListManager.js`) only draws and listens.
+ * being edited marked, unlike a plain `<wax-item-list>`, where a second click clears the selection). The element (`list-manager.js`) only draws and listens.
  */
 export class ListManagerState {
   /** The chosen entry; `null`, none

@@ -1,7 +1,12 @@
 // @ts-check
-import { LitElement, html, css, nothing } from 'lit';
+import { LitElement, html, nothing } from 'lit';
 import { repeat } from 'lit/directives/repeat.js';
-import { ItemListState } from './ItemListState.js';
+import { ItemListState } from './item-list.state.js';
+import styles from './item-list.styles.js';
+import { WaxSelectEvent } from '../../events/select.js';
+import { WaxMarkEvent } from '../../events/mark.js';
+import { WaxMoveEvent } from '../../events/move.js';
+import { WaxSwipeEvent } from '../../events/swipe.js';
 
 /**
  * @typedef {Object} ListItem
@@ -84,44 +89,7 @@ export class WaxItemList extends LitElement {
     _dragging: { state: true }
   };
 
-  static styles = css`
-    :host { display: block; overflow-y: auto; }
-    :host([hidden]) { display: none; }
-    ul { list-style: none; margin: 0; padding: 0; }
-    li {
-      display: flex; flex-wrap: wrap; gap: var(--wa-space-3xs) var(--wa-space-xs); align-items: baseline;
-      padding: var(--wa-space-2xs); border-bottom: var(--wa-border-width-s) var(--wa-border-style) var(--item-border, var(--wa-color-neutral-border-quiet));
-      cursor: pointer;
-    }
-    li:hover { background: var(--item-hover, var(--wa-color-neutral-fill-quiet)); }
-    li:focus-visible { outline: var(--wa-focus-ring); outline-offset: calc(-1 * var(--wa-border-width-m)); }
-    [part~="icon"] { font-size: var(--wa-font-size-m); }
-    /* The name takes what is left of the line next to the icon, and breaks inside itself; the note and the rest go below if they do not fit */
-    [part~="name"] { flex: 1 1 8em; min-width: 0; overflow-wrap: anywhere; }
-    [part~="note"] { color: var(--item-muted, var(--wa-color-text-quiet)); font-size: var(--wa-font-size-xs); }
-    [part~="empty"] { padding: var(--wa-space-2xs); color: var(--item-muted, var(--wa-color-text-quiet)); cursor: default; }
-    [part~="empty"]:hover { background: none; }
-    /* Chosen: the one lit on the map */
-    li.selected { background: var(--item-selected, var(--wa-color-brand-fill-quiet)); box-shadow: inset 3px 0 0 var(--item-accent, var(--wa-color-brand-fill-loud)); }
-    /* Marked with Ctrl + click */
-    li.marked { outline: 2px dashed var(--item-accent, var(--wa-color-brand-fill-loud)); outline-offset: -2px; }
-    li.faded [part~="name"] { text-decoration: line-through; opacity: .6; }
-    /* Moving a line: its handle, and the line while it is dragged */
-    [part~="handle"] { cursor: grab; touch-action: none; padding: 0 var(--wa-space-2xs); color: var(--item-muted, var(--wa-color-text-quiet)); user-select: none; }
-    li.dragging { opacity: .6; background: var(--item-selected, var(--wa-color-brand-fill-quiet)); }
-    /* Swiping a line: it follows the finger, and once slid its action shows at the end */
-    :host([swipe-label]) li { touch-action: pan-y; transition: transform .15s; }
-    [part~="swipe"] {
-      display: none; margin-left: auto; border: 0; border-radius: var(--wa-border-radius-s); padding: var(--wa-space-2xs) var(--wa-space-s);
-      background: var(--item-danger, var(--wa-color-danger-fill-loud)); color: var(--wa-color-danger-on-loud); font: inherit;
-    }
-    li.swiped [part~="swipe"] { display: inline-block; }
-    /* What can go wrong with one tap (removing) shows only when the line is under the mouse or has the focus; on a touch screen with swiping, not at all. What a line holds is the
-       page's, so the shadow cannot style it: the slot says it through custom properties, which the slotted controls inherit and the page's control reads */
-    slot { --item-risky-visibility: hidden; }
-    li:hover slot, li:focus-within slot { --item-risky-visibility: visible; }
-    @media (hover: none) { :host([swipe-label]) slot { --item-risky-visibility: hidden; --item-risky-width: 0; } }
-  `;
+  static styles = styles;
 
   /** @type {ListItem[]} */
   #items = [];
@@ -255,18 +223,13 @@ export class WaxItemList extends LitElement {
     return /** @type {HTMLElement | null} */ (event.composedPath().find(element => element instanceof HTMLElement && element.matches('li[data-key]')) ?? null);
   }
 
-  /** @param {string} name @param {object} detail */
-  #emit(name, detail) {
-    this.dispatchEvent(new CustomEvent(name, { detail, bubbles: true, composed: true }));
-  }
-
   /** @param {Event} event */
   #click(event) {
     const line = this.#lineOf(event);
     if (!line) return;
     const key = /** @type {string} */ (line.dataset.key);
     if (event.composedPath().some(element => element instanceof Element && element.matches('[part~="swipe"]'))) {
-      this.#emit('wax-swipe', { key });
+      this.dispatchEvent(new WaxSwipeEvent({ key }));
       return;
     }
     if (this.#fromOwn(event, line)) return;
@@ -274,10 +237,10 @@ export class WaxItemList extends LitElement {
     const outcome = this.#state.click(key, this.selected, mouse.ctrlKey || mouse.metaKey || mouse.shiftKey);
     if (outcome.type === 'mark') {
       this.requestUpdate();
-      this.#emit('wax-mark', { keys: outcome.keys });
+      this.dispatchEvent(new WaxMarkEvent({ keys: outcome.keys }));
     } else {
       this.select(outcome.key);
-      this.#emit('wax-select', { key: outcome.key });
+      this.dispatchEvent(new WaxSelectEvent({ key: outcome.key }));
     }
   }
 
@@ -292,7 +255,7 @@ export class WaxItemList extends LitElement {
       this.#order = order;
       this.requestUpdate();
       this.updateComplete.then(() => /** @type {HTMLElement | null} */ (this.#line(key)?.querySelector('[part~="handle"]'))?.focus());
-      this.#emit('wax-move', { keys: order });
+      this.dispatchEvent(new WaxMoveEvent({ keys: order }));
       return;
     }
     if (event.key !== 'Enter' && event.key !== ' ') return;
@@ -356,7 +319,7 @@ export class WaxItemList extends LitElement {
     if (this.#drag) {
       this.#drag = null;
       this._dragging = null;
-      this.#emit('wax-move', { keys: this.#order });
+      this.dispatchEvent(new WaxMoveEvent({ keys: this.#order }));
       return;
     }
     const slide = this.#slide;

@@ -2,7 +2,7 @@
 
 /**
  * What `<wax-ask-each>` decides without a DOM: which question is the current one, what each answer does («yes to all» answers the rest the same way, cancelling answers nothing,
- * not even what was answered already), and when it is over. The element (`WaxAskEach.js`) only draws and listens; the rules are here, so they run in Node and are tested there.
+ * not even what was answered already), and when it is over. The element (`ask-each.js`) only draws and listens; the rules are here, so they run in Node and are tested there.
  */
 export class AskEachState {
   /** @type {boolean[]} */

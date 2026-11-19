@@ -2,7 +2,7 @@
 
 /**
  * What `<wax-combobox>` decides without a DOM: how a text is compared with the labels of the choices (no capitals, no accents), which choices match what
- * was typed and in what order, and which option is the first one that can be taken. The element (`WaxCombobox.js`) only draws and listens; the rules are
+ * was typed and in what order, and which option is the first one that can be taken. The element (`combobox.js`) only draws and listens; the rules are
  * here, so they run in Node and are tested there.
  *
  * @typedef {object} Choice
