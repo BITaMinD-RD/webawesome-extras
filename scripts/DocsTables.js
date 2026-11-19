@@ -60,7 +60,12 @@ export function referenceOf(element) {
       methods.map(method => [code(signature(method)), cell(method.description), argumentsOf(method), code(method.return?.type?.text)]))]);
   }
   const events = element.events ?? [];
-  if (events.length) sections.push(['Events', table(['Event', 'Description', 'Class'], events.map(event => [code(event.name), cell(event.description), code(event.type?.text)]))]);
+  if (events.length) {
+    // The class is only said where the JSDoc names it (`@fires {WaShowEvent} wa-show`): the wax-* events have theirs in src/events, which the events page lists
+    const classes = events.some(event => event.type?.text);
+    sections.push(['Events', table(classes ? ['Event', 'Description', 'Class'] : ['Event', 'Description'],
+      events.map(event => [code(event.name), cell(event.description), ...(classes ? [code(event.type?.text)] : [])]))]);
+  }
   const slots = element.slots ?? [];
   if (slots.length) sections.push(['Slots', table(['Slot', 'Description'], slots.map(slot => [slot.name ? code(slot.name) : '(default)', cell(slot.description)]))]);
   const parts = element.cssParts ?? [];

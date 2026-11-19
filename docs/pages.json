@@ -1,1 +1,8 @@
-[]
+[
+  {
+    "title": "Components",
+    "pages": [
+      { "title": "Item list", "path": "components/item-list.md" }
+    ]
+  }
+]

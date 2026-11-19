@@ -45,7 +45,7 @@ import { WaxSwipeEvent } from '../../events/swipe.js';
  * @attr {string} swipe-label - The text of the action that a slid line uncovers; with it, lines can be slid
  *
  * @prop {ListItem[]} items - The lines. What was selected or marked stays so if its key is still there
- * @prop {Set<string>} marked - The keys marked with Ctrl, Cmd or Shift + click (read only; `clearMarks()` empties it)
+ * @prop {Set<string>} marked - The keys marked with Ctrl, Cmd or Shift + click (`clearMarks()` empties it)
  * @prop {string | null} selected - The key of the selected line; `select(key, { scroll })` sets it without firing `wax-select`
  * @prop {string} empty - What it says with no items
  * @prop {boolean} movable - Lines have a handle to reorder them
@@ -56,7 +56,7 @@ import { WaxSwipeEvent } from '../../events/swipe.js';
  * @fires wax-move - A line was moved (`movable`). `detail: { keys }`, all of them in their new order
  * @fires wax-swipe - The action of a slid line was pressed (`swipe-label`). `detail: { key }`
  *
- * @slot {key} - Own controls at the end of a line: a child with `slot="<key of the item>"`. (An item's `html` is put there for you.) What can go wrong with one tap (removing) is shown only when the line is under the mouse or has the focus: the control reads `--item-risky-visibility` and `--item-risky-width`
+ * @slot <key> - Own controls at the end of a line: a child with `slot="<key of the item>"`. (An item's `html` is put there for you.) What can go wrong with one tap (removing) is shown only when the line is under the mouse or has the focus: the control reads `--item-risky-visibility` and `--item-risky-width`
  *
  * @csspart list - The `ul`
  * @csspart line - One line. Also `selected`, `marked`, `faded` and `dragging` while they are so

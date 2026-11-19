@@ -983,11 +983,8 @@
           ],
           "slots": [
             {
-              "type": {
-                "text": "key"
-              },
               "description": "Own controls at the end of a line: a child with `slot=\"<key of the item>\"`. (An item's `html` is put there for you.) What can go wrong with one tap (removing) is shown only when the line is under the mouse or has the focus: the control reads `--item-risky-visibility` and `--item-risky-width`",
-              "name": ""
+              "name": "<key>"
             }
           ],
           "members": [
@@ -1034,7 +1031,7 @@
               "type": {
                 "text": "Set<string>"
               },
-              "description": "The keys marked with Ctrl, Cmd or Shift + click (read only; `clearMarks()` empties it)"
+              "description": "The keys marked with Ctrl, Cmd or Shift + click (`clearMarks()` empties it)"
             },
             {
               "kind": "method",
