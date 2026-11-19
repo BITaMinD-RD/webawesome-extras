@@ -1,0 +1,279 @@
+/*┌────────────────────────────────────────────────────┐
+  │ KRAFT STEAM Elements                               │
+  │ COPYRIGHT (c) 2026 Pedro Luis Barrio. BITaMinD R+D │
+  │ ALL RIGHTS RESERVED.                               │
+  └────────────────────────────────────────────────────┘ */
+
+/* Los controles nativos no heredan la letra de la pagina: se la damos, para que la familia sea la de la pagina y nadie la repita */
+button, input, select, textarea {
+  font-family    : inherit;
+}
+
+.input {
+	transition     : all 0.2s ease;
+	align-items    : center;
+}
+
+.input {
+  height         : var(--control-h, 36px);   /* la misma altura que un boton y un combo */
+  width          : 100%;
+	padding        : 0 12px;
+	background     : var(--color-surface-default);
+	border         : 1px solid var(--color-surface-border);
+	border-radius  : var(--radius);
+	color          : var(--color-text-normal);
+	font-size      : var(--fs-m, 14px);
+	box-sizing     : border-box; /* ¡Indispensable! */
+	outline        : none;
+}
+
+/* La separacion de siempre entre un control y lo que va debajo: la misma en todas partes.
+   Dentro de un rotulo (<label>) el rotulo pone la suya, y las filas y los grupos de controles ponen la suya con `gap` */
+.input, .combo {
+	margin-bottom  : var(--control-gap, 12px);
+}
+label > .input, label > .combo {
+	margin         : 4px 0 0;
+}
+/* Una fila de controles (botones, cajas): con la misma separacion entre ellos */
+.row {
+	display        : flex;
+	flex-wrap      : wrap;
+	align-items    : center;
+	gap            : var(--control-gap, 12px);
+	margin-bottom  : var(--control-gap, 12px);
+}
+.row > .input, .row > .combo, .row > wa-input, .row > wa-button {
+	margin         : 0;
+}
+
+/* PILL
+   ────
+   La forma de la pildora de Web Awesome (`wa-tag pill`: su alto, su relleno, su borde y su redondeo, con sus mismas variables), pero es un elemento
+   nuestro: lleva el color de --color si lo trae quien la use, o el gris de --color-surface-border si no. El fondo y lo demas -tenido, marcada o no,
+   tamaño de letra- es cosa de quien la use, no de esta clase. El alto es un minimo: si el contenido pide dos lineas, crece. */
+.pill {
+  box-sizing    : border-box;
+  display       : inline-flex;
+  align-items   : center;
+  gap           : 0.5em;
+  min-height    : calc(var(--wa-form-control-height, 2.25em) * 0.8);
+  padding       : 0 0.75em;
+  border        : var(--wa-border-width-s, 1px) var(--wa-border-style, solid) var(--color, var(--color-surface-border));
+  border-radius : var(--wa-border-radius-pill, 999px);
+  line-height   : 1.2;
+}
+
+/* CHECK
+   ─────
+   Convierte lo que la lleve en un checkbox (o un radio): un <input>
+   oculto dentro. Sin marcar es plano y apagado (borde suave, texto atenuado); marcada se
+   tine del color de --color, con su borde entero y el texto normal -el cuadrito nativo
+   sobra, la forma ya lo dice-. Se compone
+   con .pill ("pill check"): es el marcado de una lista de chips. Los
+   interruptores y las casillas son wa-switch y wa-checkbox (Toggle.js). */
+.check {
+  position      : relative;
+  cursor        : pointer;
+  background    : var(--color-surface-default);
+  border-color  : color-mix(in srgb, var(--color, var(--color-accent-fill-loud)) 35%, var(--color-surface-border));
+  color         : var(--color-text-quiet);
+  transition    : .15s;
+}
+/* El texto es de la pildora, no de donde este puesta: ni el color ni el tamaño de un `header span` o similar */
+.check > span {
+  color         : inherit;
+  font-size     : inherit;
+}
+.check input[type=checkbox],
+.check input[type=radio] {
+  position      : absolute;
+  width         : 1px;
+  height        : 1px;
+  opacity       : 0;
+}
+.check:has(input:checked) {
+  background    : color-mix(in srgb, var(--color, var(--color-accent-fill-loud)) 30%, var(--color-surface-default));
+  border-color  : var(--color, var(--color-accent-fill-loud));
+  /* Negro o blanco, no el gris del tema: sobre el tinte de cada color el gris se apaga */
+  color         : CanvasText;
+}
+.check:has(input:focus-visible) {
+  outline       : 2px solid var(--color, var(--color-accent-fill-loud));
+  outline-offset: 2px;
+}
+
+.select {
+    
+    font-size      : var(--fs-s, 12px);
+    text-transform : uppercase;
+    width         : 100%;
+    background    : var(--color-surface-lowered);
+    color         : var(--color-accent-fill-loud);
+    border        : 1px solid var(--color-surface-border);
+    border-radius : var(--radius);
+    padding       : 7px 8px;
+
+
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 16px;
+    accent-color: var(--color-accent-fill-loud);
+  }
+  
+  .select:focus {
+  /* 1. Quita el anillo de enfoque azul/negro por defecto del navegador */
+  outline: none;
+  
+  /* 2. Fuerza a mantener el borde original intacto */
+  border: 1px solid var(--color-text-quiet);
+}
+  
+  .select option {
+    background: var(--color-surface-lowered);
+    color: var(--color-text-normal);
+    font-size: var(--fs-s, 12px);
+}
+
+.select optgroup {
+    background: var(--color-surface-lowered);
+    color: var(--color-text-quiet);
+    font-weight: bold;
+    font-size: var(--fs-s, 12px);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.select option:hover {
+    background  : var(--color-accent-fill-loud) !important ;
+    color       : var(--color-surface-lowered)     !important ;
+}
+
+
+
+/* ==========================================================================
+   COMBO
+   Un wa-select cuya lista lleva arriba una caja de busqueda para filtrarla:
+   lo que un <select> con muchas opciones deberia ser (ComboBox.js). El
+   titulo es el placeholder del select.
+   ========================================================================== */
+.combo {
+  display        : block;
+  min-width      : 0;
+  --wa-form-control-required-content : '';   /* sigue siendo required para el formulario, pero sin el asterisco de Web Awesome */
+}
+/* La caja de busqueda es lo primero de la lista del select; el aviso de que nada encaja, lo ultimo */
+.combo .combo-search { margin : 4px; }
+.combo .combo-vacio { color : var(--color-text-quiet); }
+
+/* ==========================================================================
+   LIST-MANAGER
+   Los filtros, la caja de busqueda, el boton de nuevo y la lista de lo que hay
+   (ListManager.js). El boton va siempre encima de la lista, por si es larga.
+   ========================================================================== */
+.list-manager ul {
+  margin         : 0;
+  max-height     : 70vh;
+  overflow-y     : auto;
+  font-size      : var(--fs-s, 12px);
+}
+@media (max-width: 640px) {
+  .list-manager ul { max-height : 30vh; }
+}
+
+/* The list to choose from (ItemList.js): icon, name and a note per line. Pages theme it with --item-* tokens; the fallbacks are neutral. */
+.item-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+}
+.item-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 8px;
+  align-items: baseline;
+  padding: 4px;
+  border-bottom: 1px solid var(--item-border, rgba(128, 128, 128, .3));
+  cursor: pointer;
+}
+.item-line:hover { background: var(--item-hover, rgba(128, 128, 128, .12)); }
+.item-icon { font-size: var(--fs-l, 16px); }
+/* The name takes what is left of the line next to the icon, and breaks inside itself; the note and the rest go below if they do not fit */
+.item-name { flex: 1 1 8em; min-width: 0; overflow-wrap: anywhere; }
+.item-note { color: var(--item-muted, #888); font-size: var(--fs-s, 12px); }
+.item-empty { padding: 4px; color: var(--item-muted, #888); }
+/* Chosen: the one lit on the map */
+.item-selected {
+  background: var(--item-selected, rgba(128, 128, 128, .2));
+  box-shadow: inset 3px 0 0 var(--item-accent, #c26d00);
+}
+/* Marked with Ctrl + click */
+.item-marked { outline: 2px dashed var(--item-accent, #c26d00); outline-offset: -2px; }
+.item-faded .item-name { text-decoration: line-through; opacity: .6; }
+
+/* The detail of a place (PlaceDetail.js) */
+/* Moving a line: its handle, and the line while it is dragged */
+.item-handle { cursor: grab; touch-action: none; padding: 0 4px; color: var(--item-muted, #888); user-select: none; }
+.item-dragging { opacity: .6; background: var(--item-selected, rgba(128, 128, 128, .2)); }
+/* Swiping a line: it follows the finger, and once slid its action shows at the end */
+.item-swipeable .item-line { touch-action: pan-y; transition: transform .15s; }
+.item-swipe { display: none; margin-left: auto; border: 0; border-radius: 4px; padding: 4px 10px; background: var(--item-danger, #c0392b); color: #fff; }
+.item-swiped .item-swipe { display: inline-block; }
+/* What can go wrong with one tap (removing) shows only when the line is under the mouse or has the focus; on a touch screen with swiping, not at all */
+.item-line .item-risky { visibility: hidden; }
+.item-line:hover .item-risky, .item-line:focus-within .item-risky { visibility: visible; }
+@media (hover: none) { .item-swipeable .item-line .item-risky { display: none; } }
+
+
+/* A card floating next to what was clicked (FloatingCard.js). Its shadows and the dimmed page can be set from outside: --floating-card-shadow,
+   --floating-card-peek-shadow, --floating-card-centered-shadow, --floating-card-backdrop */
+.floating-card {
+  position: absolute;
+  box-sizing: border-box;
+  z-index: 30;
+  width: 400px;
+  max-width: 92vw;
+  max-height: 70vh;
+  max-height: 70dvh;
+  overflow: auto;
+  padding: 12px 14px;
+  border: 1px solid var(--color-surface-border, #ccc);
+  border-radius: 14px;
+  background: var(--color-surface-default, #fff);
+  box-shadow: var(--floating-card-shadow, 0 6px 24px rgba(0, 0, 0, .18));
+}
+/* Only peeking, it cannot be used until it is pinned with a click */
+.floating-card.peeking { box-shadow: var(--floating-card-peek-shadow, 0 4px 16px rgba(0, 0, 0, .14)); }
+.floating-card.peeking .floating-card-close { display: none; }
+.floating-card-close {
+  float: right;
+  border: none;
+  background: none;
+  color: var(--color-text-quiet, #777);
+  font-size: var(--fs-xl, 1.4em);
+  line-height: 1;
+  cursor: pointer;
+}
+.floating-card-close:hover { color: var(--color-text-normal, inherit); }
+/* What a function paints goes in its own container, which takes no room of its own */
+.floating-card-body { display: contents; }
+/* Without a mouse: in the middle, and the rest dimmed */
+.floating-card-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 29;
+  background: var(--floating-card-backdrop, rgba(0, 0, 0, .45));
+  backdrop-filter: blur(2px);
+}
+.floating-card.centered {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(92vw, 560px);
+  max-height: 80vh;
+  max-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  border-radius: 16px;
+  box-shadow: var(--floating-card-centered-shadow, 0 10px 40px rgba(0, 0, 0, .35));
+}
