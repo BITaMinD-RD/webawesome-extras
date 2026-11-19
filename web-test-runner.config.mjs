@@ -1,5 +1,5 @@
 /**
- * Settings of Web Test Runner, the one Web Awesome tests its components with: every `src/components/<name>/<name>.test.js` runs in Chromium, Firefox and WebKit (Playwright),
+ * Settings of Web Test Runner, the one Web Awesome tests its components with: every `src/components/<name>/<name>.test.js` (and the one of the autoloader) runs in Chromium, Firefox and WebKit (Playwright),
  * with `@open-wc/testing` (`fixture`, `oneEvent`, `expect(el).to.be.accessible()`). The `*.state.test.js` files are the Node tests of the rules, which `node --test` runs.
  */
 import { join } from 'node:path';
@@ -12,7 +12,7 @@ process.env.PLAYWRIGHT_BROWSERS_PATH ??= join(ROOT, 'node_modules', '.playwright
 const { playwrightLauncher } = await import('@web/test-runner-playwright');
 
 export default {
-  files: ['src/components/*/*.test.js', '!src/components/*/*.state.test.js'],
+  files: ['src/components/*/*.test.js', 'src/utilities/*.test.js', '!src/**/*.state.test.js'],
   nodeResolve: true,
   // The tests that type and press keys need the focus of the page, which two pages open at once fight for
   concurrency: 1,

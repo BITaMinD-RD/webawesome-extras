@@ -31,8 +31,8 @@ It is organised like Web Awesome's own package (`dist/` of `@awesome.me/webaweso
 |---|---|
 | [`src/components/<name>/`](src/components/) | One folder per element: `<name>.js` (the Lit element), `<name>.styles.js` (its styles, in its shadow), `<name>.state.js` (its rules, with no DOM), `<name>.state.test.js` (Node tests of the rules) and `<name>.test.js` (browser tests of the element) |
 | [`src/events/`](src/events/) | One typed event per file, only for what Web Awesome has no event for (`WaxSelectEvent`, `WaxMarkEvent`, `WaxMoveEvent`...), and `events.js`, which exports them all, like Web Awesome's `events/`. What means the same as an event of Web Awesome (`wa-show`, `wa-after-show`, `wa-hide`, `wa-after-hide`) uses its own classes, imported from its `dist/events/` |
-| [`src/utilities/`](src/utilities/) | The autoloader |
-| `src/webawesome-extras.loader.js` | The autoloader, like `webawesome.loader.js`: load it with a script tag and the `wax-*` elements of the page are defined when they appear |
+| [`src/utilities/`](src/utilities/) | The autoloader (`autoloader.js`, a copy of the one of Web Awesome with the prefix `wax-`: it discovers the `:not(:defined)` tags, honours `data-wax-preload`, imports `components/<name>/<name>.js` from the base path and fires `wax-discovery-complete`) and `base-path.js` |
+| `src/webawesome-extras.loader.js` | The autoloader, like `webawesome.loader.js`: load it with a script tag and the `wax-*` elements of the page are defined when they appear; exports `discover`, `startLoader`, `stopLoader`, `getBasePath` and `setBasePath` |
 | `src/webawesome-extras.js` | Everything at once, like `webawesome.js`: defines all the elements and exports the events |
 | [`custom-elements.json`](custom-elements.json) | The manifest of the elements (attributes, properties, events, slots, parts, CSS custom properties), generated from the code and its JSDoc with `@custom-elements-manifest/analyzer`, like Web Awesome's |
 | [`dist/react/`](dist/react/) | One React wrapper per `wax-*` element, generated from the manifest with `@lit/react`: the events `wax-select`... are the props `onWaxSelect`... |
@@ -63,9 +63,9 @@ Nothing else: no other library of ours.
 Like Web Awesome:
 
 ```html
-<script type="module" src="lib/webawesome-extras/webawesome-extras.loader.js"></script>   <!-- the elements are defined when they appear -->
+<script type="module" data-webawesome-extras="lib/webawesome-extras" src="lib/webawesome-extras/webawesome-extras.loader.js"></script>   <!-- the elements are defined when they appear -->
 ```
-or, without the autoloader, `import './lib/webawesome-extras/webawesome-extras.js'` (all of them) or `import './lib/webawesome-extras/components/combobox/combobox.js'` (one).
+`data-webawesome-extras` is the folder of the package (the one that has `components/`), as `data-webawesome` is for Web Awesome; without it the folder of the loader is used. An element that is made by code and used at once (a method called before the loader has defined it) needs `await customElements.whenDefined('wax-...')`, or its module imported. Or, without the autoloader, `import './lib/webawesome-extras/webawesome-extras.js'` (all of them) or `import './lib/webawesome-extras/components/combobox/combobox.js'` (one).
 
 ## The pattern for a component
 

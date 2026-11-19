@@ -17,7 +17,7 @@ the element, and needs Lit 3 (see the README of the repository); `item-list.stat
 <wax-item-list id="sites" empty="Nothing here"></wax-item-list>
 ```
 ```js
-import './lib/webawesome-extras/components/item-list/item-list.js';   // or load the autoloader, `webawesome-extras.loader.js`
+import './lib/webawesome-extras/components/item-list/item-list.js';   // or load the autoloader, `webawesome-extras.loader.js` (see the README of the repository)
 const list = document.getElementById('sites');
 list.items = sites.map(s => ({ key: s.id, icon: '🍺', name: s.name, note: `${s.meters} m`, faded: s.hidden }));
 list.addEventListener('wax-select', event => open(event.detail.key));
