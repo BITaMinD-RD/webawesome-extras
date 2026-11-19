@@ -6,7 +6,7 @@
   "description": "Components that look and work as if they were native Web Awesome ones: custom elements wax-*, built with Lit, styled with --wa-* tokens",
   "license": "GPL-3.0-or-later",
   "scripts": {
-    "test": "node --test js/webawesome-extras/test/*.test.js js/tools/test/*.test.js scripts/test/*.test.js",
+    "test": "node --test js/webawesome-extras/test/*.test.js scripts/test/*.test.js",
     "manifest": "cem analyze --config custom-elements-manifest.config.mjs",
     "react": "node scripts/react.mjs",
     "build": "npm run manifest && npm run react"

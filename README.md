@@ -19,15 +19,15 @@ The page must load these two; **neither is copied into this repository**:
 
 | path | what it is |
 |---|---|
-| [`js/webawesome-extras/`](js/webawesome-extras/) | The components, one file each, and their tests: `<wax-item-list>` (`WaxItemList.js`, with `ItemListState.js` for its rules) and, still plain classes that will become `wax-*` elements, `ComboBox`, `FloatingCard`, `AskEach` and `ListManager`. See its [README](js/webawesome-extras/README.md) |
+| [`js/webawesome-extras/`](js/webawesome-extras/) | The components, one file each, with the class of their rules and their tests: `<wax-item-list>`, `<wax-combobox>`, `<wax-floating-card>`, `<wax-ask-each>` and `<wax-list-manager>`. See its [README](js/webawesome-extras/README.md) |
 | [`custom-elements.json`](custom-elements.json) | The manifest of the elements (attributes, properties, events, slots, parts, CSS custom properties), generated from the code and its JSDoc with `@custom-elements-manifest/analyzer`, like Web Awesome's |
 | [`dist/react/`](dist/react/) | One React wrapper per `wax-*` element (`wax-item-list.js`), generated from the manifest with `@lit/react`: the events `wax-select`... are the props `onWaxSelect`... A React application takes these; the other applications take only `js/webawesome-extras/` |
 | [`scripts/`](scripts/) | `react.mjs` and `ReactWrappers.js`, the generator of the wrappers, and the test that fails if the manifest or the wrappers are stale |
-| `js/history/`, `js/vendor/`, `js/tools/` | Generated copies of [webutils](../webutils) that the components import (`BackClose`) and the tool that makes them; not edited by hand |
 
 What is **not** here: buttons, boxes and switches are Web Awesome's own (`wa-button`, `wa-input`, `wa-switch`...) and the application builds them; `Dirty`, `Typing`, `ButtonLabel`
-(behaviours of forms) and `BackClose` (history) are in [webutils](../webutils), as are `text` (tolerant search) and `vendor` (the tool that makes generated copies). The loose CSS classes
-(`.input`, `.row`, `.pill`, `.check`...) belong to each application's own stylesheet. This repository has components and nothing else.
+(behaviours of forms) and `BackClose` (history) are in [webutils](../webutils), as are `text` (tolerant search) and `vendor` (the tool that makes generated copies). A component knows nothing of the Back button, as a Web Awesome one does not: it only fires
+`wax-show` and `wax-hide`, and the application hooks `BackClose.bind` to them where it wants Back to close something. This repository has no generated copies of anything. The loose CSS classes
+(`.input`, `.row`, `.pill`, `.check`...) belong to each application's own stylesheet.
 
 ## The pattern for a component
 
@@ -48,7 +48,6 @@ Components follow Web Awesome's way:
 The components have no network and no dependencies in their tests; the manifest and the wrappers need the dev tooling:
 
     cd js/webawesome-extras && node --test test/*.test.js   # the components
-    cd js/tools && node --test test/*.test.js               # the generated copies are not edited by hand
     npm install                                             # once: the analyzer, @lit/react, lit and react (dev only; node_modules is not committed)
     npm test                                                # all of the above plus the check that custom-elements.json and dist/react are not stale
     npm run build                                           # after changing a component: writes custom-elements.json and dist/react

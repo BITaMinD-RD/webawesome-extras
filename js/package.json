@@ -1,7 +1,0 @@
-{
-  "name": "webawesome-extras-js",
-  "private": true,
-  "type": "module",
-  "description": "The JavaScript of webawesome-extras: the components (webawesome-extras) and the generated copies of webutils that they import",
-  "license": "GPL-3.0-or-later"
-}
