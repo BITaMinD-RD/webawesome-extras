@@ -34,6 +34,14 @@
             {
               "description": "The swipe action (`--wa-color-danger-fill-loud`)",
               "name": "--item-danger"
+            },
+            {
+              "description": "Set by the list on its slots, for a control the page puts in a line to read (`visibility: var(--item-risky-visibility, visible)`): `hidden` until the line is under the mouse or has the focus, and always `hidden` on a touch screen with swiping",
+              "name": "--item-risky-visibility"
+            },
+            {
+              "description": "Set by the list on its slots to `0` where a control is not shown at all (a touch screen with swiping), for the control to read as its `width`",
+              "name": "--item-risky-width"
             }
           ],
           "cssParts": [
@@ -75,7 +83,7 @@
               "type": {
                 "text": "key"
               },
-              "description": "Own controls at the end of a line: a child with `slot=\"<key of the item>\"`. (An item's `html` is put there for you.) One with class `item-risky` shows only when the line is under the mouse or has the focus",
+              "description": "Own controls at the end of a line: a child with `slot=\"<key of the item>\"`. (An item's `html` is put there for you.) What can go wrong with one tap (removing) is shown only when the line is under the mouse or has the focus: the control reads `--item-risky-visibility` and `--item-risky-width`",
               "name": ""
             }
           ],

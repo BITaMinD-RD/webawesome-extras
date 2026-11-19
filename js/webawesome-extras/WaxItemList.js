@@ -2,7 +2,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { repeat } from 'lit/directives/repeat.js';
 import { ItemListState } from './ItemListState.js';
-import { installStyles } from './DocumentStyles.js';
 
 /**
  * @typedef {Object} ListItem
@@ -52,7 +51,7 @@ import { installStyles } from './DocumentStyles.js';
  * @fires wax-move - A line was moved (`movable`). `detail: { keys }`, all of them in their new order
  * @fires wax-swipe - The action of a slid line was pressed (`swipe-label`). `detail: { key }`
  *
- * @slot {key} - Own controls at the end of a line: a child with `slot="<key of the item>"`. (An item's `html` is put there for you.) One with class `item-risky` shows only when the line is under the mouse or has the focus
+ * @slot {key} - Own controls at the end of a line: a child with `slot="<key of the item>"`. (An item's `html` is put there for you.) What can go wrong with one tap (removing) is shown only when the line is under the mouse or has the focus: the control reads `--item-risky-visibility` and `--item-risky-width`
  *
  * @csspart list - The `ul`
  * @csspart line - One line. Also `selected`, `marked`, `faded` and `dragging` while they are so
@@ -69,6 +68,8 @@ import { installStyles } from './DocumentStyles.js';
  * @cssprop [--item-accent] - The mark of the selected and marked lines (`--wa-color-brand-fill-loud`)
  * @cssprop [--item-muted] - Notes and the empty text (`--wa-color-text-quiet`)
  * @cssprop [--item-danger] - The swipe action (`--wa-color-danger-fill-loud`)
+ * @cssprop --item-risky-visibility - Set by the list on its slots, for a control the page puts in a line to read (`visibility: var(--item-risky-visibility, visible)`): `hidden` until the line is under the mouse or has the focus, and always `hidden` on a touch screen with swiping
+ * @cssprop --item-risky-width - Set by the list on its slots to `0` where a control is not shown at all (a touch screen with swiping), for the control to read as its `width`
  */
 export class WaxItemList extends LitElement {
   /** Clicks on these inside a line belong to them, not to the list */
@@ -115,8 +116,8 @@ export class WaxItemList extends LitElement {
       background: var(--item-danger, var(--wa-color-danger-fill-loud)); color: var(--wa-color-danger-on-loud); font: inherit;
     }
     li.swiped [part~="swipe"] { display: inline-block; }
-    /* What can go wrong with one tap (removing: a control with class item-risky, see the end of this file) shows only when the line is under the mouse or has the focus;
-       on a touch screen with swiping, not at all. The slot says it through custom properties, which the slotted controls inherit */
+    /* What can go wrong with one tap (removing) shows only when the line is under the mouse or has the focus; on a touch screen with swiping, not at all. What a line holds is the
+       page's, so the shadow cannot style it: the slot says it through custom properties, which the slotted controls inherit and the page's control reads */
     slot { --item-risky-visibility: hidden; }
     li:hover slot, li:focus-within slot { --item-risky-visibility: visible; }
     @media (hover: none) { :host([swipe-label]) slot { --item-risky-visibility: hidden; --item-risky-width: 0; } }
@@ -368,14 +369,3 @@ export class WaxItemList extends LitElement {
 }
 
 if (!customElements.get('wax-item-list')) customElements.define('wax-item-list', WaxItemList);
-
-// What goes in a line is the page's, so the rule for a risky control (removing, say) cannot live in the shadow: the list shows it only when the line is under the mouse
-// or has the focus, and not at all where lines can be swiped, and says it with two custom properties that the slot sets and the control inherits; out of a list the
-// control is always there
-installStyles(globalThis.document, 'wax-item-list', `
-.item-risky {
-  visibility    : var(--item-risky-visibility, visible);
-  width         : var(--item-risky-width, auto);
-  min-width     : var(--item-risky-width, auto);
-}
-`);

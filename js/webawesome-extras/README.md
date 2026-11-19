@@ -32,8 +32,9 @@ list.addEventListener('wax-mark', event => { /* join event.detail.keys */ });
 - **Move** (`movable`): a handle on each line, dragged or moved with the arrow keys; `wax-move` with `detail.keys` in the new order.
 - **Swipe** (`swipe-label="Remove"`): sliding a line sideways with the finger uncovers that action; pressing it fires `wax-swipe` with `detail.key`.
 - **Own controls**: a click on a link, button, input or label inside a line is theirs and does not select. They go in the page, not in the shadow of the list, so the page styles them and listens
-  to them: a child of the list with `slot="<key>"` (`<button slot="a1">`), or the `html` of the item, which the list puts there for you. A control with class `item-risky` (removing) shows only
-  when the line is under the mouse or has the focus.
+  to them: a child of the list with `slot="<key>"` (`<button slot="a1">`), or the `html` of the item, which the list puts there for you. What can go wrong with one tap (removing) shows only when the line is under the mouse or has the focus, and not at all on a touch screen with swiping: the list does not style
+  the page's controls (it cannot reach them from its shadow), it sets `--item-risky-visibility` and `--item-risky-width` on its slots, which the controls inherit, and the page's control reads them:
+  `.remove { visibility: var(--item-risky-visibility, visible); width: var(--item-risky-width, auto); }`.
 - **Style**: `::part(line)` (also `selected`, `marked`, `faded`, `dragging`), `::part(icon)`, `::part(name)`, `::part(note)`, `::part(empty)`, `::part(handle)`, `::part(swipe)`; tokens `--item-border`,
   `--item-hover`, `--item-selected`, `--item-accent`, `--item-muted` and `--item-danger`, each one falling back to a `--wa-*` token. `ListManager` puts the filters, the search box and «New» above one
   (`manager.list` is the element); it is a control of its own, not app logic, and will become `<wax-list-manager>`.
