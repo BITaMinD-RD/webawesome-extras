@@ -1,7 +1,7 @@
 // @ts-check
 
 /**
- * 
+ * The autoloader, like `webawesome.loader.js` of Web Awesome: load it with a script tag and the `wax-*` elements of the page are defined when they appear, with nothing else to import.
  * `data-webawesome-extras` says where the package is (the folder that has `components/`), as `data-webawesome` does for Web Awesome.
  *
  * ```html
