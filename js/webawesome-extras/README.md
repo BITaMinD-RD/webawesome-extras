@@ -77,3 +77,14 @@ day.addEventListener('click', () => card.toggle(day));
 
 The content is its children, put by whoever opens it in the listener of `wax-show` (so what is slow to draw is only drawn when it shows). `card.place()` puts it back next to its thing after what is inside has grown.
 **Style**: `::part(card)`, `::part(close-button)`, `::part(backdrop)`; `--floating-card-shadow`, `--floating-card-peek-shadow`, `--floating-card-centered-shadow`, `--floating-card-backdrop` and `--floating-card-width`.
+
+**The question about each thing** is `<wax-ask-each>` (`WaxAskEach.js`, with `AskEachState.js` for its rules): a dialog that asks about several things one by one («overwrite this file?»), with the progress, «yes to all», «no to all» and cancel.
+`ask(items)` gives a promise of the answers (`true` for the positive verb) or null if it was cancelled; `describe` says how each thing is named; `wax-all` tells whoever goes on answering the same later. It is a `wa-dialog` inside:
+`open`, `show()`, `hide()`, `light-dismiss`, Escape and the four `wax-*` events (`wax-hide` is cancellable while it is being dismissed), and it knows nothing of the Back button.
+
+```js
+import './lib/webawesome-extras/WaxAskEach.js';
+askEach.label = 'Overwrite?';  askEach.question = 'Overwrite';  askEach.describe = file => `«${file.name}»`;
+const answers = await askEach.ask(files);   // [true, false, ...] or null
+```
+**Style**: `::part(progress)`, `::part(question)`, `::part(button)` (also `yes`, `no`, `yes-all`, `no-all`, `cancel`), `::part(dialog)`; `--ask-each-width`.

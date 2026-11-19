@@ -4,6 +4,237 @@
   "modules": [
     {
       "kind": "javascript-module",
+      "path": "js/webawesome-extras/WaxAskEach.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "The usual question when something has to be decided about several things («overwrite this file?»): it asks about each one in a dialog, with the progress («2 of 5»), and the answer can be\n«yes to all» (or «no to all») for the rest, or cancelling, so that nothing happens. It knows nothing of what it asks: whoever uses it gives the verbs (`labels`) and how each thing is named\n(`describe`). It is a `wa-dialog` inside, so it opens and closes like one: the `open` property, `show()` and `hide()`, `light-dismiss`, Escape, and the events `wax-show`, `wax-after-show`,\n`wax-hide` and `wax-after-hide`, with `wax-show` and `wax-hide` cancellable. Enter is the first button (the positive verb). It knows nothing of the Back button: whoever wants Back to\ncancel it listens to those events (`BackClose.bind` in webutils).\n\n```html\n<wax-ask-each label=\"Overwrite?\" question=\"Overwrite\"></wax-ask-each>\n```\n```js\naskEach.describe = file => `«${file.name}»`;\naskEach.labels = { yes: 'Overwrite', no: 'Skip', yesAll: 'Overwrite all', noAll: 'Skip all' };\nconst answers = await askEach.ask(files);   // an array of booleans in the order of the files (true is the positive verb), or null if it was cancelled\n```",
+          "name": "WaxAskEach",
+          "cssProperties": [
+            {
+              "description": "The width of the dialog (`31rem`, the one of a `wa-dialog`)",
+              "name": "--ask-each-width"
+            }
+          ],
+          "cssParts": [
+            {
+              "description": "The `wa-dialog` (and, through it, its `header`, `title`, `body`, `footer` and `close-button`)",
+              "name": "dialog"
+            },
+            {
+              "description": "The line «2 de 5»",
+              "name": "progress"
+            },
+            {
+              "description": "The question",
+              "name": "question"
+            },
+            {
+              "description": "Each of the buttons. Also `yes`, `no`, `yes-all`, `no-all` and `cancel`",
+              "name": "button"
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "LABELS",
+              "type": {
+                "text": "object"
+              },
+              "static": true,
+              "default": "{ yes: 'Sí', no: 'No', yesAll: 'Sí a todos', noAll: 'No a todos', cancel: 'Cancelar', progress: '{n} de {total}' }",
+              "description": "The texts of the buttons that are not given"
+            },
+            {
+              "kind": "method",
+              "name": "ask",
+              "parameters": [
+                {
+                  "name": "items",
+                  "description": "What is asked about",
+                  "type": {
+                    "text": "T[]"
+                  }
+                }
+              ],
+              "description": "Asks about each thing in turn.",
+              "return": {
+                "type": {
+                  "text": "Promise<boolean[] | null>"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "show",
+              "description": "Opens it, like a `wa-dialog` (without anything to ask there is nothing to see: `ask()` is what opens it with questions)"
+            },
+            {
+              "kind": "method",
+              "name": "hide",
+              "description": "Closes it: what was being asked is cancelled"
+            },
+            {
+              "kind": "field",
+              "name": "open",
+              "privacy": "public",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "It is open",
+              "attribute": "open",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "label",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "default": "''",
+              "description": "The title of the dialog",
+              "attribute": "label"
+            },
+            {
+              "kind": "field",
+              "name": "question",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "default": "''",
+              "description": "The beginning of the question",
+              "attribute": "question"
+            },
+            {
+              "kind": "field",
+              "name": "lightDismiss",
+              "privacy": "public",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Clicking outside the dialog cancels it (attribute `light-dismiss`)",
+              "attribute": "light-dismiss"
+            },
+            {
+              "kind": "field",
+              "name": "describe",
+              "privacy": "public",
+              "type": {
+                "text": "(item: any) => string"
+              },
+              "description": "How each thing is named in the question"
+            },
+            {
+              "kind": "field",
+              "name": "labels",
+              "privacy": "public",
+              "type": {
+                "text": "Record<string, string>"
+              },
+              "default": "{}",
+              "description": "The verbs of the buttons and the progress (`{n} de {total}`); the ones not given are Spanish"
+            }
+          ],
+          "events": [
+            {
+              "name": "wax-after-hide",
+              "type": {
+                "text": "CustomEvent"
+              },
+              "description": "It is closed"
+            },
+            {
+              "description": "It is going to open. Cancellable: `preventDefault()` keeps it closed and `ask()` gives null",
+              "name": "wax-show"
+            },
+            {
+              "description": "It is open",
+              "name": "wax-after-show"
+            },
+            {
+              "description": "It is going to close. Cancellable while it is being dismissed (Escape, outside, its cross): `preventDefault()` keeps it open. `detail: { source, reason }`: `reason` is `answered`, `cancelled` (the button) or `dismissed`",
+              "name": "wax-hide"
+            },
+            {
+              "description": "A question was answered (or the whole thing cancelled). `detail: { index, item, action }`, `action` is `yes`, `no`, `yesAll`, `noAll` or `cancel`",
+              "name": "wax-answer"
+            },
+            {
+              "description": "«Yes to all» or «no to all» was answered: for whoever goes on answering the same to what is asked later. `detail: { value }`",
+              "name": "wax-all"
+            }
+          ],
+          "attributes": [
+            {
+              "type": {
+                "text": "boolean"
+              },
+              "description": "It is open",
+              "name": "open",
+              "default": "false",
+              "fieldName": "open"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "The title of the dialog",
+              "name": "label",
+              "default": "''",
+              "fieldName": "label"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "The beginning of the question",
+              "name": "question",
+              "default": "''",
+              "fieldName": "question"
+            },
+            {
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Clicking outside the dialog cancels it (attribute `light-dismiss`)",
+              "name": "light-dismiss",
+              "default": "false",
+              "fieldName": "lightDismiss"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "wax-ask-each",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "WaxAskEach",
+          "declaration": {
+            "name": "WaxAskEach",
+            "module": "js/webawesome-extras/WaxAskEach.js"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "wax-ask-each",
+          "declaration": {
+            "name": "WaxAskEach",
+            "module": "js/webawesome-extras/WaxAskEach.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "js/webawesome-extras/WaxCombobox.js",
       "declarations": [
         {
