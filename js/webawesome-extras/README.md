@@ -3,8 +3,7 @@
 Components that look and work as if they were native Web Awesome ones. They know nothing of what they are used for. The page loads Web Awesome and Lit (see the README of the
 repository) and imports the module of each component it uses.
 
-There is no stylesheet to link: what a component needs in the page (a `wa-select` or a card it builds in the light DOM, the rule for the controls a line holds) it puts there itself,
-once, when it is first made (`DocumentStyles.js`). The look comes from **Web Awesome's design tokens** (`--wa-color-surface-default`, `--wa-border-radius-m`, `--wa-font-size-s`,
+There is no stylesheet to link: every component carries its styles in its shadow DOM. The look comes from **Web Awesome's design tokens** (`--wa-color-surface-default`, `--wa-border-radius-m`, `--wa-font-size-s`,
 `--wa-space-m`, `--wa-form-control-height`, `--wa-shadow-*`...), so the theme of the page applies with nothing else to define. A page that has its own palette sets the `--wa-*` tokens.
 
 Buttons, boxes, switches and checkboxes are Web Awesome's own (`wa-button`, `wa-input`, `wa-textarea`, `wa-time-input`, `wa-switch`, `wa-checkbox`, `wa-toast`): there is nothing here to make
@@ -36,8 +35,7 @@ list.addEventListener('wax-mark', event => { /* join event.detail.keys */ });
   the page's controls (it cannot reach them from its shadow), it sets `--item-risky-visibility` and `--item-risky-width` on its slots, which the controls inherit, and the page's control reads them:
   `.remove { visibility: var(--item-risky-visibility, visible); width: var(--item-risky-width, auto); }`.
 - **Style**: `::part(line)` (also `selected`, `marked`, `faded`, `dragging`), `::part(icon)`, `::part(name)`, `::part(note)`, `::part(empty)`, `::part(handle)`, `::part(swipe)`; tokens `--item-border`,
-  `--item-hover`, `--item-selected`, `--item-accent`, `--item-muted` and `--item-danger`, each one falling back to a `--wa-*` token. `ListManager` puts the filters, the search box and «New» above one
-  (`manager.list` is the element); it is a control of its own, not app logic, and will become `<wax-list-manager>`.
+  `--item-hover`, `--item-selected`, `--item-accent`, `--item-muted` and `--item-danger`, each one falling back to a `--wa-*` token. `<wax-list-manager>` puts the filters, the search box and «New» above one.
 
 **Good to know about Web Awesome's controls** (the ones the components here use): an empty `wa-input` gives `null` (not `''`) unless it was born with a value, and in the HTML it needs
 `value=""`; what is written to `value` is not turned into text (a `41.39` stays a number); until the component is loaded `value` does not exist, so a page waits for `wa-input`,
@@ -88,3 +86,17 @@ askEach.label = 'Overwrite?';  askEach.question = 'Overwrite';  askEach.describe
 const answers = await askEach.ask(files);   // [true, false, ...] or null
 ```
 **Style**: `::part(progress)`, `::part(question)`, `::part(button)` (also `yes`, `no`, `yes-all`, `no-all`, `cancel`), `::part(dialog)`; `--ask-each-width`.
+
+**The list with its search box** is `<wax-list-manager>` (`WaxListManager.js`, with `ListManagerState.js` for its rules): the block that repeats in the screens that edit things. It has a slot for the filters
+(`slot="filters"`), the search box, the «New» button and a `<wax-item-list>` below, where one entry is chosen and clicking it again does not clear it. It knows nothing of what the entries are: the application gives
+`items` when the query changes (`wax-query`).
+
+```html
+<wax-list-manager search-placeholder="Search..." new-label="New" empty="Nothing here"><div slot="filters">...</div></wax-list-manager>
+```
+```js
+import './lib/webawesome-extras/WaxListManager.js';
+manager.items = entries.map(e => ({ key: e.id, name: e.name, icon: '🏆' }));
+manager.addEventListener('wax-select', event => open(event.detail.key));   // `wax-new`, `wax-query` ({ query }); manager.query; manager.select(key)
+```
+**Style**: `::part(search)`, `::part(actions)`, `::part(new-button)`, `::part(items)` and the parts of the list (`line`, `selected`, `marked`, `faded`, `icon`, `name`, `note`, `empty`).

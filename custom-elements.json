@@ -1161,6 +1161,185 @@
           }
         }
       ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "js/webawesome-extras/WaxListManager.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "The block that repeats in the screens that edit things: the filters (if any), the search box, the «New» button and, below, the list of what there is, where one entry is chosen (clicking\nthe chosen one again does not clear it). The button is always above the list, in case it is long. It knows nothing of what the entries are or how they are filtered: whoever uses it gives\nwhat is to be shown (`items`) when what is typed changes (`wax-query`). The list is a `<wax-item-list>`, whose parts are exported.\n\n```html\n<wax-list-manager search-placeholder=\"Search...\" new-label=\"New\" empty=\"Nothing here\">\n  <div slot=\"filters\">...</div>\n</wax-list-manager>\n```\n```js\nmanager.items = [{ key: 'a', name: 'One', icon: '🏆', note: 'a note' }];\nmanager.addEventListener('wax-select', event => open(event.detail.key));\nmanager.addEventListener('wax-new', () => openNew());\nmanager.addEventListener('wax-query', () => manager.items = filter(manager.query));\n```",
+          "name": "WaxListManager",
+          "cssParts": [
+            {
+              "description": "The search box",
+              "name": "search"
+            },
+            {
+              "description": "The row of the «New» button",
+              "name": "actions"
+            },
+            {
+              "description": "The «New» button",
+              "name": "new-button"
+            },
+            {
+              "description": "The list (a `<wax-item-list>`), which does not grow more than what fits",
+              "name": "items"
+            },
+            {
+              "description": "A line of the list. Also `selected`, `marked`, `faded`, `icon`, `name`, `note` and `empty`, those of `<wax-item-list>`",
+              "name": "line"
+            }
+          ],
+          "slots": [
+            {
+              "description": "What goes above the search box (comboboxes that filter)",
+              "name": "filters"
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "query",
+              "return": {
+                "type": {
+                  "text": "string"
+                }
+              },
+              "readonly": true,
+              "type": {
+                "text": "string"
+              },
+              "description": "What is typed in the search box (read only)"
+            },
+            {
+              "kind": "method",
+              "name": "select",
+              "parameters": [
+                {
+                  "name": "key",
+                  "description": "`null`, none",
+                  "type": {
+                    "text": "string | null"
+                  }
+                }
+              ],
+              "description": "Chooses an entry without telling anybody (the application chose it)."
+            },
+            {
+              "kind": "field",
+              "name": "items",
+              "privacy": "public",
+              "type": {
+                "text": "ListItem[]"
+              },
+              "default": "[]",
+              "description": "What is shown (without `html`: the markup of a line goes to the light DOM of the list, which here is its shadow). The chosen entry stays chosen if it is still there"
+            },
+            {
+              "kind": "field",
+              "name": "searchPlaceholder",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "default": "''",
+              "description": "What the search box says while it is empty",
+              "attribute": "search-placeholder"
+            },
+            {
+              "kind": "field",
+              "name": "newLabel",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "default": "''",
+              "description": "The text of the button",
+              "attribute": "new-label"
+            },
+            {
+              "kind": "field",
+              "name": "empty",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "default": "''",
+              "description": "What it says with nothing to show",
+              "attribute": "empty"
+            }
+          ],
+          "events": [
+            {
+              "description": "An entry was chosen by the user. `detail: { key }`. Not fired by `select()`",
+              "name": "wax-select"
+            },
+            {
+              "description": "The «New» button was pressed",
+              "name": "wax-new"
+            },
+            {
+              "description": "What is typed in the search box changed. `detail: { query }`",
+              "name": "wax-query"
+            }
+          ],
+          "attributes": [
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "What the search box says while it is empty",
+              "name": "search-placeholder",
+              "default": "''",
+              "fieldName": "searchPlaceholder"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "The text of the button",
+              "name": "new-label",
+              "default": "''",
+              "fieldName": "newLabel"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "What it says with nothing to show",
+              "name": "empty",
+              "default": "''",
+              "fieldName": "empty"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "wax-list-manager",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "WaxListManager",
+          "declaration": {
+            "name": "WaxListManager",
+            "module": "js/webawesome-extras/WaxListManager.js"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "wax-list-manager",
+          "declaration": {
+            "name": "WaxListManager",
+            "module": "js/webawesome-extras/WaxListManager.js"
+          }
+        }
+      ]
     }
   ]
 }
