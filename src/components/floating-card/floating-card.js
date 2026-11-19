@@ -45,7 +45,7 @@ import { WaAfterHideEvent } from '@awesome.me/webawesome/dist/events/after-hide.
  * @prop {boolean} centered - It is in the middle with the rest dimmed
  * @prop {string} closeLabel - What the close button is called (attribute `close-label`)
  * @prop {string} label - What the card is called for who does not see it
- * @prop {number} delay - Milliseconds the pointer has to stay before it peeks
+ * @prop {number} delay - Milliseconds the pointer has to stay before it peeks (400 by default)
  *
  * @fires {WaShowEvent} wa-show - It is going to show. Cancellable: `preventDefault()` keeps it closed. The content goes in here; `anchor` and `centered` are already set
  * @fires {WaAfterShowEvent} wa-after-show - It is shown and in its place

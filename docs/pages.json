@@ -9,6 +9,10 @@
       {
         "title": "Combobox",
         "path": "components/combobox.md"
+      },
+      {
+        "title": "Floating card",
+        "path": "components/floating-card.md"
       }
     ]
   }

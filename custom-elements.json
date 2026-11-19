@@ -773,7 +773,7 @@
               "type": {
                 "text": "number"
               },
-              "description": "Milliseconds the pointer has to stay before it peeks",
+              "description": "Milliseconds the pointer has to stay before it peeks (400 by default)",
               "attribute": "delay"
             }
           ],
@@ -857,7 +857,7 @@
               "type": {
                 "text": "number"
               },
-              "description": "Milliseconds the pointer has to stay before it peeks",
+              "description": "Milliseconds the pointer has to stay before it peeks (400 by default)",
               "name": "delay",
               "fieldName": "delay"
             }
