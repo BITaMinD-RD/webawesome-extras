@@ -181,6 +181,14 @@ label > .input, label > .combo {
   .list-manager wax-item-list { max-height : 30vh; }
 }
 
+/* What can go wrong with one tap (removing), in a line of a <wax-item-list>: the list shows it only when the line is under the mouse or has the focus, and not at all
+   where lines can be swiped. The list says it with these two variables; out of a list the control is always there */
+.item-risky {
+  visibility    : var(--item-risky-visibility, visible);
+  width         : var(--item-risky-width, auto);
+  min-width     : var(--item-risky-width, auto);
+}
+
 /* The list to choose from is <wax-item-list> (WaxItemList.js): it brings its own styles, in its shadow */
 
 /* A card floating next to what was clicked (FloatingCard.js). Its shadows and the dimmed page can be set from outside: --floating-card-shadow,

@@ -46,7 +46,7 @@ import { ItemListState } from './ItemListState.js';
  * @fires wax-move - A line was moved (`movable`). `detail: { keys }`, all of them in their new order
  * @fires wax-swipe - The action of a slid line was pressed (`swipe-label`). `detail: { key }`
  *
- * @slot {key} - Own controls at the end of a line: a child with `slot="<key of the item>"`. (An item's `html` is put there for you.)
+ * @slot {key} - Own controls at the end of a line: a child with `slot="<key of the item>"`. (An item's `html` is put there for you.) One with class `item-risky` shows only when the line is under the mouse or has the focus
  *
  * @csspart list - The `ul`
  * @csspart line - One line. Also `selected`, `marked`, `faded` and `dragging` while they are so
@@ -109,11 +109,11 @@ export class WaxItemList extends LitElement {
       background: var(--item-danger, var(--wa-color-danger-fill-loud)); color: var(--wa-color-danger-on-loud); font: inherit;
     }
     li.swiped [part~="swipe"] { display: inline-block; }
-    /* What can go wrong with one tap (removing: a slotted control with class item-risky) shows only when the line is under the mouse or has the focus;
-       on a touch screen with swiping, not at all */
-    ::slotted(.item-risky) { visibility: hidden; }
-    li:hover ::slotted(.item-risky), li:focus-within ::slotted(.item-risky) { visibility: visible; }
-    @media (hover: none) { :host([swipe-label]) ::slotted(.item-risky) { display: none; } }
+    /* What can go wrong with one tap (removing: a control with class item-risky, see controls.css) shows only when the line is under the mouse or has the focus;
+       on a touch screen with swiping, not at all. The slot says it through custom properties, which the slotted controls inherit */
+    slot { --item-risky-visibility: hidden; }
+    li:hover slot, li:focus-within slot { --item-risky-visibility: visible; }
+    @media (hover: none) { :host([swipe-label]) slot { --item-risky-visibility: hidden; --item-risky-width: 0; } }
   `;
 
   /** @type {ListItem[]} */
