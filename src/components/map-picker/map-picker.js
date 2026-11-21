@@ -1,6 +1,5 @@
 // @ts-check
 import { LitElement, html, nothing } from 'lit';
-import { ifDefined } from 'lit/directives/if-defined.js';
 import { LocalizeController, term } from '../../utilities/localize.js';
 import { LEAFLET, MapPickerState, TILE_PROVIDERS } from './map-picker.state.js';
 import styles from './map-picker.styles.js';
@@ -311,7 +310,7 @@ export class WaxMapPicker extends LitElement {
   render() {
     const { css, cssIntegrity } = WaxMapPicker.leaflet;
     return html`
-      <link rel="stylesheet" href=${css} integrity=${ifDefined(cssIntegrity || undefined)} crossorigin="" @load=${() => this.#map?.invalidateSize()}>
+      <link rel="stylesheet" href=${css} integrity=${cssIntegrity || nothing} crossorigin="" @load=${() => this.#map?.invalidateSize()}>
       <div part="base" ?hidden=${this.unavailable}></div>
       ${this.unavailable ? html`<div part="unavailable" role="status">${term(this.#localize, 'waxMapUnavailable')}</div>` : nothing}`;
   }
