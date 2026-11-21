@@ -9,5 +9,6 @@ import './components/combobox/combobox.js';
 import './components/floating-card/floating-card.js';
 import './components/ask-each/ask-each.js';
 import './components/list-manager/list-manager.js';
+import './components/map-picker/map-picker.js';
 
 export * from './events/events.js';
