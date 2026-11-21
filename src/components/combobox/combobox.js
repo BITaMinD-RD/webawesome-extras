@@ -171,10 +171,16 @@ export class WaxCombobox extends LitElement {
     // The value goes after the options are in: a `wa-select` takes the value of the options it has
     const select = /** @type {any} */ (this.#select);
     if (select && select.value !== this.#value) select.value = this.#value;
+    this.#syncForm();
+    if (changed.has('disabled')) this.toggleAttribute('aria-disabled', this.disabled);
+  }
+
+  /** What the form sees: the value and whether it is valid (a required one with nothing chosen is not). The one place that says it, for when the value is set from code and for when the user chooses */
+  #syncForm() {
     this.#internals.setFormValue(this.#value);
+    const select = /** @type {any} */ (this.#select);
     if (this.required && !this.#value && select) this.#internals.setValidity({ valueMissing: true }, this.placeholder || this.emptyLabel || ' ', select);
     else this.#internals.setValidity({});
-    if (changed.has('disabled')) this.toggleAttribute('aria-disabled', this.disabled);
   }
 
   /** @param {Event} event A `change` of the `wa-select`: what the user chose is the value now (the one of the search box does not get here) */
@@ -183,7 +189,7 @@ export class WaxCombobox extends LitElement {
     const value = String(/** @type {any} */ (this.#select).value ?? '');
     if (value === this.#value) { event.stopPropagation(); return; }
     this.#value = value;
-    this.#internals.setFormValue(value);
+    this.#syncForm();
   }
 
   /** @param {Event} event The `wa-select` begins to open: all choices, and the focus goes to the search box at once, or the first letters are lost */

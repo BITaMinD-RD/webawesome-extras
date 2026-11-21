@@ -120,6 +120,21 @@ describe('<wax-combobox>', () => {
     expect(new FormData(form).get('country')).to.equal('ar');
   });
 
+  it('a required one is valid as soon as the user chooses an option, not only when the value is set from code', async () => {
+    const form = await fixture(html`<form><wax-combobox name="country" required placeholder="Country"></wax-combobox></form>`);
+    const el = form.querySelector('wax-combobox');
+    el.choices = choices;
+    await el.updateComplete;
+    expect(form.checkValidity()).to.equal(false);
+    await open(el);
+    await sendKeys({ type: 'Fran' });
+    await sendKeys({ press: 'Enter' });
+    await aTimeout(50);
+    expect(el.value).to.equal('fr');
+    expect(form.checkValidity()).to.equal(true);
+    expect(new FormData(form).get('country')).to.equal('fr');
+  });
+
   it('is accessible', async () => {
     const el = await make();
     await expect(el).to.be.accessible();
