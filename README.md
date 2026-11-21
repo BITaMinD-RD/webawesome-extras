@@ -35,7 +35,7 @@ The pages are in [`docs/`](docs/). To read them with their live examples, serve 
     npx http-server -p 8080          # or: python3 -m http.server 8080
     # then open http://localhost:8080/docs/
 
-To see every element working on one page with the least code, open `/demo/` from the same server ([`demo/index.html`](demo/index.html)).
+To see every element working on one page with the least code, open `/demo/` from the same server ([`demo/index.html`](demo/index.html)). It takes Web Awesome and Lit from a CDN (it needs a connection, not `npm install`), so it also works as published by GitHub Pages.
 
 ## Layout
 

@@ -4,37 +4,22 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>webawesome-extras demo</title>
-  <!-- One page with every element working, the least needed to see them: serve the repository with any static server and open /demo/ -->
-  <link rel="stylesheet" href="../node_modules/@awesome.me/webawesome/dist/styles/webawesome.css">
+  <!-- One page with every element working, the least needed to see them. Web Awesome and Lit come from a CDN (jsDelivr) and the
+       elements from ../src, so it works on GitHub Pages and from any static server; it needs a connection -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@awesome.me/webawesome@3.14.0/dist-cdn/styles/webawesome.css">
   <script type="importmap">
     {
       "imports": {
-        "lit": "../node_modules/lit/index.js",
-        "lit/": "../node_modules/lit/",
-        "lit-html": "../node_modules/lit-html/lit-html.js",
-        "lit-html/": "../node_modules/lit-html/",
-        "lit-element/": "../node_modules/lit-element/",
-        "@lit/reactive-element": "../node_modules/@lit/reactive-element/reactive-element.js",
-        "@lit/reactive-element/": "../node_modules/@lit/reactive-element/",
-        "@lit/context": "../node_modules/@lit/context/index.js",
-        "@lit/context/": "../node_modules/@lit/context/",
-        "@floating-ui/dom": "../node_modules/@floating-ui/dom/dist/floating-ui.dom.esm.js",
-        "@floating-ui/core": "../node_modules/@floating-ui/core/dist/floating-ui.core.esm.js",
-        "@floating-ui/utils": "../node_modules/@floating-ui/utils/dist/floating-ui.utils.esm.js",
-        "@floating-ui/utils/dom": "../node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.esm.js",
-        "composed-offset-position": "../node_modules/composed-offset-position/dist/composed-offset-position.esm.js",
-        "@shoelace-style/localize": "../node_modules/@shoelace-style/localize/dist/index.js",
-        "@shoelace-style/animations": "../node_modules/@shoelace-style/animations/dist/index.js",
-        "@ctrl/tinycolor": "../node_modules/@ctrl/tinycolor/dist/module/public_api.js",
-        "nanoid": "../node_modules/nanoid/index.browser.js",
-        "@awesome.me/webawesome/dist/": "../node_modules/@awesome.me/webawesome/dist/"
+        "lit": "https://cdn.jsdelivr.net/npm/lit@3.3.3/+esm",
+        "lit/directives/repeat.js": "https://cdn.jsdelivr.net/npm/lit@3.3.3/directives/repeat.js/+esm",
+        "@awesome.me/webawesome/dist/": "https://cdn.jsdelivr.net/npm/@awesome.me/webawesome@3.14.0/dist-cdn/"
       }
     }
   </script>
-  <script type="module" data-webawesome="../node_modules/@awesome.me/webawesome/dist" src="../node_modules/@awesome.me/webawesome/dist/webawesome.loader.js"></script>
+  <script type="module" data-webawesome="https://cdn.jsdelivr.net/npm/@awesome.me/webawesome@3.14.0/dist-cdn" src="https://cdn.jsdelivr.net/npm/@awesome.me/webawesome@3.14.0/dist-cdn/webawesome.loader.js"></script>
   <script type="module" data-webawesome-extras="../src" src="../src/webawesome-extras.loader.js"></script>
   <!-- English is always there; Spanish, for the language switch, is imported (of Web Awesome and of the extras) -->
-  <script type="module" src="../node_modules/@awesome.me/webawesome/dist/translations/es.js"></script>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@awesome.me/webawesome@3.14.0/dist-cdn/translations/es.js"></script>
   <script type="module" src="../src/translations/es.js"></script>
   <style>
     body { max-width: 40rem; margin: 0 auto; padding: var(--wa-space-l) var(--wa-space-m); background: var(--wa-color-surface-default); }
