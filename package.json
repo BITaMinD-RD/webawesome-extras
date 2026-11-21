@@ -1,10 +1,34 @@
 {
   "name": "webawesome-extras",
-  "version": "0.0.0",
-  "private": true,
+  "version": "0.1.0",
   "type": "module",
   "description": "Components that look and work as if they were native Web Awesome ones: custom elements wax-*, built with Lit, styled with --wa-* tokens",
   "license": "GPL-3.0-or-later",
+  "keywords": [
+    "web-components",
+    "custom-elements",
+    "lit",
+    "webawesome",
+    "combobox"
+  ],
+  "main": "./src/webawesome-extras.js",
+  "module": "./src/webawesome-extras.js",
+  "exports": {
+    ".": "./src/webawesome-extras.js",
+    "./loader": "./src/webawesome-extras.loader.js",
+    "./react": "./dist/react/index.js",
+    "./react/*": "./dist/react/*",
+    "./custom-elements.json": "./custom-elements.json",
+    "./package.json": "./package.json",
+    "./*": "./src/*"
+  },
+  "files": [
+    "src",
+    "!src/**/*.test.js",
+    "dist",
+    "custom-elements.json",
+    "CHANGELOG.md"
+  ],
   "scripts": {
     "test": "npm run test:node && npm run test:browser",
     "test:node": "node --test \"src/components/*/*.state.test.js\" \"src/utilities/*.state.test.js\" \"scripts/test/*.test.js\"",
@@ -21,9 +45,6 @@
     "react": ">=18"
   },
   "peerDependenciesMeta": {
-    "@awesome.me/webawesome": {
-      "optional": true
-    },
     "@lit/react": {
       "optional": true
     },
@@ -42,5 +63,5 @@
     "marked": "^11.2.0",
     "react": "^19.3.1"
   },
-  "customElements": "node_modules/.cache/cem-check/custom-elements.json"
+  "customElements": "custom-elements.json"
 }
