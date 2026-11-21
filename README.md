@@ -5,6 +5,8 @@ custom elements with the prefix `wax-`, built with Lit and styled with the `--wa
 
 This is an independent project, not affiliated with or endorsed by Web Awesome or Font Awesome.
 
+**[See them working](https://bitamind-rd.github.io/webawesome-extras/demo/)**: one page with every element.
+
 ## Components
 
 | Element | What it is | Page |
