@@ -3,6 +3,8 @@
 Components that [Web Awesome](https://webawesome.com) does not have, written the way Web Awesome writes its own, so that they look and work as if they were native Web Awesome ones:
 custom elements with the prefix `wax-`, built with Lit and styled with the `--wa-*` design tokens. They depend on Web Awesome 3.x and Lit 3.x and on nothing else.
 
+This is an independent project, not affiliated with or endorsed by Web Awesome or Font Awesome.
+
 ## Components
 
 | Element | What it is | Page |
