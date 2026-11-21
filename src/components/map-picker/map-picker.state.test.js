@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { AREA_TONES, DEFAULT_PROVIDER, LEAFLET, MapPickerState, TILE_PROVIDERS } from './map-picker.state.js';
 
 test('the catalog has the providers that need no key, each with an https url, attribution and zoom, and the subdomains its url asks for', () => {
-  assert.deepEqual(Object.keys(TILE_PROVIDERS), ['osm', 'opentopomap', 'cyclosm', 'osm-hot', 'carto-light', 'carto-dark']);
+  assert.deepEqual(Object.keys(TILE_PROVIDERS), ['osm', 'opentopomap', 'cyclosm', 'osm-hot']);
   assert.equal(DEFAULT_PROVIDER, 'osm');
   for (const [name, provider] of Object.entries(TILE_PROVIDERS)) {
     assert.match(provider.url, /^https:\/\/.*\{z\}.*\{x\}.*\{y\}/, name);
@@ -17,8 +17,8 @@ test('the catalog has the providers that need no key, each with an https url, at
 test('MapPickerState.tiles: the provider asked for, or OpenStreetMap when it is not known', () => {
   assert.equal(MapPickerState.tiles('osm').url, 'https://tile.openstreetmap.org/{z}/{x}/{y}.png');
   assert.equal(MapPickerState.tiles('cyclosm').name, 'cyclosm');
-  assert.equal(MapPickerState.tiles(' Carto-Dark ').name, 'carto-dark');
-  assert.deepEqual(MapPickerState.tiles('carto-dark').subdomains, 'abcd');
+  assert.equal(MapPickerState.tiles(' OSM-Hot ').name, 'osm-hot');
+  assert.deepEqual(MapPickerState.tiles('osm-hot').subdomains, 'abc');
   for (const unknown of ['mapbox', '', null, undefined, 'constructor', '__proto__', 'toString']) assert.equal(MapPickerState.tiles(unknown).name, 'osm', String(unknown));
   assert.equal(MapPickerState.tiles('mapbox').url, TILE_PROVIDERS.osm.url);
 });
@@ -34,7 +34,7 @@ test('MapPickerState.tiles: custom tiles win over the provider, with defaults fo
 test('MapPickerState.tiles: it reads the catalog it is given, so an application can add providers', () => {
   const catalog = { osm: TILE_PROVIDERS.osm, mine: { url: 'https://m/{z}/{x}/{y}.png' } };
   assert.deepEqual(MapPickerState.tiles('mine', null, catalog), { name: 'mine', url: 'https://m/{z}/{x}/{y}.png', attribution: '', maxZoom: 19 });
-  assert.equal(MapPickerState.tiles('carto-dark', null, catalog).name, 'osm');
+  assert.equal(MapPickerState.tiles('cyclosm', null, catalog).name, 'osm');
 });
 
 test('MapPickerState.orderAreas: from the largest to the smallest, and the smallest has the first tone', () => {

@@ -138,7 +138,7 @@ and a tone that goes from the first colour for the smallest on. `fit` covers the
 ### Tiles
 
 `provider` chooses the tiles by name. All the providers of the catalog need no key, but each has its terms: the
-[tile usage policy of OpenStreetMap](https://operations.osmfoundation.org/policies/tiles/) is for light use, and the others are for you to check (CARTO's free tiles are for non-commercial use).
+[tile usage policy of OpenStreetMap](https://operations.osmfoundation.org/policies/tiles/) is for light use, and the others are for you to check. CARTO is not in the catalog: its tiles now ask for a key.
 The element always shows the attribution that each provider asks for.
 
 | `provider` | Tiles | Max zoom |
@@ -147,8 +147,6 @@ The element always shows the attribution that each provider asks for.
 | `opentopomap` | OpenTopoMap, with relief | 17 |
 | `cyclosm` | CyclOSM, for cyclists | 20 |
 | `osm-hot` | Humanitarian OpenStreetMap | 20 |
-| `carto-light` | CARTO Positron, a light base | 20 |
-| `carto-dark` | CARTO Dark Matter, a dark base | 20 |
 
 A name that is not in the catalog is `osm`. `tiles` gives tiles of your own (`{ url, attribution, maxZoom, subdomains }`) and wins over `provider`; and an application can add providers to the catalog it asks,
 `WaxMapPicker.providers`.
@@ -159,8 +157,6 @@ A name that is not in the catalog is `osm`. `tiles` gives tiles of your own (`{ 
   <wa-option value="opentopomap">opentopomap</wa-option>
   <wa-option value="cyclosm">cyclosm</wa-option>
   <wa-option value="osm-hot">osm-hot</wa-option>
-  <wa-option value="carto-light">carto-light</wa-option>
-  <wa-option value="carto-dark">carto-dark</wa-option>
 </wa-select>
 <wax-map-picker id="tiles-map" lat="41.3874" lon="2.1686" zoom="12"></wax-map-picker>
 
@@ -197,7 +193,7 @@ WaxMapPicker.leaflet = {
 ### Styling
 
 The height is `--map-picker-height` (`300px`). The route, the areas and the ring of the highlighted site have their own custom properties, which fall back to `--wa-*` tokens, so the map follows the light and dark themes.
-The map is the part `base`, and the notice when Leaflet could not be loaded is `unavailable`. (The base layer of the tiles is the provider's: for a dark page, `carto-dark`.)
+The map is the part `base`, and the notice when Leaflet could not be loaded is `unavailable`. (The tiles themselves are the provider's and do not follow the theme.)
 
 ```html example
 <style>

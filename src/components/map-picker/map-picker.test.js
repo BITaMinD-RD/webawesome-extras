@@ -456,9 +456,9 @@ describe('<wax-map-picker>', () => {
     it('provider picks one of the catalog, and changing it changes the tiles', async () => {
       const el = await makeWith(html`<wax-map-picker provider="cyclosm"></wax-map-picker>`);
       expect(attribution(el)).to.contain('CyclOSM');
-      el.setAttribute('provider', 'carto-dark');
+      el.setAttribute('provider', 'osm-hot');
       await el.updateComplete;
-      expect(attribution(el)).to.contain('CARTO');
+      expect(attribution(el)).to.contain('Humanitarian');
       expect(layers(el, layer => layer instanceof L().TileLayer)).to.have.length(1);
     });
 

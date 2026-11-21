@@ -30,7 +30,6 @@ export const LEAFLET = Object.freeze({
 });
 
 const OSM = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
-const CARTO = `${OSM} &copy; <a href="https://carto.com/attributions">CARTO</a>`;
 
 /** The providers of tiles that need no key (and no account), by name. The first one is the default */
 export const TILE_PROVIDERS = Object.freeze({
@@ -46,9 +45,7 @@ export const TILE_PROVIDERS = Object.freeze({
   'osm-hot': {
     url: 'https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', subdomains: 'abc', maxZoom: 20,
     attribution: `${OSM}. Tiles style by <a href="https://www.hotosm.org/">Humanitarian OpenStreetMap Team</a> hosted by <a href="https://openstreetmap.fr/">OpenStreetMap France</a>`
-  },
-  'carto-light': { url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', subdomains: 'abcd', maxZoom: 20, attribution: CARTO },
-  'carto-dark': { url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', subdomains: 'abcd', maxZoom: 20, attribution: CARTO }
+  }
 });
 
 export const DEFAULT_PROVIDER = 'osm';

@@ -36,7 +36,7 @@ const NOW = { animate: false };
  * @attr {number} center-lon - The longitude the map looks at before there is a point (`2.2`)
  * @attr {number} zoom - The zoom of the starting view (`9`)
  * @attr {boolean} readonly - Only to look at: the point cannot be picked or dragged
- * @attr {string} provider - The tiles, by name: `osm` (the default), `opentopomap`, `cyclosm`, `osm-hot`, `carto-light` or `carto-dark`. A name that is not in the catalog is `osm`
+ * @attr {string} provider - The tiles, by name: `osm` (the default), `opentopomap`, `cyclosm`, or `osm-hot`. A name that is not in the catalog is `osm`
  * @attr {boolean} unavailable - The map could not be loaded (read only: set by the element)
  *
  * @prop {number | null} lat - The latitude of the point, or null
