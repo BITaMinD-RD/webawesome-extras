@@ -3,7 +3,7 @@
 webawesome-extras is a set of components that [Web Awesome](https://webawesome.com) does not have, written the way Web Awesome writes its own, so that they look and work as if they were native
 Web Awesome ones. They are custom elements with the prefix `wax-`, built with Lit, styled with the `--wa-*` design tokens, and organised, tested and documented like Web Awesome's package.
 
-They depend on Web Awesome and Lit and on nothing else, and know nothing of what they are used for.
+They depend on Web Awesome and Lit and on nothing else (the [map picker](components/map-picker.md) also needs Leaflet, which it loads on demand), and know nothing of what they are used for.
 
 ## Components
 
@@ -14,6 +14,7 @@ They depend on Web Awesome and Lit and on nothing else, and know nothing of what
 | [Floating card](components/floating-card.md) | A card next to what was clicked: peeks with a mouse, pinned by a click, in the middle without one |
 | [Ask each](components/ask-each.md) | A dialog that asks about each thing in turn, with "yes to all" and cancel |
 | [List manager](components/list-manager.md) | The filters, the search box, the "New" button and an item list, for the screens that edit things |
+| [Map picker](components/map-picker.md) | A map to pick a point on, with sites, a route and areas; Leaflet and the tiles are loaded on demand |
 
 ## Where to start
 

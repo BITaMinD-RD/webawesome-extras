@@ -1,7 +1,7 @@
 # webawesome-extras
 
 Components that [Web Awesome](https://webawesome.com) does not have, written the way Web Awesome writes its own, so that they look and work as if they were native Web Awesome ones:
-custom elements with the prefix `wax-`, built with Lit and styled with the `--wa-*` design tokens. They depend on Web Awesome 3.x and Lit 3.x and on nothing else.
+custom elements with the prefix `wax-`, built with Lit and styled with the `--wa-*` design tokens. They depend on Web Awesome 3.x and Lit 3.x and on nothing else, except `<wax-map-picker>`, which also needs [Leaflet](https://leafletjs.com): it loads it on demand from unpkg (or from a copy you serve) the first time a map is visible.
 
 This is an independent project, not affiliated with or endorsed by Web Awesome or Font Awesome.
 
@@ -16,6 +16,7 @@ This is an independent project, not affiliated with or endorsed by Web Awesome o
 | `<wax-floating-card>` | A card next to what was clicked: peeks, pinned by a click, or in the middle | [Floating card](docs/components/floating-card.md) |
 | `<wax-ask-each>` | A dialog that asks about each thing in turn, with "yes to all" and cancel | [Ask each](docs/components/ask-each.md) |
 | `<wax-list-manager>` | Filters, search box, "New" button and an item list, for screens that edit things | [List manager](docs/components/list-manager.md) |
+| `<wax-map-picker>` | A Leaflet map to pick a point on, with sites, a route and areas; Leaflet and the tiles are loaded on demand | [Map picker](docs/components/map-picker.md) |
 
 The rest of the documentation: [overview](docs/index.md), [installation and usage](docs/installation.md), [events](docs/events.md), [theming](docs/theming.md) and [React](docs/react.md).
 

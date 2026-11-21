@@ -2,6 +2,10 @@
 
 All notable changes to this package are listed here. Versions follow [Semantic Versioning](https://semver.org/).
 
+## Unreleased
+
+- New element `wax-map-picker`: a Leaflet map to pick a point on (click or drag the marker), with sites, a route and areas. Leaflet is loaded on demand from unpkg (`WaxMapPicker.leaflet` changes where from) and the tiles come from a catalog of providers that need no key (`provider`, or `tiles` of your own). Events `wax-pick`, `wax-site-click` and `wax-map-error`; terms `waxMapUnavailable` and `waxMinutes` in English and Spanish.
+
 ## 0.1.0
 
 The first release.

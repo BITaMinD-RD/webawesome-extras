@@ -10,6 +10,7 @@ component made with `createComponent`.
 | `wax-floating-card` | `WaxFloatingCard` | `dist/react/wax-floating-card.js` |
 | `wax-ask-each` | `WaxAskEach` | `dist/react/wax-ask-each.js` |
 | `wax-list-manager` | `WaxListManager` | `dist/react/wax-list-manager.js` |
+| `wax-map-picker` | `WaxMapPicker` | `dist/react/wax-map-picker.js` |
 
 `dist/react/index.js` exports them all.
 

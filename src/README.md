@@ -100,3 +100,17 @@ manager.items = entries.map(e => ({ key: e.id, name: e.name, icon: '🏆' }));
 manager.addEventListener('wax-select', event => open(event.detail.key));   // `wax-new`, `wax-query` ({ query }); manager.query; manager.select(key)
 ```
 **Style**: `::part(search)`, `::part(actions)`, `::part(new-button)`, `::part(items)` and the parts of the list (`line`, `selected`, `marked`, `faded`, `icon`, `name`, `note`, `empty`).
+
+**A map to pick a point on** is `<wax-map-picker>` (`components/map-picker/map-picker.js`, with `map-picker.state.js` for its rules): click it or drag the marker and it fires `wax-pick` (`{ lat, lon }`). It can also draw sites, a route and areas.
+It is Leaflet, loaded on demand from unpkg (configurable with `WaxMapPicker.leaflet`) when the map is first visible, and the tiles come from the `provider` you choose (all without a key): both need a connection, and without one the element
+shows a notice and fires `wax-map-error`.
+
+```html
+<wax-map-picker lat="41.39" lon="2.17" zoom="12" provider="cyclosm"></wax-map-picker>
+```
+```js
+import './lib/webawesome-extras/components/map-picker/map-picker.js';
+map.addEventListener('wax-pick', event => save(event.detail));   // `wax-site-click` ({ key }), `wax-map-error`
+map.setPoint(lat, lon, true); map.setSites(sites); map.highlightSite('a'); map.setRoute(points); map.setAreas(areas); map.clear();   // map.point
+```
+**Style**: `::part(base)`, `::part(unavailable)`; `--map-picker-height`, `--map-picker-route`, `--map-picker-area-1` to `-5` and `--map-picker-site-ring`.
