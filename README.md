@@ -35,6 +35,8 @@ The pages are in [`docs/`](docs/). To read them with their live examples, serve 
     npx http-server -p 8080          # or: python3 -m http.server 8080
     # then open http://localhost:8080/docs/
 
+To see every element working on one page with the least code, open `/demo/` from the same server ([`demo/index.html`](demo/index.html)).
+
 ## Layout
 
 | Path | What it is |

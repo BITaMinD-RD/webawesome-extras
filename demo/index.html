@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>webawesome-extras demo</title>
+  <!-- One page with every element working, the least needed to see them: serve the repository with any static server and open /demo/ -->
+  <link rel="stylesheet" href="../node_modules/@awesome.me/webawesome/dist/styles/webawesome.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "lit": "../node_modules/lit/index.js",
+        "lit/": "../node_modules/lit/",
+        "lit-html": "../node_modules/lit-html/lit-html.js",
+        "lit-html/": "../node_modules/lit-html/",
+        "lit-element/": "../node_modules/lit-element/",
+        "@lit/reactive-element": "../node_modules/@lit/reactive-element/reactive-element.js",
+        "@lit/reactive-element/": "../node_modules/@lit/reactive-element/",
+        "@lit/context": "../node_modules/@lit/context/index.js",
+        "@lit/context/": "../node_modules/@lit/context/",
+        "@floating-ui/dom": "../node_modules/@floating-ui/dom/dist/floating-ui.dom.esm.js",
+        "@floating-ui/core": "../node_modules/@floating-ui/core/dist/floating-ui.core.esm.js",
+        "@floating-ui/utils": "../node_modules/@floating-ui/utils/dist/floating-ui.utils.esm.js",
+        "@floating-ui/utils/dom": "../node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.esm.js",
+        "composed-offset-position": "../node_modules/composed-offset-position/dist/composed-offset-position.esm.js",
+        "@shoelace-style/localize": "../node_modules/@shoelace-style/localize/dist/index.js",
+        "@shoelace-style/animations": "../node_modules/@shoelace-style/animations/dist/index.js",
+        "@ctrl/tinycolor": "../node_modules/@ctrl/tinycolor/dist/module/public_api.js",
+        "nanoid": "../node_modules/nanoid/index.browser.js",
+        "@awesome.me/webawesome/dist/": "../node_modules/@awesome.me/webawesome/dist/"
+      }
+    }
+  </script>
+  <script type="module" data-webawesome="../node_modules/@awesome.me/webawesome/dist" src="../node_modules/@awesome.me/webawesome/dist/webawesome.loader.js"></script>
+  <script type="module" data-webawesome-extras="../src" src="../src/webawesome-extras.loader.js"></script>
+  <!-- English is always there; Spanish, for the language switch, is imported (of Web Awesome and of the extras) -->
+  <script type="module" src="../node_modules/@awesome.me/webawesome/dist/translations/es.js"></script>
+  <script type="module" src="../src/translations/es.js"></script>
+  <style>
+    body { max-width: 40rem; margin: 0 auto; padding: var(--wa-space-l) var(--wa-space-m); background: var(--wa-color-surface-default); }
+    section { margin-block: var(--wa-space-2xl); }
+    h2 { margin-block-end: var(--wa-space-2xs); }
+    h2 + p { margin-block-start: 0; color: var(--wa-color-text-quiet); }
+    output { display: block; margin-block-start: var(--wa-space-s); font-size: var(--wa-font-size-s); color: var(--wa-color-text-quiet); }
+    header { display: flex; justify-content: space-between; align-items: center; gap: var(--wa-space-m); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>webawesome-extras</h1>
+    <wa-select id="lang" value="en" size="small" style="width: 8rem">
+      <wa-option value="en">English</wa-option>
+      <wa-option value="es">Español</wa-option>
+    </wa-select>
+  </header>
+  <p>Every <code>wax-*</code> element, working, with the least code. The details are in the <a href="../docs/">documentation</a>.</p>
+
+  <section>
+    <h2>wax-combobox</h2>
+    <p>A select with a search box: type to filter.</p>
+    <wax-combobox id="combo" label="Country" placeholder="Pick one..."></wax-combobox>
+    <output id="combo-out"></output>
+  </section>
+
+  <section>
+    <h2>wax-item-list</h2>
+    <p>Click to select, Ctrl or Shift + click to mark, drag the handle to reorder.</p>
+    <wax-item-list id="list" movable></wax-item-list>
+    <output id="list-out"></output>
+  </section>
+
+  <section>
+    <h2>wax-list-manager</h2>
+    <p>Search box, a «New» button and the list below.</p>
+    <wax-list-manager id="manager" search-placeholder="Search..." new-label="New"></wax-list-manager>
+    <output id="manager-out"></output>
+  </section>
+
+  <section>
+    <h2>wax-floating-card</h2>
+    <p>A card next to what was clicked.</p>
+    <wa-button id="card-button">Show the card</wa-button>
+    <wax-floating-card id="card"></wax-floating-card>
+  </section>
+
+  <section>
+    <h2>wax-ask-each</h2>
+    <p>The «overwrite this file?» question, one by one, with «yes to all».</p>
+    <wa-button id="ask-button">Copy three files</wa-button>
+    <wax-ask-each id="ask" label="Overwrite?" question="Overwrite"></wax-ask-each>
+    <output id="ask-out"></output>
+  </section>
+
+  <script type="module">
+    const $ = id => document.getElementById(id);
+    await customElements.whenDefined('wax-combobox');
+
+    // The language of the page: the texts of the elements follow it
+    $('lang').addEventListener('change', event => { document.documentElement.lang = event.target.value; });
+
+    const combo = $('combo');
+    combo.choices = ['Argentina', 'Chile', 'España', 'France', 'Italia', 'México', 'Portugal', 'Uruguay'].map(name => ({ value: name, label: name }));
+    combo.addEventListener('change', () => { $('combo-out').textContent = `Chosen: ${combo.value}`; });
+
+    const fruits = [
+      { key: 'apple', icon: '🍎', name: 'Apple', note: 'red' },
+      { key: 'banana', icon: '🍌', name: 'Banana', note: 'yellow' },
+      { key: 'grapes', icon: '🍇', name: 'Grapes' },
+      { key: 'lemon', icon: '🍋', name: 'Lemon', note: 'sour', faded: true }
+    ];
+    const list = $('list');
+    list.items = fruits;
+    list.addEventListener('wax-select', event => { $('list-out').textContent = `Selected: ${event.detail.key}`; });
+    list.addEventListener('wax-mark', event => { $('list-out').textContent = `Marked: ${event.detail.keys.join(', ') || 'none'}`; });
+    list.addEventListener('wax-move', event => { $('list-out').textContent = `Order: ${event.detail.keys.join(', ')}`; });
+
+    const manager = $('manager');
+    let people = ['Ana', 'Bruno', 'Carmen', 'David', 'Elena'].map(name => ({ key: name, icon: '👤', name }));
+    const filter = () => { manager.items = people.filter(person => person.name.toLowerCase().includes(manager.query.toLowerCase())); };
+    filter();
+    manager.addEventListener('wax-query', filter);
+    manager.addEventListener('wax-select', event => { $('manager-out').textContent = `Opened: ${event.detail.key}`; });
+    manager.addEventListener('wax-new', () => {
+      const name = `Person ${people.length + 1}`;
+      people = [...people, { key: name, icon: '👤', name }];
+      filter();
+      manager.select(name);
+      $('manager-out').textContent = `Created: ${name}`;
+    });
+
+    const card = $('card');
+    $('card-button').addEventListener('click', event => card.toggle(event.currentTarget));
+    card.addEventListener('wa-show', event => {
+      if (event.target === card) card.innerHTML = '<strong>Hello</strong><p>This card floats next to the button. Escape, a click outside or the cross close it.</p>';
+    });
+
+    const ask = $('ask');
+    ask.describe = file => `"${file}"?`;
+    $('ask-button').addEventListener('click', async () => {
+      const answers = await ask.ask(['notes.txt', 'photo.jpg', 'report.pdf']);
+      $('ask-out').textContent = answers === null ? 'Cancelled' : `Answers: ${JSON.stringify(answers)}`;
+    });
+  </script>
+</body>
+</html>
