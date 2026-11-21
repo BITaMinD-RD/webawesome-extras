@@ -36,12 +36,12 @@ describe('<wax-ask-each>', () => {
   it('asks about each thing with the progress and the question, and gives the answers in order', async () => {
     const el = await make();
     const { answers } = await ask(el);
-    expect(text(el, 'progress')).to.equal('1 de 3');
+    expect(text(el, 'progress')).to.equal('1 of 3');
     expect(text(el, 'question')).to.equal('Overwrite «a.txt»');
     expect(button(el, 'yes').textContent.trim()).to.equal('Overwrite');
     button(el, 'yes').click();
     await el.updateComplete;
-    expect(text(el, 'progress')).to.equal('2 de 3');
+    expect(text(el, 'progress')).to.equal('2 of 3');
     expect(text(el, 'question')).to.equal('Overwrite «b.txt»');
     button(el, 'no').click();
     button(el, 'yes').click();

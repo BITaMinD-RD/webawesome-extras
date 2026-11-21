@@ -2,6 +2,7 @@
 import { LitElement, html } from 'lit';
 import '@awesome.me/webawesome/dist/components/input/input.js';
 import '@awesome.me/webawesome/dist/components/button/button.js';
+import { LocalizeController, term } from '../../utilities/localize.js';
 import { ListManagerState } from './list-manager.state.js';
 import styles from './list-manager.styles.js';
 import { WaxNewEvent } from '../../events/new.js';
@@ -28,15 +29,15 @@ import '../item-list/item-list.js';
  *
  * @element wax-list-manager
  *
- * @attr {string} search-placeholder - What the search box says while it is empty
+ * @attr {string} search-placeholder - What the search box says while it is empty (the term `waxSearch` of the language of the page when empty)
  * @attr {string} search-label - What the search box is called for who does not see it (the placeholder if it is not given)
- * @attr {string} new-label - The text of the button
+ * @attr {string} new-label - The text of the button (the term `waxNew` when empty)
  * @attr {string} empty - What it says with nothing to show
  *
  * @prop {import('../item-list/item-list.js').ListItem[]} items - What is shown, each one a `ListItem` of `<wax-item-list>` (without `html`: the markup of a line goes to the light DOM of the list, which here is its shadow). The chosen entry stays chosen if it is still there
- * @prop {string} searchPlaceholder - What the search box says while it is empty
+ * @prop {string} searchPlaceholder - What the search box says while it is empty (attribute `search-placeholder`)
  * @prop {string} searchLabel - What the search box is called for who does not see it (attribute `search-label`)
- * @prop {string} newLabel - The text of the button
+ * @prop {string} newLabel - The text of the button (attribute `new-label`)
  * @prop {string} empty - What it says with nothing to show
  * @prop {string} query - What is typed in the search box
  *
@@ -64,6 +65,8 @@ export class WaxListManager extends LitElement {
   static styles = styles;
 
   #state = new ListManagerState();
+
+  #localize = new LocalizeController(this);
 
   constructor() {
     super();
@@ -101,10 +104,11 @@ export class WaxListManager extends LitElement {
   }
 
   render() {
+    const search = this.searchPlaceholder || term(this.#localize, 'waxSearch');
     return html`<slot name="filters"></slot>
-      <wa-input part="search" type="search" value="" with-clear label=${this.searchLabel || this.searchPlaceholder} placeholder=${this.searchPlaceholder}
+      <wa-input part="search" type="search" value="" with-clear label=${this.searchLabel || search} placeholder=${search}
         @input=${(/** @type {Event} */ event) => this.#typed(event)} @change=${(/** @type {Event} */ event) => event.stopPropagation()}></wa-input>
-      <div part="actions"><wa-button part="new-button" appearance="outlined" @click=${() => this.dispatchEvent(new WaxNewEvent())}>${this.newLabel}</wa-button></div>
+      <div part="actions"><wa-button part="new-button" appearance="outlined" @click=${() => this.dispatchEvent(new WaxNewEvent())}>${this.newLabel || term(this.#localize, 'waxNew')}</wa-button></div>
       <wax-item-list part="items" exportparts="line, selected, marked, faded, icon, name, note, empty" .items=${this.items} empty=${this.empty}
         @wax-select=${(/** @type {CustomEvent} */ event) => this.#chosen(event)}></wax-item-list>`;
   }

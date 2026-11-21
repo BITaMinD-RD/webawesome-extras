@@ -7,7 +7,7 @@
   "license": "GPL-3.0-or-later",
   "scripts": {
     "test": "npm run test:node && npm run test:browser",
-    "test:node": "node --test \"src/components/*/*.state.test.js\" \"scripts/test/*.test.js\"",
+    "test:node": "node --test \"src/components/*/*.state.test.js\" \"src/utilities/*.state.test.js\" \"scripts/test/*.test.js\"",
     "test:browser": "wtr",
     "manifest": "cem analyze --config custom-elements-manifest.config.mjs",
     "react": "node scripts/react.mjs",

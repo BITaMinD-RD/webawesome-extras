@@ -1,5 +1,6 @@
 // @ts-check
 import { LitElement, html, nothing } from 'lit';
+import { LocalizeController } from '../../utilities/localize.js';
 import { FloatingCardState } from './floating-card.state.js';
 import styles from './floating-card.styles.js';
 import { WaShowEvent } from '@awesome.me/webawesome/dist/events/show.js';
@@ -35,7 +36,7 @@ import { WaAfterHideEvent } from '@awesome.me/webawesome/dist/events/after-hide.
  * @attr {boolean} open - It is shown. Set from outside it shows (pinned, next to the `anchor`) or hides it, like the one of a `wa-dialog`
  * @attr {boolean} peeking - It only peeks (read only): it cannot be used until it is pinned with a click
  * @attr {boolean} centered - It is in the middle with the rest dimmed, because there is no mouse (read only)
- * @attr {string} close-label - What the close button (×) is called (`Close`)
+ * @attr {string} close-label - What the close button (×) is called (the `close` term of Web Awesome, in the language of the page, when empty)
  * @attr {string} label - What the card is called for who does not see it (its `aria-label`)
  * @attr {number} delay - Milliseconds the pointer has to stay before it peeks (400)
  *
@@ -43,7 +44,7 @@ import { WaAfterHideEvent } from '@awesome.me/webawesome/dist/events/after-hide.
  * @prop {Element | null} anchor - What it is next to; `show()` and `peek()` set it
  * @prop {boolean} peeking - It only peeks
  * @prop {boolean} centered - It is in the middle with the rest dimmed
- * @prop {string} closeLabel - What the close button is called (attribute `close-label`)
+ * @prop {string} closeLabel - What the close button is called (attribute `close-label`); the `close` term of Web Awesome, in the language of the page, when empty
  * @prop {string} label - What the card is called for who does not see it
  * @prop {number} delay - Milliseconds the pointer has to stay before it peeks (400 by default)
  *
@@ -77,6 +78,8 @@ export class WaxFloatingCard extends LitElement {
   static styles = styles;
 
   /** Whether it is really shown: `open` says what is asked, this what is so (like the dialog inside a `wa-dialog`) */
+  #localize = new LocalizeController(this);
+
   #shown = false;
 
   #pinned = false;
@@ -108,7 +111,7 @@ export class WaxFloatingCard extends LitElement {
     this.open = false;
     this.peeking = false;
     this.centered = false;
-    this.closeLabel = 'Close';
+    this.closeLabel = '';
     this.label = '';
     this.delay = FloatingCardState.DELAY;
     // Inside it, it stays still; when the pointer goes, it goes
@@ -140,7 +143,7 @@ export class WaxFloatingCard extends LitElement {
   render() {
     return html`${this.centered ? html`<div part="backdrop" @click=${(/** @type {Event} */ event) => this.#close(/** @type {Element} */ (event.target))}></div>` : nothing}
       <div part="card" role="dialog" aria-label=${this.label || nothing}>
-        <button type="button" part="close-button" aria-label=${this.closeLabel} @click=${(/** @type {Event} */ event) => this.#close(/** @type {Element} */ (event.currentTarget))}>×</button>
+        <button type="button" part="close-button" aria-label=${this.closeLabel || this.#localize.term('close')} @click=${(/** @type {Event} */ event) => this.#close(/** @type {Element} */ (event.currentTarget))}>×</button>
         <slot></slot>
       </div>`;
   }

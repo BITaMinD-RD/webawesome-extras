@@ -234,7 +234,8 @@ Names, icons and notes are text: they are never read as markup. Only `html` is, 
 
 ## Texts
 
-The list has two texts of its own, the handle's label (`Mover (flechas arriba y abajo)`) and its title, which are in Spanish for now. Everything else comes from the application: `empty` and `swipe-label`.
+The list has two texts of its own, in the language of the page (see [Localization](../localization.md)): the handle's label (`waxMove`, `Move (up and down arrows)`) and its title (`waxDrag`, `Drag to sort`). Set `handle-label`
+or `handle-title` to say them otherwise. Everything else comes from the application: `empty` and `swipe-label`.
 
 ## Importing
 
@@ -274,6 +275,8 @@ The tables are generated from `custom-elements.json` by `npm run docs`; do not e
 | `empty` | What it says with no items | `empty` | `string` | `''` |
 | `movable` | Lines have a handle to reorder them | `movable` | `boolean` | `false` |
 | `swipeLabel` | The text of the action that a slid line uncovers (attribute `swipe-label`) | `swipe-label` | `string` | `''` |
+| `handleLabel` | The name of the handle (attribute `handle-label`) | `handle-label` | `string` | `''` |
+| `handleTitle` | The tooltip of the handle (attribute `handle-title`) | `handle-title` | `string` | `''` |
 
 ### Methods
 

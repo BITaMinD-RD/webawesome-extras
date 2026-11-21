@@ -171,7 +171,7 @@ The card is a [part](#parts) and its shadows and width are custom properties tha
 
 ## Texts
 
-The card has one text of its own, the name of its close button, which is `Close` until you set `close-label`. Give the card a `label` so that people who do not see it know what it is.
+The card has one text of its own, the name of its close button, which is the `close` term of Web Awesome in the language of the page (`Close`, `Cerrar`...) until you set `close-label`. Give the card a `label` so that people who do not see it know what it is.
 
 ## Importing
 
@@ -209,7 +209,7 @@ The tables are generated from `custom-elements.json` by `npm run docs`; do not e
 | `open` | It is shown | `open` | `boolean` | `false` |
 | `peeking` | It only peeks | `peeking` | `boolean` | `false` |
 | `centered` | It is in the middle with the rest dimmed | `centered` | `boolean` | `false` |
-| `closeLabel` | What the close button is called (attribute `close-label`) | `close-label` | `string` | `'Close'` |
+| `closeLabel` | What the close button is called (attribute `close-label`); the `close` term of Web Awesome, in the language of the page, when empty | `close-label` | `string` | `''` |
 | `label` | What the card is called for who does not see it | `label` | `string` | `''` |
 | `delay` | Milliseconds the pointer has to stay before it peeks (400 by default) | `delay` | `number` |  |
 

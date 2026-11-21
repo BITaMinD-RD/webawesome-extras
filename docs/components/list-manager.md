@@ -124,8 +124,9 @@ The search box, the row of the button, the button and the list are [parts](#part
 
 ## Texts
 
-The manager has no text of its own: `search-placeholder`, `search-label` (what the search box is called for those who do not see it, the placeholder if it is not given), `new-label` and `empty`
-come from the application. The handle label of the inner list (when it is movable) is the one noted in the [item list](item-list.md#texts).
+Two texts have a default in the language of the page (see [Localization](../localization.md)): the placeholder of the search box (`waxSearch`, `Search...`) until you set `search-placeholder`, and the button
+(`waxNew`, `New`) until you set `new-label`. `search-label` (what the search box is called for those who do not see it, the placeholder if it is not given) and `empty` come from the application. The handle label of the inner
+list (when it is movable) is the one noted in the [item list](item-list.md#texts).
 
 ## Importing
 
@@ -162,9 +163,9 @@ The tables are generated from `custom-elements.json` by `npm run docs`; do not e
 |---|---|---|---|---|
 | `query` | What is typed in the search box (read only) |  | `string` |  |
 | `items` | What is shown, each one a `ListItem` of `<wax-item-list>` (without `html`: the markup of a line goes to the light DOM of the list, which here is its shadow). The chosen entry stays chosen if it is still there |  | `ListItem[]` | `[]` |
-| `searchPlaceholder` | What the search box says while it is empty | `search-placeholder` | `string` | `''` |
+| `searchPlaceholder` | What the search box says while it is empty (attribute `search-placeholder`) | `search-placeholder` | `string` | `''` |
 | `searchLabel` | What the search box is called for who does not see it (attribute `search-label`) | `search-label` | `string` | `''` |
-| `newLabel` | The text of the button | `new-label` | `string` | `''` |
+| `newLabel` | The text of the button (attribute `new-label`) | `new-label` | `string` | `''` |
 | `empty` | What it says with nothing to show | `empty` | `string` | `''` |
 
 ### Methods

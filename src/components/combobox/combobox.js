@@ -4,6 +4,7 @@ import { repeat } from 'lit/directives/repeat.js';
 import '@awesome.me/webawesome/dist/components/select/select.js';
 import '@awesome.me/webawesome/dist/components/option/option.js';
 import '@awesome.me/webawesome/dist/components/input/input.js';
+import { LocalizeController, term } from '../../utilities/localize.js';
 import { ComboboxState } from './combobox.state.js';
 import styles from './combobox.styles.js';
 import { WaxQueryEvent } from '../../events/query.js';
@@ -29,9 +30,9 @@ import { WaxQueryEvent } from '../../events/query.js';
  *
  * @attr {string} label - What the box is called, written above it (like the `label` of a `wa-select`); a box with no visible label needs its `<label>` or an `aria-label` around it
  * @attr {string} placeholder - The title, grey while nothing is chosen
- * @attr {string} search-placeholder - What the search box says while it is empty (`Buscar...`)
+ * @attr {string} search-placeholder - What the search box says while it is empty (the term `waxSearch` of the language of the page when empty)
  * @attr {string} empty-label - If set, a first option «choose nothing» with this name (and it is the title if there is no `placeholder`)
- * @attr {string} empty-text - What it says if what was typed matches nothing
+ * @attr {string} empty-text - What it says if what was typed matches nothing (the term `waxNoMatches` when empty)
  * @attr {string} name - The name of the field in a form
  * @attr {boolean} required - The form is not sent without a choice
  * @attr {boolean} disabled - It cannot be used yet (another one has to be chosen first)
@@ -41,9 +42,9 @@ import { WaxQueryEvent } from '../../events/query.js';
  * @prop {string} value - What is chosen, empty for nothing. Only one of the choices: anything else leaves nothing chosen. Set `choices` first
  * @prop {string} label - What the box is called, written above it
  * @prop {string} placeholder - The title, grey while nothing is chosen
- * @prop {string} searchPlaceholder - What the search box says while it is empty (attribute `search-placeholder`)
+ * @prop {string} searchPlaceholder - What the search box says while it is empty, the term `waxSearch` when empty (attribute `search-placeholder`)
  * @prop {string | undefined} emptyLabel - If set, a first option «choose nothing» with this name (attribute `empty-label`)
- * @prop {string} emptyText - What it says if what was typed matches nothing (attribute `empty-text`)
+ * @prop {string} emptyText - What it says if what was typed matches nothing (the term `waxNoMatches` when empty) (attribute `empty-text`)
  * @prop {string} name - The name of the field in a form
  * @prop {boolean} required - The form is not sent without a choice
  * @prop {boolean} disabled - It cannot be used yet
@@ -82,6 +83,8 @@ export class WaxCombobox extends LitElement {
 
   #internals = this.attachInternals();
 
+  #localize = new LocalizeController(this);
+
   /** @type {{value: string, label: string}[]} */
   #choices = [];
 
@@ -97,7 +100,7 @@ export class WaxCombobox extends LitElement {
     super();
     this.label = '';
     this.placeholder = '';
-    this.searchPlaceholder = 'Buscar...';
+    this.searchPlaceholder = '';
     /** @type {string | undefined} */
     this.emptyLabel = undefined;
     this.emptyText = '';
@@ -157,12 +160,12 @@ export class WaxCombobox extends LitElement {
         @change=${(/** @type {Event} */ event) => this.#changed(event)} @wa-show=${(/** @type {Event} */ event) => this.#opened(event)}
         @wa-after-show=${(/** @type {Event} */ event) => { if (event.target === this.#select) this.#search?.focus?.(); }}
         @wa-after-hide=${(/** @type {Event} */ event) => { if (event.target === this.#select) this.#forget(); }}>
-      <wa-input part="search" type="search" value="" with-clear autocomplete="off" placeholder=${this.searchPlaceholder} .value=${this._query}
+      <wa-input part="search" type="search" value="" with-clear autocomplete="off" placeholder=${this.searchPlaceholder || term(this.#localize, 'waxSearch')} .value=${this._query}
         @input=${(/** @type {Event} */ event) => this.#typed(event)} @change=${(/** @type {Event} */ event) => event.stopPropagation()}
         @keydown=${(/** @type {KeyboardEvent} */ event) => this.#searchKey(event)}></wa-input>
       ${this.emptyLabel === undefined ? nothing : html`<wa-option part="option empty" value="" ?hidden=${this._query.trim() !== ''}>${this.emptyLabel}</wa-option>`}
       ${repeat(arranged, item => item.choice.value, item => html`<wa-option part="option" value=${item.choice.value} ?hidden=${!item.shown}>${item.choice.label}</wa-option>`)}
-      <wa-option part="option none" disabled ?hidden=${anyShown}>${this.emptyText}</wa-option>
+      <wa-option part="option none" disabled ?hidden=${anyShown}>${this.emptyText || term(this.#localize, 'waxNoMatches')}</wa-option>
     </wa-select>`;
   }
 

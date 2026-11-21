@@ -1,6 +1,7 @@
 // @ts-check
 import { LitElement, html, nothing } from 'lit';
 import { repeat } from 'lit/directives/repeat.js';
+import { LocalizeController, term } from '../../utilities/localize.js';
 import { ItemListState } from './item-list.state.js';
 import styles from './item-list.styles.js';
 import { WaxSelectEvent } from '../../events/select.js';
@@ -49,6 +50,10 @@ import { WaxSwipeEvent } from '../../events/swipe.js';
  * @prop {string | null} selected - The key of the selected line; `select(key, { scroll })` sets it without firing `wax-select`
  * @prop {string} empty - What it says with no items
  * @prop {boolean} movable - Lines have a handle to reorder them
+ * @attr {string} handle-label - The name of the handle for who does not see it (the term `waxMove` of the language of the page when it is empty)
+ * @attr {string} handle-title - The tooltip of the handle (the term `waxDrag` of the language of the page when it is empty)
+ * @prop {string} handleLabel - The name of the handle (attribute `handle-label`)
+ * @prop {string} handleTitle - The tooltip of the handle (attribute `handle-title`)
  * @prop {string} swipeLabel - The text of the action that a slid line uncovers (attribute `swipe-label`)
  *
  * @fires wax-select - A line was clicked (or Enter or Space on it). `detail: { key }`, `key` null when the selection was cleared. Not fired by `select()`
@@ -85,6 +90,8 @@ export class WaxItemList extends LitElement {
     empty: { type: String },
     movable: { type: Boolean },
     swipeLabel: { type: String, attribute: 'swipe-label' },
+    handleLabel: { type: String, attribute: 'handle-label' },
+    handleTitle: { type: String, attribute: 'handle-title' },
     _swiped: { state: true },
     _dragging: { state: true }
   };
@@ -95,6 +102,8 @@ export class WaxItemList extends LitElement {
   #items = [];
 
   #state = new ItemListState();
+
+  #localize = new LocalizeController(this);
 
   /** The keys in the order they are shown: the one of `items` until a line is moved */
   #order = /** @type {string[]} */ ([]);
@@ -109,6 +118,10 @@ export class WaxItemList extends LitElement {
     this.movable = false;
     /** @type {string} */
     this.swipeLabel = '';
+    /** @type {string} */
+    this.handleLabel = '';
+    /** @type {string} */
+    this.handleTitle = '';
     /** @internal @type {string | null} The line slid sideways, whose action shows */
     this._swiped = null;
     /** @internal @type {string | null} The line being dragged */
@@ -186,7 +199,7 @@ export class WaxItemList extends LitElement {
     const states = [item.faded && 'faded', item.key === this.selected && 'selected', this.#state.marked.has(item.key) && 'marked', item.key === this._dragging && 'dragging',
       item.key === this._swiped && 'swiped'].filter(Boolean);
     return html`<li part="line ${states.join(' ')}" class=${states.join(' ')} data-key=${item.key} tabindex="0">
-      ${this.movable ? html`<span part="handle" tabindex="0" role="button" aria-label="Mover (flechas arriba y abajo)" title="Arrastrar para ordenar">⋮⋮</span>` : nothing}
+      ${this.movable ? html`<span part="handle" tabindex="0" role="button" aria-label=${this.handleLabel || term(this.#localize, 'waxMove')} title=${this.handleTitle || term(this.#localize, 'waxDrag')}>⋮⋮</span>` : nothing}
       ${item.icon ? html`<span part="icon">${item.icon}</span>` : nothing}
       <strong part="name">${item.name}</strong>
       ${item.note ? html`<span part="note">${item.note}</span>` : nothing}

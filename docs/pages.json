@@ -6,6 +6,7 @@
       { "title": "Installation and usage", "path": "installation.md" },
       { "title": "Events", "path": "events.md" },
       { "title": "Theming", "path": "theming.md" },
+      { "title": "Localization", "path": "localization.md" },
       { "title": "React", "path": "react.md" }
     ]
   },

@@ -2,6 +2,7 @@
 import { LitElement, html } from 'lit';
 import '@awesome.me/webawesome/dist/components/dialog/dialog.js';
 import '@awesome.me/webawesome/dist/components/button/button.js';
+import { LocalizeController, term } from '../../utilities/localize.js';
 import { AskEachState } from './ask-each.state.js';
 import styles from './ask-each.styles.js';
 import { WaxAllEvent } from '../../events/all.js';
@@ -35,7 +36,7 @@ import { WaxAnswerEvent } from '../../events/answer.js';
  * @prop {string} question - The beginning of the question
  * @prop {boolean} lightDismiss - Clicking outside the dialog cancels it (attribute `light-dismiss`)
  * @prop {(item: any) => string} describe - How each thing is named in the question
- * @prop {{yes?: string, no?: string, yesAll?: string, noAll?: string, cancel?: string, progress?: string}} labels - The verbs of the buttons and the progress (`{n} de {total}`); the ones not given are Spanish
+ * @prop {{yes?: string, no?: string, yesAll?: string, noAll?: string, cancel?: string, progress?: string}} labels - The verbs of the buttons and the progress (`{n} of {total}`); the ones not given are the terms `waxYes`, `waxNo`, `waxYesAll`, `waxNoAll`, `waxCancel` and `waxProgress` of the language of the page
  *
  * @fires {WaShowEvent} wa-show - It is going to open. Cancellable: `preventDefault()` keeps it closed and `ask()` gives null
  * @fires {WaAfterShowEvent} wa-after-show - It is open
@@ -45,16 +46,13 @@ import { WaxAnswerEvent } from '../../events/answer.js';
  * @fires wax-all - «Yes to all» or «no to all» was answered: for whoever goes on answering the same to what is asked later. `detail: { value }`
  *
  * @csspart dialog - The `wa-dialog` (and, through it, its `header`, `title`, `body`, `footer` and `close-button`)
- * @csspart progress - The line «2 de 5»
+ * @csspart progress - The line «2 of 5»
  * @csspart question - The question
  * @csspart button - Each of the buttons. Also `yes`, `no`, `yes-all`, `no-all` and `cancel`
  *
  * @cssprop [--ask-each-width] - The width of the dialog (`31rem`, the one of a `wa-dialog`)
  */
 export class WaxAskEach extends LitElement {
-  /** The texts of the buttons that are not given */
-  static LABELS = { yes: 'Sí', no: 'No', yesAll: 'Sí a todos', noAll: 'No a todos', cancel: 'Cancelar', progress: '{n} de {total}' };
-
   static properties = {
     open: { type: Boolean, reflect: true },
     label: { type: String },
@@ -69,6 +67,8 @@ export class WaxAskEach extends LitElement {
 
   /** @type {any[]} */
   #items = [];
+
+  #localize = new LocalizeController(this);
 
   /** @type {AskEachState | null} */
   #run = null;
@@ -123,9 +123,18 @@ export class WaxAskEach extends LitElement {
     this.open = false;
   }
 
-  /** @returns {Record<string, string>} */
+  /** @returns {Record<string, any>} The texts: each one given in `labels`, or else the one of the language */
   get #text() {
-    return { ...WaxAskEach.LABELS, ...this.labels };
+    const { labels } = this;
+    const localize = this.#localize;
+    return {
+      yes: labels.yes ?? term(localize, 'waxYes'),
+      no: labels.no ?? term(localize, 'waxNo'),
+      yesAll: labels.yesAll ?? term(localize, 'waxYesAll'),
+      noAll: labels.noAll ?? term(localize, 'waxNoAll'),
+      cancel: labels.cancel ?? term(localize, 'waxCancel'),
+      progress: (/** @type {number} */ n, /** @type {number} */ total) => labels.progress === undefined ? term(localize, 'waxProgress', n, total) : labels.progress.replace('{n}', String(n)).replace('{total}', String(total))
+    };
   }
 
   render() {
@@ -136,7 +145,7 @@ export class WaxAskEach extends LitElement {
     return html`<wa-dialog part="dialog" exportparts="dialog:dialog-base, header, title, body, footer, close-button" label=${this.label} ?without-header=${!this.label} ?light-dismiss=${this.lightDismiss}
         @wa-show=${(/** @type {Event} */ event) => this.#showing(event)} @wa-hide=${(/** @type {Event} */ event) => this.#hiding(event)} @wa-after-hide=${(/** @type {Event} */ event) => this.#hidden(event)}
         @keydown=${(/** @type {KeyboardEvent} */ event) => this.#key(event)}>
-      <p part="progress" role="status">${run ? text.progress.replace('{n}', String(this._index + 1)).replace('{total}', String(total)) : ''}</p>
+      <p part="progress" role="status">${run ? text.progress(this._index + 1, total) : ''}</p>
       <p part="question">${run ? `${this.question}${this.question ? ' ' : ''}${this.describe(item)}` : ''}</p>
       ${/** @type {const} */ ([['yes', 'brand', text.yes, 'yes'], ['no', 'neutral', text.no, 'no'], ['yesAll', 'neutral', text.yesAll, 'yes-all'], ['noAll', 'neutral', text.noAll, 'no-all'], ['cancel', 'neutral', text.cancel, 'cancel']])
         .map(([action, variant, label, name]) => html`<wa-button slot="footer" part="button ${name}" variant=${variant} appearance=${action === 'yes' ? 'accent' : 'plain'}

@@ -43,8 +43,8 @@ item is named in the question, after the `question` text.
 
 ### Texts
 
-The buttons and the progress line come from `labels`. The ones that are not given are Spanish (`Sí`, `No`, `Sí a todos`, `No a todos`, `Cancelar` and `{n} de {total}`), so an application in another
-language gives them all. `{n}` and `{total}` are replaced in `progress`.
+The buttons and the progress line come from `labels`. Each one that is not given is the [term](../localization.md) of the language of the page: `waxYes`, `waxNo`, `waxYesAll`, `waxNoAll`, `waxCancel` and
+`waxProgress` (`Yes`, `No`, `Yes to all`, `No to all`, `Cancel` and `1 of 5` in English), so `labels` is only for the words of your own question (`Overwrite`, `Skip`). `{n}` and `{total}` are replaced in `progress`.
 
 ```html example
 <wax-ask-each id="labels-ask" label="Delete?" question="Delete"></wax-ask-each>
@@ -168,7 +168,7 @@ The tables are generated from `custom-elements.json` by `npm run docs`; do not e
 | `question` | The beginning of the question | `question` | `string` | `''` |
 | `lightDismiss` | Clicking outside the dialog cancels it (attribute `light-dismiss`) | `light-dismiss` | `boolean` | `false` |
 | `describe` | How each thing is named in the question |  | `(item: any) => string` |  |
-| `labels` | The verbs of the buttons and the progress (`{n} de {total}`); the ones not given are Spanish |  | `Record<string, string>` | `{}` |
+| `labels` | The verbs of the buttons and the progress (`{n} of {total}`); the ones not given are the terms `waxYes`, `waxNo`, `waxYesAll`, `waxNoAll`, `waxCancel` and `waxProgress` of the language of the page |  | `Record<string, string>` | `{}` |
 
 ### Methods
 
@@ -194,7 +194,7 @@ The tables are generated from `custom-elements.json` by `npm run docs`; do not e
 | Part | Description |
 |---|---|
 | `dialog` | The `wa-dialog` (and, through it, its `header`, `title`, `body`, `footer` and `close-button`) |
-| `progress` | The line «2 de 5» |
+| `progress` | The line «2 of 5» |
 | `question` | The question |
 | `button` | Each of the buttons. Also `yes`, `no`, `yes-all`, `no-all` and `cancel` |
 

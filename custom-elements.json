@@ -22,7 +22,7 @@
               "name": "dialog"
             },
             {
-              "description": "The line «2 de 5»",
+              "description": "The line «2 of 5»",
               "name": "progress"
             },
             {
@@ -35,16 +35,6 @@
             }
           ],
           "members": [
-            {
-              "kind": "field",
-              "name": "LABELS",
-              "type": {
-                "text": "object"
-              },
-              "static": true,
-              "default": "{ yes: 'Sí', no: 'No', yesAll: 'Sí a todos', noAll: 'No a todos', cancel: 'Cancelar', progress: '{n} de {total}' }",
-              "description": "The texts of the buttons that are not given"
-            },
             {
               "kind": "method",
               "name": "ask",
@@ -136,7 +126,7 @@
                 "text": "Record<string, string>"
               },
               "default": "{}",
-              "description": "The verbs of the buttons and the progress (`{n} de {total}`); the ones not given are Spanish"
+              "description": "The verbs of the buttons and the progress (`{n} of {total}`); the ones not given are the terms `waxYes`, `waxNo`, `waxYesAll`, `waxNoAll`, `waxCancel` and `waxProgress` of the language of the page"
             }
           ],
           "events": [
@@ -370,8 +360,8 @@
               "type": {
                 "text": "string"
               },
-              "default": "'Buscar...'",
-              "description": "What the search box says while it is empty (attribute `search-placeholder`)",
+              "default": "''",
+              "description": "What the search box says while it is empty, the term `waxSearch` when empty (attribute `search-placeholder`)",
               "attribute": "search-placeholder"
             },
             {
@@ -393,7 +383,7 @@
                 "text": "string"
               },
               "default": "''",
-              "description": "What it says if what was typed matches nothing (attribute `empty-text`)",
+              "description": "What it says if what was typed matches nothing (the term `waxNoMatches` when empty) (attribute `empty-text`)",
               "attribute": "empty-text"
             },
             {
@@ -465,9 +455,9 @@
               "type": {
                 "text": "string"
               },
-              "description": "What the search box says while it is empty (attribute `search-placeholder`)",
+              "description": "What the search box says while it is empty, the term `waxSearch` when empty (attribute `search-placeholder`)",
               "name": "search-placeholder",
-              "default": "'Buscar...'",
+              "default": "''",
               "fieldName": "searchPlaceholder"
             },
             {
@@ -483,7 +473,7 @@
               "type": {
                 "text": "string"
               },
-              "description": "What it says if what was typed matches nothing (attribute `empty-text`)",
+              "description": "What it says if what was typed matches nothing (the term `waxNoMatches` when empty) (attribute `empty-text`)",
               "name": "empty-text",
               "default": "''",
               "fieldName": "emptyText"
@@ -751,8 +741,8 @@
               "type": {
                 "text": "string"
               },
-              "default": "'Close'",
-              "description": "What the close button is called (attribute `close-label`)",
+              "default": "''",
+              "description": "What the close button is called (attribute `close-label`); the `close` term of Web Awesome, in the language of the page, when empty",
               "attribute": "close-label"
             },
             {
@@ -839,9 +829,9 @@
               "type": {
                 "text": "string"
               },
-              "description": "What the close button is called (attribute `close-label`)",
+              "description": "What the close button is called (attribute `close-label`); the `close` term of Web Awesome, in the language of the page, when empty",
               "name": "close-label",
-              "default": "'Close'",
+              "default": "''",
               "fieldName": "closeLabel"
             },
             {
@@ -1090,6 +1080,28 @@
               "default": "''",
               "description": "The text of the action that a slid line uncovers (attribute `swipe-label`)",
               "attribute": "swipe-label"
+            },
+            {
+              "kind": "field",
+              "name": "handleLabel",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "default": "''",
+              "description": "The name of the handle (attribute `handle-label`)",
+              "attribute": "handle-label"
+            },
+            {
+              "kind": "field",
+              "name": "handleTitle",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "default": "''",
+              "description": "The tooltip of the handle (attribute `handle-title`)",
+              "attribute": "handle-title"
             }
           ],
           "events": [
@@ -1146,6 +1158,24 @@
               "name": "swipe-label",
               "default": "''",
               "fieldName": "swipeLabel"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "The name of the handle (attribute `handle-label`)",
+              "name": "handle-label",
+              "default": "''",
+              "fieldName": "handleLabel"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "The tooltip of the handle (attribute `handle-title`)",
+              "name": "handle-title",
+              "default": "''",
+              "fieldName": "handleTitle"
             }
           ],
           "superclass": {
@@ -1258,7 +1288,7 @@
                 "text": "string"
               },
               "default": "''",
-              "description": "What the search box says while it is empty",
+              "description": "What the search box says while it is empty (attribute `search-placeholder`)",
               "attribute": "search-placeholder"
             },
             {
@@ -1280,7 +1310,7 @@
                 "text": "string"
               },
               "default": "''",
-              "description": "The text of the button",
+              "description": "The text of the button (attribute `new-label`)",
               "attribute": "new-label"
             },
             {
@@ -1314,7 +1344,7 @@
               "type": {
                 "text": "string"
               },
-              "description": "What the search box says while it is empty",
+              "description": "What the search box says while it is empty (attribute `search-placeholder`)",
               "name": "search-placeholder",
               "default": "''",
               "fieldName": "searchPlaceholder"
@@ -1332,7 +1362,7 @@
               "type": {
                 "text": "string"
               },
-              "description": "The text of the button",
+              "description": "The text of the button (attribute `new-label`)",
               "name": "new-label",
               "default": "''",
               "fieldName": "newLabel"

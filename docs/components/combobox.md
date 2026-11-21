@@ -131,8 +131,8 @@ The inside is open to styling through [parts](#parts). The space below the box i
 
 ## Texts
 
-The combobox has no language of its own except one default: the placeholder of its search box is `Buscar...` (Spanish) until you set `search-placeholder`. Everything else, the label, the
-placeholder, the text of the empty option and of "nothing matches", comes from the application.
+Two texts have a default in the language of the page (see [Localization](../localization.md)): the placeholder of the search box (`waxSearch`, `Search...`) until you set `search-placeholder`, and the notice that nothing
+matches (`waxNoMatches`, `No matches`) until you set `empty-text`. Everything else, the label, the placeholder and the text of the empty option, comes from the application.
 
 ## Importing
 
@@ -172,9 +172,9 @@ The tables are generated from `custom-elements.json` by `npm run docs`; do not e
 | `value` | What is chosen, empty for nothing. Only one of the choices: anything else leaves nothing chosen. Set `choices` first |  | `string` |  |
 | `label` | What the box is called, written above it | `label` | `string` | `''` |
 | `placeholder` | The title, grey while nothing is chosen | `placeholder` | `string` | `''` |
-| `searchPlaceholder` | What the search box says while it is empty (attribute `search-placeholder`) | `search-placeholder` | `string` | `'Buscar...'` |
+| `searchPlaceholder` | What the search box says while it is empty, the term `waxSearch` when empty (attribute `search-placeholder`) | `search-placeholder` | `string` | `''` |
 | `emptyLabel` | If set, a first option «choose nothing» with this name (attribute `empty-label`) | `empty-label` | `string \| undefined` | `undefined` |
-| `emptyText` | What it says if what was typed matches nothing (attribute `empty-text`) | `empty-text` | `string` | `''` |
+| `emptyText` | What it says if what was typed matches nothing (the term `waxNoMatches` when empty) (attribute `empty-text`) | `empty-text` | `string` | `''` |
 | `required` | The form is not sent without a choice | `required` | `boolean` | `false` |
 | `disabled` | It cannot be used yet | `disabled` | `boolean` | `false` |
 | `queryDelay` | Milliseconds without typing before `wax-query` (attribute `query-delay`) | `query-delay` | `number` | `300` |

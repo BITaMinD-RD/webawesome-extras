@@ -52,6 +52,8 @@ The files in `lib/` are yours: whichever way you bring Web Awesome and Lit in (t
 the map lists `lit`, `lit/` and the packages Lit itself imports (`@lit/reactive-element`, `lit-html` and `lit-element`); with a bundle that has them all, every name points at the same file.
 The [local docs site](index.md#reading-these-pages) does it from `node_modules`: see the import map in `docs/index.html`.
 
+Web Awesome's own `utilities/localize.js` imports `@shoelace-style/localize`, so the map lists it too (the docs site does). The language of the elements is set as in Web Awesome: see [Localization](localization.md).
+
 The import path `@awesome.me/webawesome/dist/components/select/select.js` has to be the same file that Web Awesome's own autoloader loads for `<wa-select>`, so that nothing is loaded twice. A prefix
 entry in the import map (`"@awesome.me/webawesome/dist/": "/lib/webawesome/dist/"`) does that for all of them.
 
