@@ -17,7 +17,8 @@
       { "title": "Combobox", "path": "components/combobox.md" },
       { "title": "Floating card", "path": "components/floating-card.md" },
       { "title": "Ask each", "path": "components/ask-each.md" },
-      { "title": "List manager", "path": "components/list-manager.md" }
+      { "title": "List manager", "path": "components/list-manager.md" },
+      { "title": "Map picker", "path": "components/map-picker.md" }
     ]
   }
 ]

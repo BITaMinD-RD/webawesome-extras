@@ -1,6 +1,7 @@
 import { aTimeout, expect } from '@open-wc/testing';
 import { setBasePath as setWebAwesomeBasePath, startLoader as startWebAwesomeLoader } from '@awesome.me/webawesome/dist/webawesome.loader.js';
 import { setBasePath, startLoader } from '../src/webawesome-extras.loader.js';
+import { WaxMapPicker } from '../src/components/map-picker/map-picker.js';
 import { extractExamples, mountExample, tagsOf } from './site/examples.js';
 
 /**
@@ -13,6 +14,11 @@ setWebAwesomeBasePath('/node_modules/@awesome.me/webawesome/dist');
 startWebAwesomeLoader();
 setBasePath('/src');
 startLoader();
+
+// The maps of the examples do not use the network: Leaflet is the copy of node_modules and every provider of tiles is a blank pixel
+const BLANK = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
+WaxMapPicker.leaflet = { js: '/node_modules/leaflet/dist/leaflet.js', jsIntegrity: '', css: '/node_modules/leaflet/dist/leaflet.css', cssIntegrity: '', imagePath: '' };
+for (const [name, provider] of Object.entries(WaxMapPicker.providers)) WaxMapPicker.providers[name] = { ...provider, url: BLANK, subdomains: undefined };
 
 const pages = (await (await fetch('/docs/pages.json')).json()).flatMap(section => section.pages);
 

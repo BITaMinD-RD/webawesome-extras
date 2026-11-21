@@ -6,3 +6,6 @@ export { WaxQueryEvent } from './query.js';
 export { WaxNewEvent } from './new.js';
 export { WaxAnswerEvent } from './answer.js';
 export { WaxAllEvent } from './all.js';
+export { WaxPickEvent } from './pick.js';
+export { WaxSiteClickEvent } from './site-click.js';
+export { WaxMapErrorEvent } from './map-error.js';

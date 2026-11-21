@@ -44,6 +44,9 @@ What Web Awesome has no event for, the elements fire with a typed class, one per
 | `wax-new` | `WaxNewEvent` | `{}` | [list manager](components/list-manager.md) |
 | `wax-answer` | `WaxAnswerEvent` | `{ index, item, action }` | [ask each](components/ask-each.md) |
 | `wax-all` | `WaxAllEvent` | `{ value }` | [ask each](components/ask-each.md) |
+| `wax-pick` | `WaxPickEvent` | `{ lat, lon }`, where the user clicked or dropped the marker | [map picker](components/map-picker.md) |
+| `wax-site-click` | `WaxSiteClickEvent` | `{ key }` | [map picker](components/map-picker.md) |
+| `wax-map-error` | `WaxMapErrorEvent` | `{ src }`, the address of Leaflet that could not be loaded | [map picker](components/map-picker.md) |
 
 The element that fires a `wax-*` event does not fire it when the application did the same thing from code: `list.select(key)` tells nobody, because the application already knows.
 

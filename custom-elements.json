@@ -1403,6 +1403,478 @@
           }
         }
       ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/map-picker/map-picker.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A map to pick a point on: click it, or drag the marker, and it says where the point ended up. It can also show sites around the point (each a circle with an emoji and a text on hover, one of them\nhighlighted), a route and areas (how far one gets in some minutes). It is [Leaflet](https://leafletjs.com), which is **loaded on demand** the first time a map is visible (from unpkg, unless the page\nalready has `window.L` or `WaxMapPicker.leaflet` says where to find it), and the tiles come from a provider that needs no key (`provider`). Both need a connection: with none, the element shows\na notice, has `unavailable`, fires `wax-map-error` and whoever uses it carries on with what it has (typed coordinates, for example).\n\nIt needs no `show()`: it creates the map when it is first visible and measures it again whenever its size changes (a tab that opens, a dialog). Everything that is set before the map exists\n(the point, the sites, the route, the areas) is kept and drawn when it does.\n\n```html\n<wax-map-picker lat=\"41.39\" lon=\"2.17\" zoom=\"12\" provider=\"cyclosm\"></wax-map-picker>\n```\n```js\nmap.addEventListener('wax-pick', event => save(event.detail.lat, event.detail.lon));\nmap.setSites([{ key: 'a', lat: 41.4, lon: 2.18, icon: '🏟️', label: 'Pitch A' }]);\nmap.highlightSite('a');\n```",
+          "name": "WaxMapPicker",
+          "cssProperties": [
+            {
+              "description": "The height of the element (`300px`)",
+              "name": "--map-picker-height"
+            },
+            {
+              "description": "The colour of the route (`--wa-color-brand-fill-loud`)",
+              "name": "--map-picker-route"
+            },
+            {
+              "description": "The colour of the smallest area (`--wa-color-success-fill-loud`); `--map-picker-area-2` to `-5` are the next ones (warning, danger, purple and brand), and then they start again",
+              "name": "--map-picker-area-1"
+            },
+            {
+              "description": "The ring of the highlighted site (`--wa-color-brand-fill-loud`)",
+              "name": "--map-picker-site-ring"
+            }
+          ],
+          "cssParts": [
+            {
+              "description": "The map",
+              "name": "base"
+            },
+            {
+              "description": "The notice that takes the place of the map when it could not be loaded",
+              "name": "unavailable"
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "leaflet",
+              "type": {
+                "text": "{js: string, jsIntegrity: string, css: string, cssIntegrity: string, imagePath: string}"
+              },
+              "static": true,
+              "default": "{ ...LEAFLET }",
+              "description": "Static. Where Leaflet is loaded from: the files of version 1.9.4 on unpkg, with their integrity. Set it before the first map is shown to serve your own copy (an empty integrity is not checked)"
+            },
+            {
+              "kind": "field",
+              "name": "providers",
+              "type": {
+                "text": "Record<string, {url: string, attribution?: string, maxZoom?: number, subdomains?: string}>"
+              },
+              "static": true,
+              "default": "{ ...TILE_PROVIDERS }",
+              "description": "Static. The catalog of tiles by name, where an application can add its own"
+            },
+            {
+              "kind": "field",
+              "name": "point",
+              "return": {
+                "type": {
+                  "text": "{lat: number, lon: number} | null"
+                }
+              },
+              "readonly": true,
+              "type": {
+                "text": "{lat: number, lon: number} | null"
+              },
+              "description": "The point, or null if there is none"
+            },
+            {
+              "kind": "field",
+              "name": "map",
+              "return": {
+                "type": {
+                  "text": "any"
+                }
+              },
+              "readonly": true,
+              "type": {
+                "text": "any"
+              },
+              "description": "The Leaflet map, once it exists (null before), for what this element does not cover"
+            },
+            {
+              "kind": "method",
+              "name": "load",
+              "static": true,
+              "description": "Loads Leaflet, once for all maps: if the page already has `window.L` it is that one, otherwise a script is added to the page from `WaxMapPicker.leaflet`. A failure is not remembered, so the next call tries again.",
+              "return": {
+                "type": {
+                  "text": "Promise<boolean>"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "show",
+              "description": "Makes sure the map exists and has measured itself. Nobody needs to call it: the map is created when the element is first visible and measured again when its size changes. It is here for code that\nwants to wait for the map (`await map.show()`) or to try again after a failure.",
+              "return": {
+                "type": {
+                  "text": "Promise<boolean>"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "setPoint",
+              "parameters": [
+                {
+                  "name": "lat",
+                  "type": {
+                    "text": "number"
+                  }
+                },
+                {
+                  "name": "lon",
+                  "type": {
+                    "text": "number"
+                  }
+                },
+                {
+                  "name": "zoomIn",
+                  "default": "false",
+                  "description": "Zoom all the way in; otherwise, only to a comfortable zoom",
+                  "optional": true,
+                  "type": {
+                    "text": "boolean"
+                  }
+                }
+              ],
+              "description": "Puts the marker and looks at it. It does not fire `wax-pick`: that is only for what the user does on the map."
+            },
+            {
+              "kind": "method",
+              "name": "setSites",
+              "parameters": [
+                {
+                  "name": "items",
+                  "type": {
+                    "text": "{key: string, lat: number, lon: number, icon: string, label: string, faded?: boolean}[]"
+                  }
+                },
+                {
+                  "name": "{ fit = false }",
+                  "default": "{}"
+                },
+                {
+                  "description": "`fit`: make the map cover the point and all the sites",
+                  "name": "options",
+                  "optional": true,
+                  "type": {
+                    "text": "{fit?: boolean}"
+                  }
+                }
+              ],
+              "description": "Draws some sites next to the point, each with its little picture (an emoji) and its text on hover. It replaces those there were. They cannot be dragged and do not change the point. If one was\nhighlighted and still is there, it stays highlighted."
+            },
+            {
+              "kind": "method",
+              "name": "highlightSite",
+              "parameters": [
+                {
+                  "name": "key",
+                  "description": "The site, or null to turn off the one there was",
+                  "type": {
+                    "text": "string | null"
+                  }
+                },
+                {
+                  "name": "{ pan = true }",
+                  "default": "{}"
+                },
+                {
+                  "name": "options",
+                  "optional": true,
+                  "type": {
+                    "text": "{pan?: boolean}"
+                  }
+                }
+              ],
+              "description": "Highlights a site: it grows and goes on top of the others, with its text open. If it falls outside what is visible, the map moves until it can be seen."
+            },
+            {
+              "kind": "method",
+              "name": "setRoute",
+              "parameters": [
+                {
+                  "name": "points",
+                  "type": {
+                    "text": "{lat: number, lon: number}[]"
+                  }
+                },
+                {
+                  "name": "{ fit = true }",
+                  "default": "{}"
+                },
+                {
+                  "description": "`fit`: make the map cover the whole path",
+                  "name": "options",
+                  "optional": true,
+                  "type": {
+                    "text": "{fit?: boolean}"
+                  }
+                }
+              ],
+              "description": "Draws a path (a route) on top of the map. It replaces the one there was."
+            },
+            {
+              "kind": "method",
+              "name": "clearRoute",
+              "description": "Removes the path"
+            },
+            {
+              "kind": "method",
+              "name": "setAreas",
+              "parameters": [
+                {
+                  "name": "areas",
+                  "description": "Each with its GeoJSON geometry",
+                  "type": {
+                    "text": "{minutes: number, geometry: any}[]"
+                  }
+                },
+                {
+                  "name": "{ fit = true }",
+                  "default": "{}"
+                },
+                {
+                  "description": "`fit`: make the map cover the largest",
+                  "name": "options",
+                  "optional": true,
+                  "type": {
+                    "text": "{fit?: boolean}"
+                  }
+                }
+              ],
+              "description": "Draws some areas (how far one gets in some minutes), from largest to smallest so that all show, each with a tooltip («20 min»). It replaces those there were."
+            },
+            {
+              "kind": "method",
+              "name": "clearAreas",
+              "description": "Removes the areas"
+            },
+            {
+              "kind": "method",
+              "name": "clear",
+              "description": "Removes the marker: there is no point"
+            },
+            {
+              "kind": "field",
+              "name": "lat",
+              "privacy": "public",
+              "type": {
+                "text": "number | null"
+              },
+              "default": "null",
+              "description": "The latitude of the point, or null",
+              "attribute": "lat",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "lon",
+              "privacy": "public",
+              "type": {
+                "text": "number | null"
+              },
+              "default": "null",
+              "description": "The longitude of the point, or null",
+              "attribute": "lon",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "centerLat",
+              "privacy": "public",
+              "type": {
+                "text": "number"
+              },
+              "default": "41.6",
+              "description": "The latitude the map looks at before there is a point (attribute `center-lat`)",
+              "attribute": "center-lat",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "centerLon",
+              "privacy": "public",
+              "type": {
+                "text": "number"
+              },
+              "default": "2.2",
+              "description": "The longitude the map looks at before there is a point (attribute `center-lon`)",
+              "attribute": "center-lon",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "zoom",
+              "privacy": "public",
+              "type": {
+                "text": "number"
+              },
+              "default": "9",
+              "description": "The zoom of the starting view",
+              "attribute": "zoom",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "readonly",
+              "privacy": "public",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Only to look at: the point cannot be picked or dragged",
+              "attribute": "readonly",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "provider",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "default": "'osm'",
+              "description": "The name of the provider of the tiles",
+              "attribute": "provider",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "tiles",
+              "privacy": "public",
+              "type": {
+                "text": "{url: string, attribution?: string, maxZoom?: number, subdomains?: string} | null"
+              },
+              "default": "null",
+              "description": "Tiles of your own, which win over `provider`: `url` with `{z}`, `{x}` and `{y}` (and `{s}` with `subdomains`), the `attribution` as HTML and the `maxZoom`"
+            },
+            {
+              "kind": "field",
+              "name": "unavailable",
+              "privacy": "public",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "The map could not be loaded (read only)",
+              "attribute": "unavailable",
+              "reflects": true
+            }
+          ],
+          "events": [
+            {
+              "description": "The user clicked the map or dropped the marker (not `setPoint`, nor changing `lat` and `lon`). `detail: { lat, lon }`",
+              "name": "wax-pick"
+            },
+            {
+              "description": "A site was clicked. `detail: { key }`",
+              "name": "wax-site-click"
+            },
+            {
+              "description": "Leaflet could not be loaded, so there is no map. `detail: { src }`, the address that failed. The next `show()` tries again",
+              "name": "wax-map-error"
+            }
+          ],
+          "attributes": [
+            {
+              "type": {
+                "text": "number | null"
+              },
+              "description": "The latitude of the point, or null",
+              "name": "lat",
+              "default": "null",
+              "fieldName": "lat"
+            },
+            {
+              "type": {
+                "text": "number | null"
+              },
+              "description": "The longitude of the point, or null",
+              "name": "lon",
+              "default": "null",
+              "fieldName": "lon"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "The latitude the map looks at before there is a point (attribute `center-lat`)",
+              "name": "center-lat",
+              "default": "41.6",
+              "fieldName": "centerLat"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "The longitude the map looks at before there is a point (attribute `center-lon`)",
+              "name": "center-lon",
+              "default": "2.2",
+              "fieldName": "centerLon"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "The zoom of the starting view",
+              "name": "zoom",
+              "default": "9",
+              "fieldName": "zoom"
+            },
+            {
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Only to look at: the point cannot be picked or dragged",
+              "name": "readonly",
+              "default": "false",
+              "fieldName": "readonly"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "The name of the provider of the tiles",
+              "name": "provider",
+              "default": "'osm'",
+              "fieldName": "provider"
+            },
+            {
+              "type": {
+                "text": "boolean"
+              },
+              "description": "The map could not be loaded (read only)",
+              "name": "unavailable",
+              "default": "false",
+              "fieldName": "unavailable"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "wax-map-picker",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "WaxMapPicker",
+          "declaration": {
+            "name": "WaxMapPicker",
+            "module": "src/components/map-picker/map-picker.js"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "wax-map-picker",
+          "declaration": {
+            "name": "WaxMapPicker",
+            "module": "src/components/map-picker/map-picker.js"
+          }
+        }
+      ]
     }
   ]
 }

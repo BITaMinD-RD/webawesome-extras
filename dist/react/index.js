@@ -4,3 +4,4 @@ export * from './wax-combobox.js';
 export * from './wax-floating-card.js';
 export * from './wax-item-list.js';
 export * from './wax-list-manager.js';
+export * from './wax-map-picker.js';

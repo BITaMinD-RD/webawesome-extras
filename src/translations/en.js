@@ -12,6 +12,8 @@ const translation = {
   $dir: 'ltr',
   waxCancel: 'Cancel',
   waxDrag: 'Drag to sort',
+  waxMapUnavailable: 'The map is not available',
+  waxMinutes: (/** @type {number} */ n) => `${n} min`,
   waxMove: 'Move (up and down arrows)',
   waxNew: 'New',
   waxNo: 'No',

@@ -47,6 +47,10 @@ wax-item-list {
 | `wax-floating-card` | `--floating-card-backdrop` | The dimmed page behind a card in the middle | `rgba(0, 0, 0, .45)` |
 | `wax-floating-card` | `--floating-card-width` | The width of the card | `400px` |
 | `wax-ask-each` | `--ask-each-width` | The width of the dialog | `31rem`, the one of a `wa-dialog` |
+| `wax-map-picker` | `--map-picker-height` | The height of the map | `300px` |
+| `wax-map-picker` | `--map-picker-route` | The line of the route | `--wa-color-brand-fill-loud` |
+| `wax-map-picker` | `--map-picker-area-1` to `--map-picker-area-5` | The areas, from the smallest (the tones start again after the fifth) | `--wa-color-success-fill-loud`, `--wa-color-warning-fill-loud`, `--wa-color-danger-fill-loud`, `--wa-color-purple-50`, `--wa-color-brand-fill-loud` |
+| `wax-map-picker` | `--map-picker-site-ring` | The ring of the highlighted site | `--wa-color-brand-fill-loud` |
 
 The reference of each component page lists the same properties, generated from its JSDoc.
 

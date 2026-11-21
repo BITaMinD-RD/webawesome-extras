@@ -44,6 +44,8 @@ A term that is missing in a registered language is not an error: the element sho
 | --- | --- | --- |
 | `waxCancel` | `Cancel` | [Ask each](components/ask-each.md#texts): the cancel button (`labels.cancel`) |
 | `waxDrag` | `Drag to sort` | [Item list](components/item-list.md#texts): the title of the handle (`handle-title`) |
+| `waxMapUnavailable` | `The map is not available` | [Map picker](components/map-picker.md#texts): the notice that takes the place of a map that could not be loaded |
+| `waxMinutes` | `20 min` | [Map picker](components/map-picker.md#texts): a function of the number, the tooltip of an area |
 | `waxMove` | `Move (up and down arrows)` | [Item list](components/item-list.md#texts): the label of the handle (`handle-label`) |
 | `waxNew` | `New` | [List manager](components/list-manager.md#texts): the button (`new-label`) |
 | `waxNo` | `No` | [Ask each](components/ask-each.md#texts): the no button (`labels.no`) |

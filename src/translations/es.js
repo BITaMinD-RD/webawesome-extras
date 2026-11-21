@@ -8,6 +8,8 @@ const translation = {
   $dir: 'ltr',
   waxCancel: 'Cancelar',
   waxDrag: 'Arrastrar para ordenar',
+  waxMapUnavailable: 'El mapa no está disponible',
+  waxMinutes: (/** @type {number} */ n) => `${n} min`,
   waxMove: 'Mover (flechas arriba y abajo)',
   waxNew: 'Nuevo',
   waxNo: 'No',
