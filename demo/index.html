@@ -76,6 +76,21 @@
     <output id="ask-out"></output>
   </section>
 
+  <section>
+    <h2>wax-map-picker</h2>
+    <p>Click the map or drag the marker. Leaflet and the tiles come from the internet.</p>
+    <wa-select id="map-provider" value="osm" size="s" label="Tiles">
+      <wa-option value="osm">osm</wa-option>
+      <wa-option value="opentopomap">opentopomap</wa-option>
+      <wa-option value="cyclosm">cyclosm</wa-option>
+      <wa-option value="osm-hot">osm-hot</wa-option>
+      <wa-option value="carto-light">carto-light</wa-option>
+      <wa-option value="carto-dark">carto-dark</wa-option>
+    </wa-select>
+    <wax-map-picker id="map" lat="41.3874" lon="2.1686" zoom="13"></wax-map-picker>
+    <output id="map-out"></output>
+  </section>
+
   <script type="module">
     const $ = id => document.getElementById(id);
     await customElements.whenDefined('wax-combobox');
@@ -118,6 +133,16 @@
     card.addEventListener('wa-show', event => {
       if (event.target === card) card.innerHTML = '<strong>Hello</strong><p>This card floats next to the button. Escape, a click outside or the cross close it.</p>';
     });
+
+    const map = $('map');
+    map.setSites([
+      { key: 'stadium', lat: 41.3809, lon: 2.1228, icon: '🏟️', label: 'Stadium' },
+      { key: 'station', lat: 41.3791, lon: 2.14, icon: '🚉', label: 'Station' }
+    ], { fit: true });
+    $('map-provider').addEventListener('change', event => { map.provider = event.target.value; });
+    map.addEventListener('wax-pick', event => { $('map-out').textContent = `Picked: ${event.detail.lat.toFixed(5)}, ${event.detail.lon.toFixed(5)}`; });
+    map.addEventListener('wax-site-click', event => { map.highlightSite(event.detail.key); $('map-out').textContent = `Site: ${event.detail.key}`; });
+    map.addEventListener('wax-map-error', () => { $('map-out').textContent = 'The map could not be loaded: no connection?'; });
 
     const ask = $('ask');
     ask.describe = file => `"${file}"?`;
