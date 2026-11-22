@@ -4,7 +4,7 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { END, START, elementsOf, referenceOf, withReference } from '../DocsTables.js';
 import { extractExamples, tagsOf } from '../../docs/site/examples.js';
-import { cardsOf, filterCards } from '../../docs/site/gallery.js';
+import { STATUS_VARIANTS, cardsOf, filterCards } from '../../docs/site/gallery.js';
 
 const ROOT = join(import.meta.dirname, '..', '..');
 const manifest = JSON.parse(readFileSync(join(ROOT, 'custom-elements.json'), 'utf8'));
@@ -106,10 +106,10 @@ test('cardsOf: a card per element with the name of its page, its tag, summary, v
     { kind: 'class', name: 'WaxB', tagName: 'wax-b', customElement: true, summary: 'Second.', since: '0.2.0' },
     { kind: 'class', name: 'WaxA', tagName: 'wax-a', customElement: true, summary: 'First.', since: '0.1.0' }
   ] }] };
-  const pages = [{ title: 'Things', pages: [{ title: 'All', path: 'components/index.md' }, { title: 'A', path: 'components/a.md', preview: '<wax-a></wax-a>' }, { title: 'B', path: 'components/b.md', preview: '<wax-b></wax-b>' }] }];
+  const pages = [{ title: 'Things', pages: [{ title: 'All', path: 'components/index.md' }, { title: 'A', path: 'components/a.md', preview: '<wax-a></wax-a>' }, { title: 'B', path: 'components/b.md', preview: '<wax-b></wax-b>', status: 'beta' }] }];
   assert.deepEqual(cardsOf(pages, manifest), [
-    { name: 'A', tag: 'wax-a', summary: 'First.', since: '0.1.0', path: 'components/a.md', preview: '<wax-a></wax-a>' },
-    { name: 'B', tag: 'wax-b', summary: 'Second.', since: '0.2.0', path: 'components/b.md', preview: '<wax-b></wax-b>' }
+    { name: 'A', tag: 'wax-a', summary: 'First.', since: '0.1.0', status: 'stable', path: 'components/a.md', preview: '<wax-a></wax-a>' },
+    { name: 'B', tag: 'wax-b', summary: 'Second.', since: '0.2.0', status: 'beta', path: 'components/b.md', preview: '<wax-b></wax-b>' }
   ]);
   const without = field => {
     const copy = structuredClone(manifest);
@@ -127,6 +127,7 @@ test('the gallery has a card for every element of the manifest: each with its se
   assert.deepEqual(cards.map(card => card.tag).sort(), elementsOf(manifest).map(element => element.tagName).sort());
   for (const card of cards) {
     assert.match(card.since, /^\d+\.\d+\.\d+$/);
+    assert.ok(card.status in STATUS_VARIANTS, `${card.tag} has the unknown status ${card.status}`);
     assert.ok(card.preview.includes(`<${card.tag}`), `the preview of ${card.tag} does not use it`);
   }
 });

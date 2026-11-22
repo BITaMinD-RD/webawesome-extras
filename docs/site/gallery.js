@@ -7,13 +7,16 @@
  */
 import { mountExample } from './examples.js';
 
-/** @typedef {{title: string, path: string, preview?: string}} Page */
-/** @typedef {{name: string, tag: string, summary: string, since: string, path: string, preview: string}} Card */
+/** The `wa-badge` variant of each status an entry of docs/pages.json can have (`status`, "stable" when it has none) */
+export const STATUS_VARIANTS = { stable: 'success', beta: 'warning', experimental: 'danger', deprecated: 'neutral' };
+
+/** @typedef {{title: string, path: string, preview?: string, status?: string}} Page */
+/** @typedef {{name: string, tag: string, summary: string, since: string, status: string, path: string, preview: string}} Card */
 
 /**
  * @param {{title: string, pages: Page[]}[]} sections The content of docs/pages.json
  * @param {{modules?: {declarations?: any[]}[]}} manifest The content of custom-elements.json
- * @returns {Card[]} A card for each element of the manifest, in the order of the pages; it throws if an element has no page with a preview, no summary or no version
+ * @returns {Card[]} A card for each element of the manifest, in the order of the pages; it throws if an element has no page with a preview, no summary or no version; the status is the one of its page, "stable" by default
  */
 export function cardsOf(sections, manifest) {
   const pages = sections.flatMap(section => section.pages);
@@ -25,7 +28,7 @@ export function cardsOf(sections, manifest) {
     if (!page.preview) throw new Error(`${element.tagName}: its entry in docs/pages.json has no "preview"`);
     if (!element.summary) throw new Error(`${element.tagName} has no @summary in its JSDoc`);
     if (!element.since) throw new Error(`${element.tagName} has no @since in its JSDoc`);
-    return { name: page.title, tag: element.tagName, summary: element.summary, since: element.since, path, preview: page.preview };
+    return { name: page.title, tag: element.tagName, summary: element.summary, since: element.since, status: page.status ?? 'stable', path, preview: page.preview };
   });
   const order = pages.map(page => page.path);
   return cards.sort((a, b) => order.indexOf(a.path) - order.indexOf(b.path));
@@ -93,13 +96,19 @@ export async function renderGallery(container, cards) {
     tag.textContent = `<${card.tag}>`;
     const summary = document.createElement('p');
     summary.textContent = card.summary;
-    const since = document.createElement('p');
-    since.className = 'gallery-since';
+    const footer = document.createElement('footer');
+    footer.className = 'gallery-footer';
+    const status = document.createElement('wa-badge');
+    status.setAttribute('variant', STATUS_VARIANTS[card.status] ?? 'neutral');
+    status.textContent = card.status.charAt(0).toUpperCase() + card.status.slice(1);
+    const since = document.createElement('wa-badge');
+    since.setAttribute('variant', 'neutral');
     since.textContent = `Since ${card.since}`;
+    footer.append(status, since);
     const preview = document.createElement('div');
     preview.className = 'gallery-preview';
     preview.dataset.tag = card.tag;
-    item.append(preview, title, tag, summary, since);
+    item.append(preview, title, tag, summary, footer);
     list.append(item);
     items.set(card, item);
     mounted.push(mountExample(preview, card.preview).catch(error => {

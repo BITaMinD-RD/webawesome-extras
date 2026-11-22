@@ -79,7 +79,9 @@ describe('the gallery of the components page', () => {
       for (const [index, card] of cards.entries()) {
         const item = items[index];
         expect(item.querySelector('h3 a').getAttribute('href'), card.tag).to.equal(`#/${card.path}`);
-        expect(item.textContent, card.tag).to.include(`<${card.tag}>`).and.include(`Since ${card.since}`);
+        expect(item.textContent, card.tag).to.include(`<${card.tag}>`);
+        const badges = [...item.querySelectorAll('.gallery-footer wa-badge')].map(badge => badge.textContent);
+        expect(badges, card.tag).to.deep.equal([card.status.charAt(0).toUpperCase() + card.status.slice(1), `Since ${card.since}`]);
         expect(item.querySelector('.gallery-preview').textContent, `the preview of ${card.tag} failed`).to.not.include('failed');
         for (const tag of tagsOf(card.preview)) expect(customElements.get(tag), `<${tag}> in the preview of ${card.tag}`).to.exist;
       }
