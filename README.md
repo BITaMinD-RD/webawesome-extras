@@ -5,7 +5,7 @@ custom elements with the prefix `wax-`, built with Lit and styled with the `--wa
 
 This is an independent project, not affiliated with or endorsed by Web Awesome or Font Awesome.
 
-**[See them working](https://bitamind-rd.github.io/webawesome-extras/demo/)**: one page with every element.
+**[See them working](https://bitamind-rd.github.io/webawesome-extras/demo/)**: one page with every element. **[Read the docs](https://bitamind-rd.github.io/webawesome-extras/docs/)**: a page per element, with live examples.
 
 ## Components
 
@@ -32,9 +32,8 @@ The import map, cherry-picking, vendoring and React are in [installation and usa
 
 ## The docs
 
-The pages are in [`docs/`](docs/). To read them with their live examples, serve the root of the repository with any static server and open `/docs/`:
+The pages are in [`docs/`](docs/), and the site that renders them with their live examples is published at <https://bitamind-rd.github.io/webawesome-extras/docs/>. It takes Web Awesome, Lit and the Markdown renderer from a CDN, so it needs a connection but no `npm install`. To run it from a clone, serve the root of the repository with any static server and open `/docs/`:
 
-    npm install
     npx http-server -p 8080          # or: python3 -m http.server 8080
     # then open http://localhost:8080/docs/
 

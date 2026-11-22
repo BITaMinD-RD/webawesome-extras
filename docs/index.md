@@ -28,11 +28,12 @@ drift from the code.
 
 ## Reading these pages
 
-The pages are Markdown files in the `docs/` folder of the repository, readable as they are. The local site renders them with the examples running:
+The pages are Markdown files in the `docs/` folder of the repository, readable as they are. The site renders them with the examples running, and it is published at
+<https://bitamind-rd.github.io/webawesome-extras/docs/>: it takes Web Awesome, Lit and the Markdown renderer from a CDN, so it needs a connection but no `npm install`. To run it from your clone,
+serve the root of the repository with any static server:
 
 ```
-npm install
 npx http-server -p 8080     # or: python3 -m http.server 8080
 ```
 
-and then open `http://localhost:8080/docs/`. Every example of every page is also mounted by the browser tests (`npm test`), so a broken example fails the build.
+and then open `http://localhost:8080/docs/`. Every example of every page is also mounted by the browser tests (`npm install`, then `npm test`, which do not use the network), so a broken example fails the build.

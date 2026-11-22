@@ -50,9 +50,9 @@ Because the imports are bare, the page needs an **import map** that says where e
 
 The files in `lib/` are yours: whichever way you bring Web Awesome and Lit in (the packages from npm, a bundle), the import map says where they are. If Lit comes from `node_modules`,
 the map lists `lit`, `lit/` and the packages Lit itself imports (`@lit/reactive-element`, `lit-html` and `lit-element`); with a bundle that has them all, every name points at the same file.
-The [local docs site](index.md#reading-these-pages) does it from `node_modules`: see the import map in `docs/index.html`.
+The [docs site](index.md#reading-these-pages) does it from a CDN (jsDelivr): see the import map in `docs/index.html`, which lists only what the elements and the site import (`lit`, `lit/directives/repeat.js`, `marked` and the prefix of Web Awesome).
 
-Web Awesome's own `utilities/localize.js` imports `@shoelace-style/localize`, so the map lists it too (the docs site does). The language of the elements is set as in Web Awesome: see [Localization](localization.md).
+Web Awesome's own `utilities/localize.js` imports `@shoelace-style/localize`, so the map lists it too if you load Web Awesome from its own files (the CDN build of the docs site has it bundled). The language of the elements is set as in Web Awesome: see [Localization](localization.md).
 
 The import path `@awesome.me/webawesome/dist/components/select/select.js` has to be the same file that Web Awesome's own autoloader loads for `<wa-select>`, so that nothing is loaded twice. A prefix
 entry in the import map (`"@awesome.me/webawesome/dist/": "/lib/webawesome/dist/"`) does that for all of them.
