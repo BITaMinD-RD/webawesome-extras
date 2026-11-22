@@ -72,7 +72,6 @@ th { background: var(--wa-color-neutral-fill-quiet); white-space: nowrap; }
   order: 0; min-height: 9rem; max-height: 14rem; overflow: auto; padding: var(--wa-space-s); margin-bottom: var(--wa-space-xs);
   background: var(--wa-color-surface-default); border-radius: var(--wa-border-radius-m); border: var(--wa-border-width-s) var(--wa-border-style) var(--wa-color-surface-border);
 }
-.gallery-preview wax-map-picker { pointer-events: none; }
 .gallery-card h3 { margin: 0; font-size: var(--wa-font-size-l); }
 .gallery-card h3 a { color: inherit; text-decoration: none; }
 .gallery-card h3 a:hover { text-decoration: underline; }

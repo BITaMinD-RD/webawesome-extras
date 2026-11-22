@@ -63,7 +63,7 @@
       {
         "title": "Map picker",
         "path": "components/map-picker.md",
-        "preview": "<wax-map-picker lat='41.3874' lon='2.1686' zoom='4' readonly style='--map-picker-height: 12rem'></wax-map-picker>"
+        "preview": "<wax-map-picker id='gallery-map-picker' lat='41.3874' lon='2.1686' zoom='12' style='--map-picker-height: 12rem'></wax-map-picker><small id='gallery-map-picked'>Click the map to move the point</small><script type=\"module\">const picked = document.getElementById('gallery-map-picked'); document.getElementById('gallery-map-picker').addEventListener('wax-pick', event => { picked.textContent = `Picked ${event.detail.lat.toFixed(4)}, ${event.detail.lon.toFixed(4)}`; });</script>"
       }
     ]
   }
