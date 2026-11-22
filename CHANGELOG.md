@@ -2,7 +2,7 @@
 
 All notable changes to this package are listed here. Versions follow [Semantic Versioning](https://semver.org/).
 
-## Unreleased
+## 0.2.2
 
 - `wax-floating-card` is a `wa-popup` inside when there is a mouse: it is placed by Web Awesome (flips to the other side, shifts and shrinks its height to fit) instead of by the coordinates of the page, so it no longer has to be a child of the `body`. New `placement` (`bottom-start` by default) and `distance` (6) attributes, a `popup` part, and `place()` asks the popup to reposition.
 - `wax-floating-card` without a mouse is a `wa-dialog` inside (`light-dismiss`, without header, with its own × button), so Escape, a click outside and the focus are the ones of Web Awesome; its inner events do not come out, only the four of the card, once each. Changed: the `backdrop` part and the `--floating-card-backdrop` and `--floating-card-centered-shadow` properties are gone (the dialog dims the page with its own `::backdrop`; style it with the `dialog` and `body` parts and `--width`), `--floating-card-width` and the `card` part only apply next to the anchor, and in the middle a click outside has the card itself as the `source` of `wa-hide` (before it was the backdrop).
