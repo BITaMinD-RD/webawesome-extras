@@ -53,7 +53,7 @@ const NOW = { animate: false };
  * @prop {boolean} unavailable - The map could not be loaded (read only)
  * @prop {{lat: number, lon: number} | null} point - The point, or null if there is none
  * @prop {any} map - The Leaflet map, once it exists (null before), for what this element does not cover
- * @prop {{js: string, jsIntegrity: string, css: string, cssIntegrity: string, imagePath: string}} leaflet - Static. Where Leaflet is loaded from: the files of version 1.9.4 on unpkg, with their integrity. Set it before the first map is shown to serve your own copy (an empty integrity is not checked)
+ * @prop {{js: string, jsIntegrity: string, css: string, cssIntegrity: string, imagePath: string, prefix: string}} leaflet - Static. Where Leaflet is loaded from: the files of version 1.9.4 on unpkg, with their integrity. Set it before the first map is shown to serve your own copy (an empty integrity is not checked). `prefix` is the HTML before the attributions of the tiles: a plain link to Leaflet by default, without the flag Leaflet adds; an empty one leaves only the attributions
  * @prop {Record<string, {url: string, attribution?: string, maxZoom?: number, subdomains?: string}>} providers - Static. The catalog of tiles by name, where an application can add its own
  *
  * @fires wax-pick - The user clicked the map or dropped the marker (not `setPoint`, nor changing `lat` and `lon`). `detail: { lat, lon }`
@@ -371,6 +371,7 @@ export class WaxMapPicker extends LitElement {
     const view = this.#view;
     this.#map = L.map(container).setView(view?.center ?? [this.centerLat, this.centerLon], view?.zoom ?? this.zoom, NOW);
     this.#view = null;
+    this.#map.attributionControl.setPrefix(WaxMapPicker.leaflet.prefix ?? LEAFLET.prefix);
     this.#map.on('click', (/** @type {any} */ event) => {
       if (!this.readonly) this.#pick(event.latlng.lat, event.latlng.lng);
     });

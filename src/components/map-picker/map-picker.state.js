@@ -26,7 +26,9 @@ export const LEAFLET = Object.freeze({
   css: 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
   cssIntegrity: 'sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=',
   // The images of the default marker; when it is empty they are next to the stylesheet (`images/`)
-  imagePath: ''
+  imagePath: '',
+  // What goes before the attributions of the tiles, as HTML: a plain link to Leaflet, without the flag that Leaflet adds by default since 1.8
+  prefix: '<a href="https://leafletjs.com">Leaflet</a>'
 });
 
 const OSM = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';

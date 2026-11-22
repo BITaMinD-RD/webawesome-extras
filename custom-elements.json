@@ -1493,11 +1493,11 @@
               "kind": "field",
               "name": "leaflet",
               "type": {
-                "text": "{js: string, jsIntegrity: string, css: string, cssIntegrity: string, imagePath: string}"
+                "text": "{js: string, jsIntegrity: string, css: string, cssIntegrity: string, imagePath: string, prefix: string}"
               },
               "static": true,
               "default": "{ ...LEAFLET }",
-              "description": "Static. Where Leaflet is loaded from: the files of version 1.9.4 on unpkg, with their integrity. Set it before the first map is shown to serve your own copy (an empty integrity is not checked)"
+              "description": "Static. Where Leaflet is loaded from: the files of version 1.9.4 on unpkg, with their integrity. Set it before the first map is shown to serve your own copy (an empty integrity is not checked). `prefix` is the HTML before the attributions of the tiles: a plain link to Leaflet by default, without the flag Leaflet adds; an empty one leaves only the attributions"
             },
             {
               "kind": "field",

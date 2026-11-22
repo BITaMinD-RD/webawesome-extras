@@ -105,3 +105,8 @@ test('Leaflet is pinned to a version with the integrity of both files', () => {
   assert.match(LEAFLET.jsIntegrity, /^sha256-/);
   assert.match(LEAFLET.cssIntegrity, /^sha256-/);
 });
+
+test('the prefix of the attributions is a plain link to Leaflet, without the flag Leaflet puts by default', () => {
+  assert.equal(LEAFLET.prefix, '<a href="https://leafletjs.com">Leaflet</a>');
+  assert.doesNotMatch(LEAFLET.prefix, /svg|flag|\p{Regional_Indicator}/u);
+});

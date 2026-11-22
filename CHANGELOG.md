@@ -2,6 +2,10 @@
 
 All notable changes to this package are listed here. Versions follow [Semantic Versioning](https://semver.org/).
 
+## Unreleased
+
+- `wax-map-picker` shows a plain link to Leaflet before the attributions of the tiles, without the flag Leaflet adds by default since 1.8; `WaxMapPicker.leaflet.prefix` changes it (empty leaves only the attributions).
+
 ## 0.2.2
 
 - `wax-floating-card` is a `wa-popup` inside when there is a mouse: it is placed by Web Awesome (flips to the other side, shifts and shrinks its height to fit) instead of by the coordinates of the page, so it no longer has to be a child of the `body`. New `placement` (`bottom-start` by default) and `distance` (6) attributes, a `popup` part, and `place()` asks the popup to reposition.
