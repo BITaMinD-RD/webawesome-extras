@@ -3,6 +3,7 @@ import { setBasePath as setWebAwesomeBasePath, startLoader as startWebAwesomeLoa
 import { setBasePath, startLoader } from '../src/webawesome-extras.loader.js';
 import { WaxMapPicker } from '../src/components/map-picker/map-picker.js';
 import { extractExamples, mountExample, tagsOf } from './site/examples.js';
+import { cardsOf, renderGallery } from './site/gallery.js';
 
 /**
  * Every example of the documentation (the `html example` blocks of every page in docs/pages.json) is mounted as the site mounts it, with the two loaders, and must define its
@@ -58,4 +59,35 @@ describe('the examples of the documentation', () => {
       });
     });
   }
+});
+
+describe('the gallery of the components page', () => {
+  it('draws a card per element, links to its page, and mounts every preview with its elements defined and nothing thrown', async function () {
+    this.timeout(30000);
+    const cards = cardsOf(await (await fetch('/docs/pages.json')).json(), await (await fetch('/custom-elements.json')).json());
+    const errors = [];
+    const onError = event => errors.push(event.error?.message ?? event.message ?? String(event.reason));
+    window.addEventListener('error', onError);
+    window.addEventListener('unhandledrejection', onError);
+    const container = document.createElement('div');
+    document.body.append(container);
+    try {
+      await renderGallery(container, cards);
+      await aTimeout(50);
+      const items = [...container.querySelectorAll('.gallery-card')];
+      expect(items.length).to.equal(cards.length);
+      for (const [index, card] of cards.entries()) {
+        const item = items[index];
+        expect(item.querySelector('h3 a').getAttribute('href'), card.tag).to.equal(`#/${card.path}`);
+        expect(item.textContent, card.tag).to.include(`<${card.tag}>`).and.include(`Since ${card.since}`);
+        expect(item.querySelector('.gallery-preview').textContent, `the preview of ${card.tag} failed`).to.not.include('failed');
+        for (const tag of tagsOf(card.preview)) expect(customElements.get(tag), `<${tag}> in the preview of ${card.tag}`).to.exist;
+      }
+      expect(errors, 'errors in the gallery').to.deep.equal([]);
+    } finally {
+      window.removeEventListener('error', onError);
+      window.removeEventListener('unhandledrejection', onError);
+      container.remove();
+    }
+  });
 });

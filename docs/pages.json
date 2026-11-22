@@ -2,23 +2,69 @@
   {
     "title": "Getting started",
     "pages": [
-      { "title": "Overview", "path": "index.md" },
-      { "title": "Installation and usage", "path": "installation.md" },
-      { "title": "Events", "path": "events.md" },
-      { "title": "Theming", "path": "theming.md" },
-      { "title": "Localization", "path": "localization.md" },
-      { "title": "React", "path": "react.md" }
+      {
+        "title": "Overview",
+        "path": "index.md"
+      },
+      {
+        "title": "Installation and usage",
+        "path": "installation.md"
+      },
+      {
+        "title": "Events",
+        "path": "events.md"
+      },
+      {
+        "title": "Theming",
+        "path": "theming.md"
+      },
+      {
+        "title": "Localization",
+        "path": "localization.md"
+      },
+      {
+        "title": "React",
+        "path": "react.md"
+      }
     ]
   },
   {
     "title": "Components",
     "pages": [
-      { "title": "Item list", "path": "components/item-list.md" },
-      { "title": "Combobox", "path": "components/combobox.md" },
-      { "title": "Floating card", "path": "components/floating-card.md" },
-      { "title": "Ask each", "path": "components/ask-each.md" },
-      { "title": "List manager", "path": "components/list-manager.md" },
-      { "title": "Map picker", "path": "components/map-picker.md" }
+      {
+        "title": "All components",
+        "path": "components/index.md"
+      },
+      {
+        "title": "Item list",
+        "path": "components/item-list.md",
+        "preview": "<wax-item-list id='gallery-item-list' movable></wax-item-list><script type=\"module\">document.getElementById('gallery-item-list').items = [{ key: 'apple', icon: '🍎', name: 'Apple', note: 'red or green' }, { key: 'banana', icon: '🍌', name: 'Banana', note: 'from far away' }, { key: 'cherry', icon: '🍒', name: 'Cherry', note: 'in summer' }];</script>"
+      },
+      {
+        "title": "Combobox",
+        "path": "components/combobox.md",
+        "preview": "<wax-combobox id='gallery-combobox' placeholder='Pick a city...'></wax-combobox><script type=\"module\">document.getElementById('gallery-combobox').choices = ['Oslo', 'Lima', 'Kyoto', 'Cairo', 'Quito'].map(city => ({ value: city.toLowerCase(), label: city }));</script>"
+      },
+      {
+        "title": "Floating card",
+        "path": "components/floating-card.md",
+        "preview": "<wa-button id='gallery-floating-button' size='s'>Open the card</wa-button><wax-floating-card id='gallery-floating-card' close-label='Close'>A card next to what was clicked.</wax-floating-card><script type=\"module\">const button = document.getElementById('gallery-floating-button'); button.addEventListener('click', () => document.getElementById('gallery-floating-card').toggle(button));</script>"
+      },
+      {
+        "title": "Ask each",
+        "path": "components/ask-each.md",
+        "preview": "<wax-ask-each id='gallery-ask-each' label='Overwrite?' question='Overwrite' light-dismiss></wax-ask-each><wa-button id='gallery-ask-button' size='s'>Ask about two files</wa-button><script type=\"module\">const ask = document.getElementById('gallery-ask-each'); ask.describe = file => `\"${file}\"?`; ask.labels = { yes: 'Overwrite', no: 'Skip', yesAll: 'Overwrite all', noAll: 'Skip all', cancel: 'Cancel', progress: '{n} of {total}' }; document.getElementById('gallery-ask-button').addEventListener('click', () => ask.ask(['apples.txt', 'bananas.txt']));</script>"
+      },
+      {
+        "title": "List manager",
+        "path": "components/list-manager.md",
+        "preview": "<wax-list-manager id='gallery-list-manager' search-placeholder='Search...' new-label='New' style='max-height: 12rem'></wax-list-manager><script type=\"module\">const people = [{ key: 'ada', icon: '🙂', name: 'Ada', note: 'Oslo' }, { key: 'bruno', icon: '🙂', name: 'Bruno', note: 'Lima' }, { key: 'carla', icon: '🙂', name: 'Carla', note: 'Kyoto' }]; const manager = document.getElementById('gallery-list-manager'); manager.items = people; manager.addEventListener('wax-query', event => { manager.items = people.filter(person => person.name.toLowerCase().includes(event.detail.query.toLowerCase())); });</script>"
+      },
+      {
+        "title": "Map picker",
+        "path": "components/map-picker.md",
+        "preview": "<wax-map-picker lat='41.3874' lon='2.1686' zoom='4' readonly style='--map-picker-height: 12rem'></wax-map-picker>"
+      }
     ]
   }
 ]

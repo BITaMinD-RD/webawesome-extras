@@ -6,6 +6,7 @@
  */
 import { Marked } from 'marked';
 import { mountExample } from './examples.js';
+import { cardsOf, renderGallery } from './gallery.js';
 
 const content = /** @type {HTMLElement} */ (document.getElementById('site-content'));
 const nav = /** @type {HTMLElement} */ (document.getElementById('site-nav'));
@@ -102,6 +103,16 @@ async function show() {
   const title = sections.flatMap(section => section.pages).find(page => page.path === path)?.title;
   document.title = title ? `${title} - webawesome-extras` : 'webawesome-extras';
   scrollToAnchor(anchor);
+  // The gallery of the components page: a card per element, with its preview
+  const gallery = /** @type {HTMLElement | null} */ (content.querySelector('[data-gallery]'));
+  if (gallery) {
+    try {
+      await renderGallery(gallery, cardsOf(sections, await (await fetch('../custom-elements.json')).json()));
+    } catch (error) {
+      console.error(`${path}, gallery:`, error);
+      gallery.textContent = `The gallery failed: ${error instanceof Error ? error.message : error}`;
+    }
+  }
   // The examples run once the page is in the document, in order: they find their elements by id
   for (const [index, code] of examples.entries()) {
     const result = /** @type {HTMLElement} */ (content.querySelector(`[data-example="${index}"]`));

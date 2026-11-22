@@ -2,6 +2,12 @@
 
 All notable changes to this package are listed here. Versions follow [Semantic Versioning](https://semver.org/).
 
+## Unreleased
+
+- The docs site works as published by GitHub Pages: it takes Web Awesome, Lit and marked from jsDelivr (like the demo) and needs a connection but no `npm install`.
+- The docs have a gallery as the front page of the components: a card per element with its sentence, its version and a small live preview, made from `custom-elements.json` and `docs/pages.json`.
+- The JSDoc of each element has `@summary` and `@since`, which `custom-elements.json` now carries as `summary` and `since`.
+
 ## 0.2.1
 
 - The click or the drag of the user on `wax-map-picker` moves the marker and leaves the view as it is (`setPoint` and the `lat` and `lon` attributes still look at the point).

@@ -7,6 +7,8 @@ They depend on Web Awesome and Lit and on nothing else (the [map picker](compone
 
 ## Components
 
+The [gallery of components](components/index.md) shows each one working, small. The same list in a table:
+
 | Component | What it is for |
 |---|---|
 | [Item list](components/item-list.md) | A list to choose from: a line per item with icon, name and note; select, mark, move and swipe |
