@@ -31,16 +31,54 @@ export function cardsOf(sections, manifest) {
   return cards.sort((a, b) => order.indexOf(a.path) - order.indexOf(b.path));
 }
 
+/** @param {string} text @returns {string} The text in lower case and without accents, to compare it */
+const fold = text => text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+
 /**
- * Draws the cards in the container and mounts the preview of each one (they do not wait for each other, and one that fails does not stop the rest).
+ * @param {Card[]} cards
+ * @param {string} query What was typed: every word of it must appear in the name, the tag or the summary of a card, ignoring case and accents
+ * @returns {Card[]} The cards that match, in their order; all of them for an empty query
+ */
+export function filterCards(cards, query) {
+  const words = fold(query).split(/\s+/).filter(Boolean);
+  return cards.filter(card => {
+    const text = fold(`${card.name} ${card.tag} ${card.summary}`);
+    return words.every(word => text.includes(word));
+  });
+}
+
+/**
+ * Draws the hero, the search field and the cards in the container and mounts the preview of each one (they do not wait for each other, and one that fails does not stop the rest).
  *
  * @param {HTMLElement} container
  * @param {Card[]} cards
  * @returns {Promise<void>} It settles when every preview is mounted or has failed
  */
 export async function renderGallery(container, cards) {
+  const hero = document.createElement('header');
+  hero.className = 'gallery-hero';
+  const heading = document.createElement('h1');
+  heading.textContent = 'Build with extra components';
+  const lead = document.createElement('p');
+  lead.textContent = `${cards.length} elements that look and work as if they were native Web Awesome ones. Each card shows one working; its title opens its page, with the examples, how to import it and its reference.`;
+  hero.append(heading, lead);
+  const search = document.createElement('wa-input');
+  search.className = 'gallery-search';
+  search.setAttribute('with-clear', '');
+  search.setAttribute('placeholder', 'Find a component to use…');
+  search.setAttribute('aria-label', 'Find a component');
+  const icon = document.createElement('wa-icon');
+  icon.setAttribute('slot', 'start');
+  icon.setAttribute('name', 'magnifying-glass');
+  search.append(icon);
+  const empty = document.createElement('p');
+  empty.className = 'gallery-empty';
+  empty.hidden = true;
+  empty.textContent = 'No component matches.';
   const list = document.createElement('ul');
   list.className = 'gallery';
+  /** @type {Map<Card, HTMLElement>} */
+  const items = new Map();
   /** @type {Promise<void>[]} */
   const mounted = [];
   for (const card of cards) {
@@ -63,11 +101,18 @@ export async function renderGallery(container, cards) {
     preview.dataset.tag = card.tag;
     item.append(preview, title, tag, summary, since);
     list.append(item);
+    items.set(card, item);
     mounted.push(mountExample(preview, card.preview).catch(error => {
       console.error(`${card.tag}, preview:`, error);
       preview.textContent = 'The preview failed.';
     }));
   }
-  container.replaceChildren(list);
+  // The cards that do not match are hidden, not removed: their previews stay mounted
+  search.addEventListener('input', () => {
+    const shown = new Set(filterCards(cards, /** @type {HTMLInputElement} */ (search).value ?? ''));
+    for (const [card, item] of items) item.hidden = !shown.has(card);
+    empty.hidden = shown.size > 0;
+  });
+  container.replaceChildren(hero, search, empty, list);
   await Promise.all(mounted);
 }

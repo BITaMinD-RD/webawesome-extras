@@ -79,3 +79,11 @@ th { background: var(--wa-color-neutral-fill-quiet); white-space: nowrap; }
 .gallery-card code { align-self: flex-start; }
 .gallery-card p { margin: 0; }
 .gallery-since { margin-top: auto !important; padding-top: var(--wa-space-xs); font-size: var(--wa-font-size-s); color: var(--wa-color-text-quiet); }
+
+/* The hero and the search field of the gallery */
+.gallery-hero { text-align: center; padding: var(--wa-space-2xl) 0 var(--wa-space-l); }
+.gallery-hero h1 { margin: 0 0 var(--wa-space-s); font-size: var(--wa-font-size-3xl); line-height: var(--wa-line-height-condensed); }
+.gallery-hero p { margin: 0 auto; max-width: 40rem; color: var(--wa-color-text-quiet); font-size: var(--wa-font-size-l); }
+.gallery-search { display: block; max-width: 32rem; margin: 0 auto var(--wa-space-l); }
+.gallery-empty { text-align: center; color: var(--wa-color-text-quiet); }
+.gallery-card[hidden] { display: none; }

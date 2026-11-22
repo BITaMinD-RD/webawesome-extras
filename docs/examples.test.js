@@ -83,6 +83,20 @@ describe('the gallery of the components page', () => {
         expect(item.querySelector('.gallery-preview').textContent, `the preview of ${card.tag} failed`).to.not.include('failed');
         for (const tag of tagsOf(card.preview)) expect(customElements.get(tag), `<${tag}> in the preview of ${card.tag}`).to.exist;
       }
+      // The search field hides the cards that do not match and says so when none does
+      const search = container.querySelector('wa-input.gallery-search');
+      const visible = () => items.filter(item => !item.hidden).length;
+      search.value = cards[0].tag.toUpperCase();
+      search.dispatchEvent(new Event('input'));
+      expect(visible()).to.equal(1);
+      expect(container.querySelector('.gallery-empty').hidden).to.equal(true);
+      search.value = 'no such thing';
+      search.dispatchEvent(new Event('input'));
+      expect(visible()).to.equal(0);
+      expect(container.querySelector('.gallery-empty').hidden).to.equal(false);
+      search.value = '';
+      search.dispatchEvent(new Event('input'));
+      expect(visible()).to.equal(cards.length);
       expect(errors, 'errors in the gallery').to.deep.equal([]);
     } finally {
       window.removeEventListener('error', onError);

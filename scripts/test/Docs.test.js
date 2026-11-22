@@ -4,7 +4,7 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { END, START, elementsOf, referenceOf, withReference } from '../DocsTables.js';
 import { extractExamples, tagsOf } from '../../docs/site/examples.js';
-import { cardsOf } from '../../docs/site/gallery.js';
+import { cardsOf, filterCards } from '../../docs/site/gallery.js';
 
 const ROOT = join(import.meta.dirname, '..', '..');
 const manifest = JSON.parse(readFileSync(join(ROOT, 'custom-elements.json'), 'utf8'));
@@ -142,4 +142,20 @@ test('docs/components/ redirects to the gallery of the viewer, and the repositor
   assert.match(text, /<meta http-equiv="refresh" content="0; url=\.\.\/#\/components\/index\.md">/);
   assert.match(text, /location\.replace\('\.\.\/#\/components\/index\.md'\)/);
   assert.match(text, /<a href="\.\.\/#\/components\/index\.md">/);
+});
+
+test('filterCards: every word must be in the name, tag or summary, ignoring case and accents; nothing typed keeps all, and no match gives none', () => {
+  const cards = [
+    { name: 'Combobox', tag: 'wax-combobox', summary: 'A select that filters while you type.' },
+    { name: 'Mapa', tag: 'wax-map-picker', summary: 'Elige una ubicación en el mapa.' },
+    { name: 'Item list', tag: 'wax-item-list', summary: 'A list of items.' }
+  ];
+  assert.deepEqual(filterCards(cards, ''), cards);
+  assert.deepEqual(filterCards(cards, '   '), cards);
+  assert.deepEqual(filterCards(cards, 'COMBO').map(card => card.name), ['Combobox']);
+  assert.deepEqual(filterCards(cards, 'map-picker').map(card => card.name), ['Mapa']);
+  assert.deepEqual(filterCards(cards, 'ubicacion').map(card => card.name), ['Mapa']);
+  assert.deepEqual(filterCards(cards, 'UBICACIÓN mapa').map(card => card.name), ['Mapa']);
+  assert.deepEqual(filterCards(cards, 'list type').map(card => card.name), []);
+  assert.deepEqual(filterCards(cards, 'zzz'), []);
 });
