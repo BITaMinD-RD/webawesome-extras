@@ -61,11 +61,11 @@ combo.addEventListener('change', () => use(combo.value));
 
 **The floating card** is `<wax-floating-card>` (`components/floating-card/floating-card.js`, with `floating-card.state.js` for its rules): a card next to what was clicked, for what is far from it in a long list. With a mouse it
 peeks (`peek(anchor)` shows it a moment later, `leave()` takes it away) and a click pins it (`toggle(anchor)`: the same thing again closes it); Escape, a click outside and its × close it. Without a mouse it goes in the
-middle with the page dimmed. It opens and closes like a `wa-dialog` (`open`, `show()`, `hide()`, and the events of Web Awesome, `wa-show`, `wa-after-show`, `wa-hide`, `wa-after-hide`, the first and the third cancellable;
+middle, in a `wa-dialog` that dims the page. It opens and closes like a `wa-dialog` (`open`, `show()`, `hide()`, and the events of Web Awesome, `wa-show`, `wa-after-show`, `wa-hide`, `wa-after-hide`, the first and the third cancellable;
 the detail of `wa-hide` is its `source`, the element that asked) and knows nothing of the Back button: whoever wants Back to close it listens to those events (`BackClose.bind` in webutils).
 
 ```html
-<wax-floating-card close-label="Cerrar"></wax-floating-card>   <!-- a child of the body: it is placed with the coordinates of the page -->
+<wax-floating-card close-label="Cerrar"></wax-floating-card>
 ```
 ```js
 import './lib/webawesome-extras/components/floating-card/floating-card.js';
@@ -74,7 +74,7 @@ day.addEventListener('click', () => card.toggle(day));
 ```
 
 The content is its children, put by whoever opens it in the listener of `wa-show` (so what is slow to draw is only drawn when it shows). `card.place()` puts it back next to its thing after what is inside has grown.
-**Style**: `::part(card)`, `::part(close-button)`, `::part(backdrop)`; `--floating-card-shadow`, `--floating-card-peek-shadow`, `--floating-card-centered-shadow`, `--floating-card-backdrop` and `--floating-card-width`.
+**Style**: `::part(card)`, `::part(close-button)`, `::part(popup)`, `::part(dialog)`; `--floating-card-shadow`, `--floating-card-peek-shadow` and `--floating-card-width`.
 
 **The question about each thing** is `<wax-ask-each>` (`components/ask-each/ask-each.js`, with `ask-each.state.js` for its rules): a dialog that asks about several things one by one («overwrite this file?»), with the progress, «yes to all», «no to all» and cancel.
 `ask(items)` gives a promise of the answers (`true` for the positive verb) or null if it was cancelled; `describe` says how each thing is named; `wax-all` tells whoever goes on answering the same later. It is a `wa-dialog` inside:

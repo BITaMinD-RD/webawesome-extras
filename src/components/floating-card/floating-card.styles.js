@@ -4,7 +4,8 @@ import { css } from 'lit';
 /** The styles of `<wax-floating-card>`, in the shadow of the element: only `--wa-*` tokens, and its own custom properties always falling back to them */
 export default css`
   :host { display: none; }
-  :host([open]) { display: contents; }
+  /* In the middle, the wa-dialog needs the host while it closes */
+  :host([open]), :host([centered]) { display: contents; }
   :host([hidden]) { display: none; }
   [part~="card"] {
     position: relative; z-index: 1;
@@ -34,13 +35,4 @@ export default css`
   }
   [part~="close-button"]:hover { color: var(--wa-color-text-normal); }
   [part~="close-button"]:focus-visible { outline: var(--wa-focus-ring); }
-  /* Without a mouse: in the middle, and the rest dimmed */
-  :host([centered][open]) { position: fixed; inset: 0; z-index: 30; display: grid; place-items: center; }
-  [part~="backdrop"] { position: absolute; inset: 0; background: var(--floating-card-backdrop, rgba(0, 0, 0, .45)); backdrop-filter: blur(2px); }
-  :host([centered]) [part~="card"] {
-    width: min(92vw, 560px);
-    max-height: 80vh;
-    max-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
-    box-shadow: var(--floating-card-centered-shadow, var(--wa-shadow-l));
-  }
 `;

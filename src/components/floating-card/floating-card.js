@@ -1,6 +1,7 @@
 // @ts-check
 import { LitElement, html, nothing } from 'lit';
 import '@awesome.me/webawesome/dist/components/popup/popup.js';
+import '@awesome.me/webawesome/dist/components/dialog/dialog.js';
 import { LocalizeController } from '../../utilities/localize.js';
 import { FloatingCardState } from './floating-card.state.js';
 import styles from './floating-card.styles.js';
@@ -12,7 +13,7 @@ import { WaAfterHideEvent } from '@awesome.me/webawesome/dist/events/after-hide.
 /**
  * A card that floats next to what was clicked: in a long list the thing it talks about may be far away, out of sight. With a mouse it can also peek: it shows a moment after the pointer
  * arrives (`peek`), goes when it leaves (`leave`), and stays once clicked (`show`); clicking the same thing again closes it (`toggle`). Without a mouse there is no "next to": it goes in the
- * middle with the rest dimmed. Escape, a click outside and its × close it too.
+ * middle, in a `wa-dialog` with the rest dimmed. Escape, a click outside and its × close it too.
  *
  * It opens and closes like a `wa-dialog`: the `open` property, `show()` and `hide()`, and the four events of Web Awesome (`wa-show`, `wa-after-show`, `wa-hide` and `wa-after-hide`, its own
  * classes). `wa-show` and `wa-hide` can be cancelled (`preventDefault()` keeps it as it was); at `wa-show` the element already has its `anchor` and its `centered`. It knows nothing of what it shows: the content is its children, which whoever opens it fills in the listener of
@@ -30,7 +31,7 @@ import { WaAfterHideEvent } from '@awesome.me/webawesome/dist/events/after-hide.
  * day.addEventListener('mouseleave', () => card.leave());
  * ```
  *
- * With a mouse it is a `wa-popup` inside, anchored to the element it talks about: under it by default (`placement`), on the other side or moved along if it does not fit. It is where the `anchor` is wherever the card is in the page, so it can be a child of any element.
+ * With a mouse it is a `wa-popup` inside, anchored to the element it talks about: under it by default (`placement`), on the other side or moved along if it does not fit. It is where the `anchor` is wherever the card is in the page, so it can be a child of any element. Without one it is a `wa-dialog` (`light-dismiss`, without header: the × is its own), whose focus handling, Escape and click outside are the ones of the dialog; the events of the inner popup and dialog stay inside, and what comes out are the four of the card, once each.
  *
  * @summary A card next to what was clicked: it peeks with a mouse, is pinned by a click and sits in the middle without one.
  * @since 0.1.0
@@ -58,20 +59,19 @@ import { WaAfterHideEvent } from '@awesome.me/webawesome/dist/events/after-hide.
  *
  * @fires {WaShowEvent} wa-show - It is going to show. Cancellable: `preventDefault()` keeps it closed. The content goes in here; `anchor` and `centered` are already set
  * @fires {WaAfterShowEvent} wa-after-show - It is shown and in its place
- * @fires {WaHideEvent} wa-hide - It is going to hide. Cancellable: `preventDefault()` keeps it open. `detail: { source }`: the element that asked (the close button, the backdrop, what was clicked outside) or the card itself (Escape, `hide()`, the pointer leaving, another anchor)
+ * @fires {WaHideEvent} wa-hide - It is going to hide. Cancellable: `preventDefault()` keeps it open. `detail: { source }`: the element that asked (the close button, what was clicked outside) or the card itself (Escape, `hide()`, the pointer leaving, another anchor, a click outside in the middle)
  * @fires {WaAfterHideEvent} wa-after-hide - It is hidden (it has no animation: it comes right after `wa-hide`)
  *
  * @slot - What it says. Whoever opens it puts it here, in the listener of `wa-show`
  *
- * @csspart card - The card: its border, its background, its shadow and its size
+ * @csspart card - The card next to its anchor, with a mouse: its border, its background, its shadow and its size
  * @csspart close-button - The × button, in the corner (hidden while it only peeks)
- * @csspart backdrop - The dimmed page behind it, without a mouse
  * @csspart popup - The container the `wa-popup` positions, with a mouse (its `popup` part)
+ * @csspart dialog - The `<dialog>` of the `wa-dialog`, without a mouse (its `dialog` part)
+ * @csspart body - The body of the `wa-dialog`, without a mouse (its `body` part)
  *
  * @cssprop [--floating-card-shadow] - The shadow of a pinned card (`--wa-shadow-l`)
  * @cssprop [--floating-card-peek-shadow] - The shadow of one that only peeks (`--wa-shadow-m`)
- * @cssprop [--floating-card-centered-shadow] - The shadow of one in the middle (`--wa-shadow-l`)
- * @cssprop [--floating-card-backdrop] - The dimmed page behind a card in the middle (`rgba(0, 0, 0, .45)`)
  * @cssprop [--floating-card-width] - The width of the card (`400px`)
  */
 export class WaxFloatingCard extends LitElement {
@@ -100,6 +100,9 @@ export class WaxFloatingCard extends LitElement {
 
   /** Counts the times it has been shown: only the last one says `wa-after-show` */
   #showing = 0;
+
+  /** Whether the dialog of the middle is closing because it was told to or because it was asked to (its animation takes a moment): it must not be told again */
+  #dialogClosing = false;
 
   /** @type {ReturnType<typeof setTimeout> | undefined} */
   #peeking;
@@ -158,21 +161,24 @@ export class WaxFloatingCard extends LitElement {
 
   render() {
     const close = html`<button type="button" part="close-button" aria-label=${this.closeLabel || this.#localize.term('close')} @click=${(/** @type {Event} */ event) => this.#close(/** @type {Element} */ (event.currentTarget))}>×</button>`;
-    // Without a mouse, in the middle with the rest dimmed
+    // Without a mouse, in the middle: a `wa-dialog` that dims the rest, closes with Escape and a click outside, and looks after the focus. Its events stay here: the card says its own
     if (this.centered) {
-      return html`<div part="backdrop" @click=${(/** @type {Event} */ event) => this.#close(/** @type {Element} */ (event.target))}></div>
-        <div part="card" role="dialog" aria-label=${this.label || nothing}>${close}<slot></slot></div>`;
+      return html`<wa-dialog exportparts="dialog, body" without-header light-dismiss label=${this.label || nothing}
+          @wa-show=${this.#dialogEvent} @wa-after-show=${this.#dialogShown} @wa-hide=${this.#dialogHiding} @wa-after-hide=${this.#dialogHidden}>
+        ${close}<slot></slot>
+      </wa-dialog>`;
     }
     // With a mouse, a `wa-popup` next to the anchor: the same one for every anchor, active while it is shown
     return html`<wa-popup exportparts="popup" ?active=${this.open} .anchor=${this.#anchor} placement=${this.placement} distance=${this.distance}
         flip flip-padding=${FloatingCardState.MARGIN} shift shift-padding=${FloatingCardState.MARGIN} auto-size="vertical" auto-size-padding=${FloatingCardState.MARGIN} hover-bridge
-        @wa-reposition=${(/** @type {Event} */ event) => event.stopPropagation()}>
+        @wa-reposition=${this.#dialogEvent}>
       <div part="card" role="dialog" aria-label=${this.label || nothing}>${close}<slot></slot></div>
     </wa-popup>`;
   }
 
   /** @param {import('lit').PropertyValues} changed */
   updated(changed) {
+    this.#syncDialog();
     if (changed.has('open') && changed.get('open') !== undefined) {
       // `open` set from outside, like the one of a `wa-dialog`: it shows or hides, and what was cancelled puts `open` back
       if (this.open && !this.#shown) this.show();
@@ -231,13 +237,15 @@ export class WaxFloatingCard extends LitElement {
     this.#pinned = pinned;
     this.peeking = !pinned;
     this.open = true;
-    // After this click has finished: the click that opens it is not a click outside it
-    this.#listening = setTimeout(() => document.addEventListener('click', this.#outside), 0);
-    document.addEventListener('keydown', this.#escape);
-    const shown = ++this.#showing;
-    this.#placed().then(() => {
-      if (this.#shown && shown === this.#showing) this.dispatchEvent(new WaAfterShowEvent());
-    });
+    if (!centered) {
+      // After this click has finished: the click that opens it is not a click outside it. (In the middle, the `wa-dialog` does both)
+      this.#listening = setTimeout(() => document.addEventListener('click', this.#outside), 0);
+      document.addEventListener('keydown', this.#escape);
+      const shown = ++this.#showing;
+      this.#placed().then(() => {
+        if (this.#shown && shown === this.#showing) this.dispatchEvent(new WaAfterShowEvent());
+      });
+    }
     return true;
   }
 
@@ -258,6 +266,47 @@ export class WaxFloatingCard extends LitElement {
     /** @type {any} */ (this.renderRoot.querySelector('wa-popup'))?.reposition();
   }
 
+  /** @param {Event} event What the inner `wa-popup` or `wa-dialog` says about itself: the card does not pass it on */
+  #dialogEvent = event => {
+    if (event.target === event.currentTarget) event.stopPropagation();
+  };
+
+  /** @param {Event} event The `wa-dialog` is open: the card says so */
+  #dialogShown = event => {
+    if (event.target !== event.currentTarget) return;
+    event.stopPropagation();
+    if (this.#shown && this.centered) this.dispatchEvent(new WaAfterShowEvent());
+  };
+
+  /** @param {Event} event The `wa-dialog` is asked to close (Escape, a click outside), unless it was the card that asked */
+  #dialogHiding = event => {
+    if (event.target !== event.currentTarget) return;
+    event.stopPropagation();
+    if (this.#dialogClosing) return;
+    // Its source is its own `<dialog>` for Escape and a click outside: for the card, itself. If the card is told no, the dialog stays open
+    const source = /** @type {CustomEvent} */ (event).detail?.source;
+    if (this.#close(source instanceof HTMLDialogElement ? this : source)) this.#dialogClosing = true;
+    else event.preventDefault();
+  };
+
+  /** @param {Event} event The `wa-dialog` has closed (the card said so when it was asked, as it has no animation of its own) */
+  #dialogHidden = event => {
+    if (event.target !== event.currentTarget) return;
+    event.stopPropagation();
+    this.#dialogClosing = false;
+    this.#syncDialog();   // it was shown again while the dialog was closing
+  };
+
+  /** Opens or closes the `wa-dialog` of the middle as the card is: it follows `open`, and tells back in its events */
+  async #syncDialog() {
+    const dialog = /** @type {any} */ (this.renderRoot?.querySelector('wa-dialog'));
+    if (!dialog) return;
+    await dialog.updateComplete;
+    const wanted = this.#shown && this.centered;
+    if (wanted && !dialog.open) dialog.open = true;
+    else if (!wanted && dialog.open && !this.#dialogClosing) { this.#dialogClosing = true; dialog.open = false; }
+  }
+
   /** @returns {Promise<void>} Once what is shown is drawn and, next to its anchor, the popup has placed it */
   async #placed() {
     await this.updateComplete;
@@ -268,7 +317,7 @@ export class WaxFloatingCard extends LitElement {
   }
 
   /**
-   * @param {Element} [source] What asked (the close button, the backdrop, what was clicked outside); the card itself if nothing else (Escape, `hide()`, the pointer leaving, another anchor)
+   * @param {Element} [source] What asked (the close button, what was clicked outside); the card itself if nothing else (Escape, `hide()`, the pointer leaving, another anchor, a click outside in the middle)
    * @returns {boolean} Whether it is hidden
    */
   #close(source = this) {

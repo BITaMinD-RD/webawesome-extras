@@ -43,8 +43,6 @@ wax-item-list {
 | `wax-combobox` | `--combobox-gap` | The space below the box | `--wa-space-m` |
 | `wax-floating-card` | `--floating-card-shadow` | The shadow of a pinned card | `--wa-shadow-l` |
 | `wax-floating-card` | `--floating-card-peek-shadow` | The shadow of one that only peeks | `--wa-shadow-m` |
-| `wax-floating-card` | `--floating-card-centered-shadow` | The shadow of one in the middle | `--wa-shadow-l` |
-| `wax-floating-card` | `--floating-card-backdrop` | The dimmed page behind a card in the middle | `rgba(0, 0, 0, .45)` |
 | `wax-floating-card` | `--floating-card-width` | The width of the card | `400px` |
 | `wax-ask-each` | `--ask-each-width` | The width of the dialog | `31rem`, the one of a `wa-dialog` |
 | `wax-map-picker` | `--map-picker-height` | The height of the map | `300px` |

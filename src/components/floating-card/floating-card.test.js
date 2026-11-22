@@ -179,29 +179,105 @@ describe('<wax-floating-card>', () => {
     expect(card.open).to.equal(true);
   });
 
-  it('without a mouse it goes in the middle with the rest dimmed, and a click on the backdrop closes it', async () => {
-    const { card, day } = await make();
+  /** Runs `body` as if there were no mouse */
+  const withoutMouse = async body => {
     const real = window.matchMedia;
     window.matchMedia = () => ({ matches: false });
-    try {
+    try { await body(); } finally { window.matchMedia = real; }
+  };
+
+  it('without a mouse it goes in the middle, in a wa-dialog, and peeking does nothing', async () => {
+    const { card, day } = await make();
+    await withoutMouse(async () => {
       let centered;
       card.addEventListener('wa-show', () => { centered = card.centered; });
       card.peek(day);
       await aTimeout(60);
       expect(card.open).to.equal(false, 'peeking does nothing without a mouse');
       card.show(day);
-      await card.updateComplete;
+      await oneEvent(card, 'wa-after-show');
       expect(centered).to.equal(true);
       expect(card.centered).to.equal(true);
-      expect(part(card, 'backdrop')).to.exist;
+      expect(card.shadowRoot.querySelector('wa-popup')).to.equal(null);
+      const dialog = card.shadowRoot.querySelector('wa-dialog');
+      expect(dialog.open).to.equal(true);
+      expect(dialog.lightDismiss).to.equal(true);
+      expect(dialog.label).to.equal('The day');
+      expect(card.textContent).to.equal('About day');
+      const box = dialog.dialog.getBoundingClientRect();
+      expect(Math.round(box.left + box.width / 2)).to.be.closeTo(window.innerWidth / 2, 12, 'in the middle');
+      expect(part(card, 'close-button')).to.exist;
+    });
+  });
+
+  it('in the middle the four events come out of the card once each, and the ones of the dialog stay inside', async () => {
+    const { page, card, day } = await make();
+    await withoutMouse(async () => {
+      const seen = log(card);
+      const outside = [];
+      for (const name of ['wa-show', 'wa-after-show', 'wa-hide', 'wa-after-hide', 'wa-reposition']) page.addEventListener(name, event => outside.push(`${name}:${event.target === card}`));
+      card.show(day);
+      await oneEvent(card, 'wa-after-show');
+      card.hide();
+      await oneEvent(card.shadowRoot.querySelector('wa-dialog'), 'wa-after-hide');
+      await aTimeout(20);
+      expect(seen).to.deep.equal(['wa-show', 'wa-after-show', 'wa-hide', 'wa-after-hide']);
+      expect(outside).to.deep.equal(['wa-show:true', 'wa-after-show:true', 'wa-hide:true', 'wa-after-hide:true']);
+      expect(card.shadowRoot.querySelector('wa-dialog').open).to.equal(false);
+    });
+  });
+
+  it('in the middle Escape, a click outside and the close button close it, with their source, and the card can say no', async () => {
+    const { card, day } = await make();
+    await withoutMouse(async () => {
       const sources = [];
       card.addEventListener('wa-hide', event => sources.push(event.detail.source));
-      part(card, 'backdrop').click();
-      expect(sources).to.deep.equal([part(card, 'backdrop')]);
+      const dialog = () => card.shadowRoot.querySelector('wa-dialog');
+      card.show(day);
+      await oneEvent(card, 'wa-after-show');
+      await sendKeys({ press: 'Escape' });
       expect(card.open).to.equal(false);
-    } finally {
-      window.matchMedia = real;
-    }
+      await oneEvent(dialog(), 'wa-after-hide');
+      card.show(day);
+      await oneEvent(card, 'wa-after-show');
+      dialog().dialog.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, composed: true, clientX: 1, clientY: 1 }));
+      expect(card.open).to.equal(false);
+      await oneEvent(dialog(), 'wa-after-hide');
+      card.show(day);
+      await oneEvent(card, 'wa-after-show');
+      part(card, 'close-button').click();
+      expect(card.open).to.equal(false);
+      await oneEvent(dialog(), 'wa-after-hide');
+      expect(sources).to.deep.equal([card, card, part(card, 'close-button')]);
+      // wa-hide cancelled: it stays open, once asked
+      card.show(day);
+      await oneEvent(card, 'wa-after-show');
+      let asked = 0;
+      const stop = event => { asked++; event.preventDefault(); };
+      card.addEventListener('wa-hide', stop);
+      await sendKeys({ press: 'Escape' });
+      await aTimeout(50);
+      expect(asked).to.equal(1);
+      expect(card.open).to.equal(true);
+      expect(dialog().open).to.equal(true);
+      card.removeEventListener('wa-hide', stop);
+      card.hide();
+      await oneEvent(dialog(), 'wa-after-hide');
+    });
+  });
+
+  it('shown again for another anchor in the middle it stays open: it closes and opens without the dialog closing', async () => {
+    const { card, day, other } = await make();
+    await withoutMouse(async () => {
+      const seen = log(card, ['wa-show', 'wa-hide', 'wa-after-hide']);
+      card.toggle(day);
+      await oneEvent(card, 'wa-after-show');
+      card.toggle(other);
+      await aTimeout(300);
+      expect(seen).to.deep.equal(['wa-show', 'wa-hide', 'wa-after-hide', 'wa-show']);
+      expect(card.textContent).to.equal('About other');
+      expect(card.shadowRoot.querySelector('wa-dialog').open).to.equal(true);
+    });
   });
 
   it('is accessible', async () => {

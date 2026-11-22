@@ -565,7 +565,7 @@
       "declarations": [
         {
           "kind": "class",
-          "description": "A card that floats next to what was clicked: in a long list the thing it talks about may be far away, out of sight. With a mouse it can also peek: it shows a moment after the pointer\narrives (`peek`), goes when it leaves (`leave`), and stays once clicked (`show`); clicking the same thing again closes it (`toggle`). Without a mouse there is no \"next to\": it goes in the\nmiddle with the rest dimmed. Escape, a click outside and its × close it too.\n\nIt opens and closes like a `wa-dialog`: the `open` property, `show()` and `hide()`, and the four events of Web Awesome (`wa-show`, `wa-after-show`, `wa-hide` and `wa-after-hide`, its own\nclasses). `wa-show` and `wa-hide` can be cancelled (`preventDefault()` keeps it as it was); at `wa-show` the element already has its `anchor` and its `centered`. It knows nothing of what it shows: the content is its children, which whoever opens it fills in the listener of\n`wa-show` (and cancels it if there is nothing to say). It knows nothing of the Back button either: whoever wants Back to close it listens to its events.\n\n```html\n<wax-floating-card close-label=\"Cerrar\"></wax-floating-card>\n```\n```js\ncard.addEventListener('wa-show', event => {                       // the content, when it is going to show (the events of what is inside come up here too: look at event.target)\n  if (event.target === card) card.replaceChildren(dayView(card.anchor.dataset.day));\n});\nday.addEventListener('click', () => card.toggle(day));            // pinned, next to the day; the same day again closes it\nday.addEventListener('mouseenter', () => card.peek(day));         // with a mouse, after a moment\nday.addEventListener('mouseleave', () => card.leave());\n```\n\nWith a mouse it is a `wa-popup` inside, anchored to the element it talks about: under it by default (`placement`), on the other side or moved along if it does not fit. It is where the `anchor` is wherever the card is in the page, so it can be a child of any element.",
+          "description": "A card that floats next to what was clicked: in a long list the thing it talks about may be far away, out of sight. With a mouse it can also peek: it shows a moment after the pointer\narrives (`peek`), goes when it leaves (`leave`), and stays once clicked (`show`); clicking the same thing again closes it (`toggle`). Without a mouse there is no \"next to\": it goes in the\nmiddle, in a `wa-dialog` with the rest dimmed. Escape, a click outside and its × close it too.\n\nIt opens and closes like a `wa-dialog`: the `open` property, `show()` and `hide()`, and the four events of Web Awesome (`wa-show`, `wa-after-show`, `wa-hide` and `wa-after-hide`, its own\nclasses). `wa-show` and `wa-hide` can be cancelled (`preventDefault()` keeps it as it was); at `wa-show` the element already has its `anchor` and its `centered`. It knows nothing of what it shows: the content is its children, which whoever opens it fills in the listener of\n`wa-show` (and cancels it if there is nothing to say). It knows nothing of the Back button either: whoever wants Back to close it listens to its events.\n\n```html\n<wax-floating-card close-label=\"Cerrar\"></wax-floating-card>\n```\n```js\ncard.addEventListener('wa-show', event => {                       // the content, when it is going to show (the events of what is inside come up here too: look at event.target)\n  if (event.target === card) card.replaceChildren(dayView(card.anchor.dataset.day));\n});\nday.addEventListener('click', () => card.toggle(day));            // pinned, next to the day; the same day again closes it\nday.addEventListener('mouseenter', () => card.peek(day));         // with a mouse, after a moment\nday.addEventListener('mouseleave', () => card.leave());\n```\n\nWith a mouse it is a `wa-popup` inside, anchored to the element it talks about: under it by default (`placement`), on the other side or moved along if it does not fit. It is where the `anchor` is wherever the card is in the page, so it can be a child of any element. Without one it is a `wa-dialog` (`light-dismiss`, without header: the × is its own), whose focus handling, Escape and click outside are the ones of the dialog; the events of the inner popup and dialog stay inside, and what comes out are the four of the card, once each.",
           "name": "WaxFloatingCard",
           "cssProperties": [
             {
@@ -577,21 +577,13 @@
               "name": "--floating-card-peek-shadow"
             },
             {
-              "description": "The shadow of one in the middle (`--wa-shadow-l`)",
-              "name": "--floating-card-centered-shadow"
-            },
-            {
-              "description": "The dimmed page behind a card in the middle (`rgba(0, 0, 0, .45)`)",
-              "name": "--floating-card-backdrop"
-            },
-            {
               "description": "The width of the card (`400px`)",
               "name": "--floating-card-width"
             }
           ],
           "cssParts": [
             {
-              "description": "The card: its border, its background, its shadow and its size",
+              "description": "The card next to its anchor, with a mouse: its border, its background, its shadow and its size",
               "name": "card"
             },
             {
@@ -599,12 +591,16 @@
               "name": "close-button"
             },
             {
-              "description": "The dimmed page behind it, without a mouse",
-              "name": "backdrop"
-            },
-            {
               "description": "The container the `wa-popup` positions, with a mouse (its `popup` part)",
               "name": "popup"
+            },
+            {
+              "description": "The `<dialog>` of the `wa-dialog`, without a mouse (its `dialog` part)",
+              "name": "dialog"
+            },
+            {
+              "description": "The body of the `wa-dialog`, without a mouse (its `body` part)",
+              "name": "body"
             }
           ],
           "slots": [
@@ -815,7 +811,7 @@
               "type": {
                 "text": "WaHideEvent"
               },
-              "description": "It is going to hide. Cancellable: `preventDefault()` keeps it open. `detail: { source }`: the element that asked (the close button, the backdrop, what was clicked outside) or the card itself (Escape, `hide()`, the pointer leaving, another anchor)",
+              "description": "It is going to hide. Cancellable: `preventDefault()` keeps it open. `detail: { source }`: the element that asked (the close button, what was clicked outside) or the card itself (Escape, `hide()`, the pointer leaving, another anchor, a click outside in the middle)",
               "name": "wa-hide"
             },
             {

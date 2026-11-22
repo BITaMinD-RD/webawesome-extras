@@ -2,7 +2,7 @@
 
 `<wax-floating-card>` is a card that floats next to what was clicked. In a long list the thing it talks about may be far away, out of sight, so the detail appears next to it instead of in a
 side panel. With a mouse it can also peek: it shows a moment after the pointer arrives, goes when the pointer leaves, and a click pins it. Without a mouse there is no "next to", so it goes in the
-middle of the page with the rest dimmed.
+middle of the page, in a `wa-dialog` that dims the rest.
 
 Use it for a detail that belongs to one thing among many (the day of a calendar, a row of a table). For something that needs a decision from the user, use a `wa-dialog` or an
 [ask each](ask-each.md).
@@ -105,8 +105,8 @@ pins it. Call them from `mouseenter` and `mouseleave`, and `toggle` from `click`
 
 ### Events
 
-The four events are Web Awesome's own. The `detail` of `wa-hide` has its `source`: the element that asked (the close button, the backdrop, whatever was clicked outside), or the card itself (Escape,
-`hide()`, the pointer leaving, another anchor). A listener of `wa-hide` that calls `preventDefault()` keeps the card open.
+The four events are Web Awesome's own. The `detail` of `wa-hide` has its `source`: the element that asked (the close button, whatever was clicked outside), or the card itself (Escape,
+`hide()`, the pointer leaving, another anchor, a click outside in the middle). The events of the `wa-popup` and the `wa-dialog` inside do not come out: each of the four comes out once, from the card. A listener of `wa-hide` that calls `preventDefault()` keeps the card open.
 
 ```html example
 <wa-button id="events-button">Open the card</wa-button>
@@ -168,7 +168,7 @@ and shrinks its height to what is left, and `placement` takes any of the placeme
 
 ### Styling
 
-The card is a [part](#parts) (and `popup`, the container the `wa-popup` positions) and its shadows and width are custom properties that fall back to `--wa-*` tokens.
+The card is a [part](#parts) (and `popup`, the container the `wa-popup` positions, and `dialog` and `body`, those of the `wa-dialog` in the middle) and its shadows and width are custom properties that fall back to `--wa-*` tokens.
 
 ```html example
 <style>
@@ -249,7 +249,7 @@ The tables are generated from `custom-elements.json` by `npm run docs`; do not e
 |---|---|---|
 | `wa-show` | It is going to show. Cancellable: `preventDefault()` keeps it closed. The content goes in here; `anchor` and `centered` are already set | `WaShowEvent` |
 | `wa-after-show` | It is shown and in its place | `WaAfterShowEvent` |
-| `wa-hide` | It is going to hide. Cancellable: `preventDefault()` keeps it open. `detail: { source }`: the element that asked (the close button, the backdrop, what was clicked outside) or the card itself (Escape, `hide()`, the pointer leaving, another anchor) | `WaHideEvent` |
+| `wa-hide` | It is going to hide. Cancellable: `preventDefault()` keeps it open. `detail: { source }`: the element that asked (the close button, what was clicked outside) or the card itself (Escape, `hide()`, the pointer leaving, another anchor, a click outside in the middle) | `WaHideEvent` |
 | `wa-after-hide` | It is hidden (it has no animation: it comes right after `wa-hide`) | `WaAfterHideEvent` |
 
 ### Slots
@@ -262,10 +262,11 @@ The tables are generated from `custom-elements.json` by `npm run docs`; do not e
 
 | Part | Description |
 |---|---|
-| `card` | The card: its border, its background, its shadow and its size |
+| `card` | The card next to its anchor, with a mouse: its border, its background, its shadow and its size |
 | `close-button` | The × button, in the corner (hidden while it only peeks) |
-| `backdrop` | The dimmed page behind it, without a mouse |
 | `popup` | The container the `wa-popup` positions, with a mouse (its `popup` part) |
+| `dialog` | The `<dialog>` of the `wa-dialog`, without a mouse (its `dialog` part) |
+| `body` | The body of the `wa-dialog`, without a mouse (its `body` part) |
 
 ### CSS custom properties
 
@@ -273,8 +274,6 @@ The tables are generated from `custom-elements.json` by `npm run docs`; do not e
 |---|---|
 | `--floating-card-shadow` | The shadow of a pinned card (`--wa-shadow-l`) |
 | `--floating-card-peek-shadow` | The shadow of one that only peeks (`--wa-shadow-m`) |
-| `--floating-card-centered-shadow` | The shadow of one in the middle (`--wa-shadow-l`) |
-| `--floating-card-backdrop` | The dimmed page behind a card in the middle (`rgba(0, 0, 0, .45)`) |
 | `--floating-card-width` | The width of the card (`400px`) |
 
 <!-- api:end -->
