@@ -50,7 +50,7 @@ A click on the map, or dropping the marker, puts the point there and fires `wax-
 
 ### Setting the point from code
 
-`lat` and `lon` move the marker and look at it, and so does `setPoint(lat, lon, zoomIn?)`; none of them fires `wax-pick`, which is only for what the user does. The map zooms to at least 15, or all the way in (17) with
+`lat` and `lon` move the marker and look at it, and so does `setPoint(lat, lon, zoomIn?)` (a click or a drag on the map moves the marker and leaves the view as it is); none of them fires `wax-pick`, which is only for what the user does. The map zooms to at least 15, or all the way in (17) with
 `zoomIn`. `point` gives the point back (or `null`), and `clear()` removes the marker.
 
 ```html example

@@ -198,6 +198,19 @@ describe('<wax-map-picker>', () => {
       expect(el.getAttribute('lon')).to.equal(String(lon));
     });
 
+    it('a click on the map keeps the view: neither the zoom nor the centre move', async () => {
+      const el = await make();
+      const zoom = el.map.getZoom(), center = el.map.getCenter();
+      clickMap(el);
+      await el.updateComplete;
+      expect(el.map.getZoom()).to.equal(zoom);
+      expect(el.map.getCenter().lat).to.equal(center.lat);
+      expect(el.map.getCenter().lng).to.equal(center.lng);
+      clickMap(el);   // and also when the marker is already there
+      await el.updateComplete;
+      expect(el.map.getZoom()).to.equal(zoom);
+    });
+
     it('dropping the marker fires wax-pick with where it ended up', async () => {
       const el = await makeWith(html`<wax-map-picker lat="41.6" lon="2.2"></wax-map-picker>`);
       const seen = listen(el);

@@ -393,7 +393,10 @@ export class WaxMapPicker extends LitElement {
 
   /** @param {number} lat @param {number} lon */
   #pick(lat, lon) {
-    this.setPoint(lat, lon, false);
+    // What the user does does not move the view: the point goes where they put it, with the zoom there was
+    this.lat = lat;
+    this.lon = lon;
+    this.#drawPoint(false, false);
     this.dispatchEvent(new WaxPickEvent({ lat, lon }));
   }
 
@@ -404,8 +407,11 @@ export class WaxMapPicker extends LitElement {
     this.#tileLayer = L.tileLayer(tiles.url, { maxZoom: tiles.maxZoom, attribution: tiles.attribution, ...(tiles.subdomains ? { subdomains: tiles.subdomains } : {}) }).addTo(this.#map);
   }
 
-  /** @param {boolean} zoomIn */
-  #drawPoint(zoomIn) {
+  /**
+   * @param {boolean} zoomIn
+   * @param {boolean} [look] Move the view to the point: not when the user put it there
+   */
+  #drawPoint(zoomIn, look = true) {
     const point = this.point;
     this.#drawn = { lat: this.lat, lon: this.lon };
     if (!this.#map) {
@@ -431,7 +437,7 @@ export class WaxMapPicker extends LitElement {
       this.#drawReadonly();
     }
     this.#pendingZoomIn = false;
-    this.#map.setView([point.lat, point.lon], MapPickerState.zoomFor(this.#map.getZoom(), zoomIn), NOW);
+    if (look) this.#map.setView([point.lat, point.lon], MapPickerState.zoomFor(this.#map.getZoom(), zoomIn), NOW);
   }
 
   #drawReadonly() {
