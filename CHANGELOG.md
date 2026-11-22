@@ -2,9 +2,15 @@
 
 All notable changes to this package are listed here. Versions follow [Semantic Versioning](https://semver.org/).
 
-## Unreleased
+## 0.2.1
+
+- The click or the drag of the user on `wax-map-picker` moves the marker and leaves the view as it is (`setPoint` and the `lat` and `lon` attributes still look at the point).
+- The demo waits until every `wax-*` element it uses is defined, and its language select no longer uses the deprecated `size="small"`.
+
+## 0.2.0
 
 - New element `wax-map-picker`: a Leaflet map to pick a point on (click or drag the marker), with sites, a route and areas. Leaflet is loaded on demand from unpkg (`WaxMapPicker.leaflet` changes where from) and the tiles come from a catalog of providers that need no key (`provider`, or `tiles` of your own). Events `wax-pick`, `wax-site-click` and `wax-map-error`; terms `waxMapUnavailable` and `waxMinutes` in English and Spanish.
+- A demo page, `demo/index.html`, that loads Web Awesome and Lit from jsDelivr.
 
 ## 0.1.0
 
