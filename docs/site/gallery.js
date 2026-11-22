@@ -50,6 +50,26 @@ export function filterCards(cards, query) {
   });
 }
 
+/** The ways to sort the cards: the label of each, in the select */
+export const SORTS = { name: 'Name', since: 'Newest first' };
+
+/** @param {string} a @param {string} b @returns {number} Negative if the version a is older than b, comparing x.y.z numerically */
+const compareVersions = (a, b) => {
+  const [x, y] = [a, b].map(version => version.split('.').map(Number));
+  for (let index = 0; index < Math.max(x.length, y.length); index++) if ((x[index] ?? 0) !== (y[index] ?? 0)) return (x[index] ?? 0) - (y[index] ?? 0);
+  return 0;
+};
+
+/**
+ * @param {Card[]} cards
+ * @param {string} by A key of SORTS: "name" (A to Z, ignoring case and accents) or "since" (the newest version first, and by name within a version)
+ * @returns {Card[]} A sorted copy
+ */
+export function sortCards(cards, by) {
+  const byName = (/** @type {Card} */ a, /** @type {Card} */ b) => fold(a.name).localeCompare(fold(b.name));
+  return [...cards].sort(by === 'since' ? (a, b) => compareVersions(b.since, a.since) || byName(a, b) : byName);
+}
+
 /**
  * Draws the hero, the search field and the cards in the container and mounts the preview of each one (they do not wait for each other, and one that fails does not stop the rest).
  *
@@ -74,6 +94,19 @@ export async function renderGallery(container, cards) {
   icon.setAttribute('slot', 'start');
   icon.setAttribute('name', 'magnifying-glass');
   search.append(icon);
+  const sort = document.createElement('wa-select');
+  sort.className = 'gallery-sort';
+  sort.setAttribute('value', 'name');
+  sort.setAttribute('aria-label', 'Sort by');
+  for (const [key, label] of Object.entries(SORTS)) {
+    const option = document.createElement('wa-option');
+    option.setAttribute('value', key);
+    option.textContent = label;
+    sort.append(option);
+  }
+  const toolbar = document.createElement('div');
+  toolbar.className = 'gallery-toolbar';
+  toolbar.append(search, sort);
   const empty = document.createElement('p');
   empty.className = 'gallery-empty';
   empty.hidden = true;
@@ -122,6 +155,12 @@ export async function renderGallery(container, cards) {
     for (const [card, item] of items) item.hidden = !shown.has(card);
     empty.hidden = shown.size > 0;
   });
-  container.replaceChildren(hero, search, empty, list);
+  // The sorted cards are the same elements in another order
+  sort.addEventListener('change', () => {
+    const order = sortCards(cards, /** @type {HTMLSelectElement} */ (sort).value);
+    list.append(...order.map(card => /** @type {HTMLElement} */ (items.get(card))));
+  });
+  list.append(...sortCards(cards, 'name').map(card => /** @type {HTMLElement} */ (items.get(card))));
+  container.replaceChildren(hero, toolbar, empty, list);
   await Promise.all(mounted);
 }

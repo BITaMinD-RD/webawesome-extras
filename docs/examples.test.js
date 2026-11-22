@@ -3,7 +3,7 @@ import { setBasePath as setWebAwesomeBasePath, startLoader as startWebAwesomeLoa
 import { setBasePath, startLoader } from '../src/webawesome-extras.loader.js';
 import { WaxMapPicker } from '../src/components/map-picker/map-picker.js';
 import { extractExamples, mountExample, tagsOf } from './site/examples.js';
-import { cardsOf, renderGallery } from './site/gallery.js';
+import { cardsOf, renderGallery, sortCards } from './site/gallery.js';
 
 /**
  * Every example of the documentation (the `html example` blocks of every page in docs/pages.json) is mounted as the site mounts it, with the two loaders, and must define its
@@ -76,8 +76,8 @@ describe('the gallery of the components page', () => {
       await aTimeout(50);
       const items = [...container.querySelectorAll('.gallery-card')];
       expect(items.length).to.equal(cards.length);
-      for (const [index, card] of cards.entries()) {
-        const item = items[index];
+      for (const card of cards) {
+        const item = items.find(candidate => candidate.querySelector('.gallery-preview').dataset.tag === card.tag);
         expect(item.querySelector('h3 a').getAttribute('href'), card.tag).to.equal(`#/${card.path}`);
         expect(item.textContent, card.tag).to.include(`<${card.tag}>`);
         const badges = [...item.querySelectorAll('.gallery-footer wa-badge')].map(badge => badge.textContent);
@@ -85,6 +85,14 @@ describe('the gallery of the components page', () => {
         expect(item.querySelector('.gallery-preview').textContent, `the preview of ${card.tag} failed`).to.not.include('failed');
         for (const tag of tagsOf(card.preview)) expect(customElements.get(tag), `<${tag}> in the preview of ${card.tag}`).to.exist;
       }
+      // The select sorts the cards: by name first, by version after
+      const sort = container.querySelector('wa-select.gallery-sort');
+      const order = () => [...container.querySelectorAll('.gallery-card h3')].map(title => title.textContent);
+      expect(order()).to.deep.equal([...order()].sort((a, b) => a.localeCompare(b)));
+      sort.value = 'since';
+      sort.dispatchEvent(new Event('change'));
+      expect(order().length).to.equal(cards.length);
+      expect(order()).to.deep.equal(sortCards(cards, 'since').map(card => card.name));
       // The search field hides the cards that do not match and says so when none does
       const search = container.querySelector('wa-input.gallery-search');
       const visible = () => items.filter(item => !item.hidden).length;

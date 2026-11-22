@@ -4,7 +4,7 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { END, START, elementsOf, referenceOf, withReference } from '../DocsTables.js';
 import { extractExamples, tagsOf } from '../../docs/site/examples.js';
-import { STATUS_VARIANTS, cardsOf, filterCards } from '../../docs/site/gallery.js';
+import { STATUS_VARIANTS, cardsOf, filterCards, sortCards } from '../../docs/site/gallery.js';
 
 const ROOT = join(import.meta.dirname, '..', '..');
 const manifest = JSON.parse(readFileSync(join(ROOT, 'custom-elements.json'), 'utf8'));
@@ -159,4 +159,14 @@ test('filterCards: every word must be in the name, tag or summary, ignoring case
   assert.deepEqual(filterCards(cards, 'UBICACIÓN mapa').map(card => card.name), ['Mapa']);
   assert.deepEqual(filterCards(cards, 'list type').map(card => card.name), []);
   assert.deepEqual(filterCards(cards, 'zzz'), []);
+});
+
+test('sortCards: by name ignoring case and accents, or by version with the newest first (numerically: 0.10.0 after 0.9.0) and by name within a version; the input stays as it was', () => {
+  const cards = [
+    { name: 'Zeta', since: '0.2.0' }, { name: 'álamo', since: '0.10.0' }, { name: 'Beta', since: '0.9.0' }, { name: 'Alfa', since: '0.2.0' }
+  ];
+  const before = structuredClone(cards);
+  assert.deepEqual(sortCards(cards, 'name').map(card => card.name), ['álamo', 'Alfa', 'Beta', 'Zeta']);
+  assert.deepEqual(sortCards(cards, 'since').map(card => card.name), ['álamo', 'Beta', 'Alfa', 'Zeta']);
+  assert.deepEqual(cards, before);
 });
