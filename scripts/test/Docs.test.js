@@ -135,3 +135,11 @@ test('docs/components/index.md, the gallery page, is the first one of the compon
   assert.equal(sections().find(section => section.title === 'Components').pages[0].path, 'components/index.md');
   assert.ok(readFileSync(join(ROOT, 'docs', 'components', 'index.md'), 'utf8').includes('<div data-gallery></div>'));
 });
+
+test('docs/components/ redirects to the gallery of the viewer, and the repository is served as it is (.nojekyll)', () => {
+  assert.ok(existsSync(join(ROOT, '.nojekyll')), 'GitHub Pages would build the Markdown with Jekyll without .nojekyll');
+  const text = readFileSync(join(ROOT, 'docs', 'components', 'index.html'), 'utf8');
+  assert.match(text, /<meta http-equiv="refresh" content="0; url=\.\.\/#\/components\/index\.md">/);
+  assert.match(text, /location\.replace\('\.\.\/#\/components\/index\.md'\)/);
+  assert.match(text, /<a href="\.\.\/#\/components\/index\.md">/);
+});
