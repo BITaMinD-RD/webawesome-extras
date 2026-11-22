@@ -91,7 +91,8 @@
 
   <script type="module">
     const $ = id => document.getElementById(id);
-    await customElements.whenDefined('wax-combobox');
+    // Every element has to be defined before it is used: the loader defines them one by one, in no fixed order
+    await Promise.all(['wax-combobox', 'wax-item-list', 'wax-list-manager', 'wax-floating-card', 'wax-ask-each', 'wax-map-picker'].map(tag => customElements.whenDefined(tag)));
 
     // The language of the page: the texts of the elements follow it
     $('lang').addEventListener('change', event => { document.documentElement.lang = event.target.value; });
