@@ -2,7 +2,7 @@
 
 All notable changes to this package are listed here. Versions follow [Semantic Versioning](https://semver.org/).
 
-## Unreleased
+## 0.2.3
 
 - `wax-map-picker` shows a plain link to Leaflet before the attributions of the tiles, without the flag Leaflet adds by default since 1.8; `WaxMapPicker.leaflet.prefix` changes it (empty leaves only the attributions).
 
