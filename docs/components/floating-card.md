@@ -14,7 +14,7 @@ It opens and closes like a `wa-dialog`: the `open` property, `show()` and `hide(
 <wax-floating-card close-label="Close"></wax-floating-card>
 ```
 
-The card is placed with the coordinates of the page, so it has to be a child of the `body` or of an element that is not positioned. It knows nothing of what it shows: the content is its children,
+With a mouse the card is a `wa-popup` anchored to the element it talks about, so it can be a child of any element of the page. It knows nothing of what it shows: the content is its children,
 which whoever opens it puts in the listener of `wa-show`.
 
 ## Examples
@@ -149,9 +149,26 @@ that came from the network), call `place()` to put the card back next to its anc
 </script>
 ```
 
+### Where it goes
+
+By default the card goes under its anchor, aligned to its start (`placement="bottom-start"`, at a `distance` of 6 pixels). It is a `wa-popup`, so when it does not fit it flips to the other side, shifts along the edge
+and shrinks its height to what is left, and `placement` takes any of the placements of `wa-popup`.
+
+```html example
+<div style="display: flex; gap: 0.5rem">
+  <wa-button id="where-button">To the right</wa-button>
+</div>
+<wax-floating-card id="where-card" placement="right-start" distance="12" close-label="Close">Next to the button, 12 pixels away.</wax-floating-card>
+
+<script type="module">
+  const button = document.getElementById('where-button');
+  button.addEventListener('click', () => document.getElementById('where-card').toggle(button));
+</script>
+```
+
 ### Styling
 
-The card is a [part](#parts) and its shadows and width are custom properties that fall back to `--wa-*` tokens.
+The card is a [part](#parts) (and `popup`, the container the `wa-popup` positions) and its shadows and width are custom properties that fall back to `--wa-*` tokens.
 
 ```html example
 <style>
@@ -212,6 +229,8 @@ The tables are generated from `custom-elements.json` by `npm run docs`; do not e
 | `closeLabel` | What the close button is called (attribute `close-label`); the `close` term of Web Awesome, in the language of the page, when empty | `close-label` | `string` | `''` |
 | `label` | What the card is called for who does not see it | `label` | `string` | `''` |
 | `delay` | Milliseconds the pointer has to stay before it peeks (400 by default) | `delay` | `number` |  |
+| `placement` | Where it goes with respect to the `anchor`, as in `wa-popup` (`bottom-start` by default) | `placement` | `string` | `'bottom-start'` |
+| `distance` | Pixels between the `anchor` and the card (6 by default) | `distance` | `number` |  |
 
 ### Methods
 
@@ -222,7 +241,7 @@ The tables are generated from `custom-elements.json` by `npm run docs`; do not e
 | `toggle(anchor)` | Shows it pinned next to `anchor`, or hides it if it was pinned next to the same thing. | `anchor: Element` |  |
 | `show(anchor?, options?)` | Shows it next to `anchor`. Pinned, it stays until it is closed. If it was open, it closes first (and either listener can cancel what it is asked). | `anchor?: Element \| null` What it talks about; by default, the one it has<br>`options?: {pinned?: boolean}` | `boolean` |
 | `hide()` | Hides it. |  | `boolean` |
-| `place()` | Puts it back next to its thing after what is inside has grown (something that came later from the network). In the middle, the CSS places it. |  |  |
+| `place()` | Puts it back next to its thing after what is inside has grown (something that came later from the network): it asks the `wa-popup` to reposition. In the middle, the CSS places it. |  |  |
 
 ### Events
 
@@ -246,6 +265,7 @@ The tables are generated from `custom-elements.json` by `npm run docs`; do not e
 | `card` | The card: its border, its background, its shadow and its size |
 | `close-button` | The × button, in the corner (hidden while it only peeks) |
 | `backdrop` | The dimmed page behind it, without a mouse |
+| `popup` | The container the `wa-popup` positions, with a mouse (its `popup` part) |
 
 ### CSS custom properties
 

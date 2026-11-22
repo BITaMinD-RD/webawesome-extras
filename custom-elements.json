@@ -565,7 +565,7 @@
       "declarations": [
         {
           "kind": "class",
-          "description": "A card that floats next to what was clicked: in a long list the thing it talks about may be far away, out of sight. With a mouse it can also peek: it shows a moment after the pointer\narrives (`peek`), goes when it leaves (`leave`), and stays once clicked (`show`); clicking the same thing again closes it (`toggle`). Without a mouse there is no \"next to\": it goes in the\nmiddle with the rest dimmed. Escape, a click outside and its × close it too.\n\nIt opens and closes like a `wa-dialog`: the `open` property, `show()` and `hide()`, and the four events of Web Awesome (`wa-show`, `wa-after-show`, `wa-hide` and `wa-after-hide`, its own\nclasses). `wa-show` and `wa-hide` can be cancelled (`preventDefault()` keeps it as it was); at `wa-show` the element already has its `anchor` and its `centered`. It knows nothing of what it shows: the content is its children, which whoever opens it fills in the listener of\n`wa-show` (and cancels it if there is nothing to say). It knows nothing of the Back button either: whoever wants Back to close it listens to its events.\n\n```html\n<wax-floating-card close-label=\"Cerrar\"></wax-floating-card>   <!-- a child of the body -->\n```\n```js\ncard.addEventListener('wa-show', event => {                       // the content, when it is going to show (the events of what is inside come up here too: look at event.target)\n  if (event.target === card) card.replaceChildren(dayView(card.anchor.dataset.day));\n});\nday.addEventListener('click', () => card.toggle(day));            // pinned, next to the day; the same day again closes it\nday.addEventListener('mouseenter', () => card.peek(day));         // with a mouse, after a moment\nday.addEventListener('mouseleave', () => card.leave());\n```\n\nIt is placed with the coordinates of the page, so it has to be a child of the `body` (or of an element that is not positioned).",
+          "description": "A card that floats next to what was clicked: in a long list the thing it talks about may be far away, out of sight. With a mouse it can also peek: it shows a moment after the pointer\narrives (`peek`), goes when it leaves (`leave`), and stays once clicked (`show`); clicking the same thing again closes it (`toggle`). Without a mouse there is no \"next to\": it goes in the\nmiddle with the rest dimmed. Escape, a click outside and its × close it too.\n\nIt opens and closes like a `wa-dialog`: the `open` property, `show()` and `hide()`, and the four events of Web Awesome (`wa-show`, `wa-after-show`, `wa-hide` and `wa-after-hide`, its own\nclasses). `wa-show` and `wa-hide` can be cancelled (`preventDefault()` keeps it as it was); at `wa-show` the element already has its `anchor` and its `centered`. It knows nothing of what it shows: the content is its children, which whoever opens it fills in the listener of\n`wa-show` (and cancels it if there is nothing to say). It knows nothing of the Back button either: whoever wants Back to close it listens to its events.\n\n```html\n<wax-floating-card close-label=\"Cerrar\"></wax-floating-card>\n```\n```js\ncard.addEventListener('wa-show', event => {                       // the content, when it is going to show (the events of what is inside come up here too: look at event.target)\n  if (event.target === card) card.replaceChildren(dayView(card.anchor.dataset.day));\n});\nday.addEventListener('click', () => card.toggle(day));            // pinned, next to the day; the same day again closes it\nday.addEventListener('mouseenter', () => card.peek(day));         // with a mouse, after a moment\nday.addEventListener('mouseleave', () => card.leave());\n```\n\nWith a mouse it is a `wa-popup` inside, anchored to the element it talks about: under it by default (`placement`), on the other side or moved along if it does not fit. It is where the `anchor` is wherever the card is in the page, so it can be a child of any element.",
           "name": "WaxFloatingCard",
           "cssProperties": [
             {
@@ -601,6 +601,10 @@
             {
               "description": "The dimmed page behind it, without a mouse",
               "name": "backdrop"
+            },
+            {
+              "description": "The container the `wa-popup` positions, with a mouse (its `popup` part)",
+              "name": "popup"
             }
           ],
           "slots": [
@@ -700,7 +704,7 @@
             {
               "kind": "method",
               "name": "place",
-              "description": "Puts it back next to its thing after what is inside has grown (something that came later from the network). In the middle, the CSS places it."
+              "description": "Puts it back next to its thing after what is inside has grown (something that came later from the network): it asks the `wa-popup` to reposition. In the middle, the CSS places it."
             },
             {
               "kind": "field",
@@ -769,6 +773,27 @@
               },
               "description": "Milliseconds the pointer has to stay before it peeks (400 by default)",
               "attribute": "delay"
+            },
+            {
+              "kind": "field",
+              "name": "placement",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "default": "'bottom-start'",
+              "description": "Where it goes with respect to the `anchor`, as in `wa-popup` (`bottom-start` by default)",
+              "attribute": "placement"
+            },
+            {
+              "kind": "field",
+              "name": "distance",
+              "privacy": "public",
+              "type": {
+                "text": "number"
+              },
+              "description": "Pixels between the `anchor` and the card (6 by default)",
+              "attribute": "distance"
             }
           ],
           "events": [
@@ -854,6 +879,23 @@
               "description": "Milliseconds the pointer has to stay before it peeks (400 by default)",
               "name": "delay",
               "fieldName": "delay"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "Where it goes with respect to the `anchor`, as in `wa-popup` (`bottom-start` by default)",
+              "name": "placement",
+              "default": "'bottom-start'",
+              "fieldName": "placement"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "Pixels between the `anchor` and the card (6 by default)",
+              "name": "distance",
+              "fieldName": "distance"
             }
           ],
           "superclass": {

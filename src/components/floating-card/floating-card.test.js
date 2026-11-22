@@ -37,6 +37,7 @@ describe('<wax-floating-card>', () => {
     await oneEvent(card, 'wa-after-show');
     expect(card.open).to.equal(true);
     expect(card.hasAttribute('open')).to.equal(true);
+    expect(card.shadowRoot.querySelector('wa-popup').active).to.equal(true);
     expect(card.textContent).to.equal('About day');
     const box = part(card, 'card').getBoundingClientRect();
     const near = day.getBoundingClientRect();
@@ -44,6 +45,41 @@ describe('<wax-floating-card>', () => {
     card.hide();
     expect(seen).to.deep.equal(['wa-show', 'wa-after-show', 'wa-hide', 'wa-after-hide']);
     expect(card.open).to.equal(false);
+  });
+
+  it('goes where placement says, flips to the other side near the edge of the window and has a default and a distance', async () => {
+    const { card, day } = await make();
+    expect(card.placement).to.equal('bottom-start');
+    expect(card.distance).to.equal(6);
+    day.style.cssText = 'position: fixed; left: 50px; bottom: 10px; margin: 0';
+    card.show(day);
+    await oneEvent(card, 'wa-after-show');
+    expect(part(card, 'card').getBoundingClientRect().bottom).to.be.at.most(day.getBoundingClientRect().top, 'there is no room below: above');
+    card.hide();
+    day.style.cssText = 'position: fixed; left: 50px; top: 100px; margin: 0';
+    card.placement = 'right-start';
+    card.distance = 20;
+    card.show(day);
+    await oneEvent(card, 'wa-after-show');
+    const box = part(card, 'card').getBoundingClientRect();
+    const near = day.getBoundingClientRect();
+    expect(Math.round(box.left)).to.be.closeTo(Math.round(near.right + 20), 1, 'to the right, at the distance');
+    expect(Math.round(box.top)).to.be.closeTo(Math.round(near.top), 1);
+    card.hide();
+    card.setAttribute('placement', 'top');
+    expect(card.placement).to.equal('top', 'the attribute');
+  });
+
+  it('place() asks the popup to reposition it after what is inside has grown', async () => {
+    const { card, day } = await make();
+    day.style.cssText = 'position: fixed; left: 50px; bottom: 10px; margin: 0';
+    card.show(day);
+    await oneEvent(card, 'wa-after-show');
+    const popup = card.shadowRoot.querySelector('wa-popup');
+    let repositions = 0;
+    popup.addEventListener('wa-reposition', () => repositions++);
+    card.place();
+    expect(repositions).to.equal(1);
   });
 
   it('keeps it closed if wa-show is cancelled (nothing to say), and open if wa-hide is cancelled', async () => {

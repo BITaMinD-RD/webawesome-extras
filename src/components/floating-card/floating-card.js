@@ -1,5 +1,6 @@
 // @ts-check
 import { LitElement, html, nothing } from 'lit';
+import '@awesome.me/webawesome/dist/components/popup/popup.js';
 import { LocalizeController } from '../../utilities/localize.js';
 import { FloatingCardState } from './floating-card.state.js';
 import styles from './floating-card.styles.js';
@@ -18,7 +19,7 @@ import { WaAfterHideEvent } from '@awesome.me/webawesome/dist/events/after-hide.
  * `wa-show` (and cancels it if there is nothing to say). It knows nothing of the Back button either: whoever wants Back to close it listens to its events.
  *
  * ```html
- * <wax-floating-card close-label="Cerrar"></wax-floating-card>   <!-- a child of the body -->
+ * <wax-floating-card close-label="Cerrar"></wax-floating-card>
  * ```
  * ```js
  * card.addEventListener('wa-show', event => {                       // the content, when it is going to show (the events of what is inside come up here too: look at event.target)
@@ -29,7 +30,7 @@ import { WaAfterHideEvent } from '@awesome.me/webawesome/dist/events/after-hide.
  * day.addEventListener('mouseleave', () => card.leave());
  * ```
  *
- * It is placed with the coordinates of the page, so it has to be a child of the `body` (or of an element that is not positioned).
+ * With a mouse it is a `wa-popup` inside, anchored to the element it talks about: under it by default (`placement`), on the other side or moved along if it does not fit. It is where the `anchor` is wherever the card is in the page, so it can be a child of any element.
  *
  * @summary A card next to what was clicked: it peeks with a mouse, is pinned by a click and sits in the middle without one.
  * @since 0.1.0
@@ -42,6 +43,8 @@ import { WaAfterHideEvent } from '@awesome.me/webawesome/dist/events/after-hide.
  * @attr {string} close-label - What the close button (×) is called (the `close` term of Web Awesome, in the language of the page, when empty)
  * @attr {string} label - What the card is called for who does not see it (its `aria-label`)
  * @attr {number} delay - Milliseconds the pointer has to stay before it peeks (400)
+ * @attr {string} placement - Where it goes with respect to the `anchor`, as in `wa-popup` (`bottom-start`); it flips to the other side and shifts if it does not fit
+ * @attr {number} distance - Pixels between the `anchor` and the card (6)
  *
  * @prop {boolean} open - It is shown
  * @prop {Element | null} anchor - What it is next to; `show()` and `peek()` set it
@@ -50,6 +53,8 @@ import { WaAfterHideEvent } from '@awesome.me/webawesome/dist/events/after-hide.
  * @prop {string} closeLabel - What the close button is called (attribute `close-label`); the `close` term of Web Awesome, in the language of the page, when empty
  * @prop {string} label - What the card is called for who does not see it
  * @prop {number} delay - Milliseconds the pointer has to stay before it peeks (400 by default)
+ * @prop {string} placement - Where it goes with respect to the `anchor`, as in `wa-popup` (`bottom-start` by default)
+ * @prop {number} distance - Pixels between the `anchor` and the card (6 by default)
  *
  * @fires {WaShowEvent} wa-show - It is going to show. Cancellable: `preventDefault()` keeps it closed. The content goes in here; `anchor` and `centered` are already set
  * @fires {WaAfterShowEvent} wa-after-show - It is shown and in its place
@@ -61,6 +66,7 @@ import { WaAfterHideEvent } from '@awesome.me/webawesome/dist/events/after-hide.
  * @csspart card - The card: its border, its background, its shadow and its size
  * @csspart close-button - The × button, in the corner (hidden while it only peeks)
  * @csspart backdrop - The dimmed page behind it, without a mouse
+ * @csspart popup - The container the `wa-popup` positions, with a mouse (its `popup` part)
  *
  * @cssprop [--floating-card-shadow] - The shadow of a pinned card (`--wa-shadow-l`)
  * @cssprop [--floating-card-peek-shadow] - The shadow of one that only peeks (`--wa-shadow-m`)
@@ -75,7 +81,9 @@ export class WaxFloatingCard extends LitElement {
     centered: { type: Boolean, reflect: true },
     closeLabel: { type: String, attribute: 'close-label' },
     label: { type: String },
-    delay: { type: Number }
+    delay: { type: Number },
+    placement: { type: String },
+    distance: { type: Number }
   };
 
   static styles = styles;
@@ -89,6 +97,9 @@ export class WaxFloatingCard extends LitElement {
 
   /** @type {Element | null} */
   #anchor = null;
+
+  /** Counts the times it has been shown: only the last one says `wa-after-show` */
+  #showing = 0;
 
   /** @type {ReturnType<typeof setTimeout> | undefined} */
   #peeking;
@@ -117,6 +128,8 @@ export class WaxFloatingCard extends LitElement {
     this.closeLabel = '';
     this.label = '';
     this.delay = FloatingCardState.DELAY;
+    this.placement = 'bottom-start';
+    this.distance = FloatingCardState.GAP;
     // Inside it, it stays still; when the pointer goes, it goes
     this.addEventListener('mouseenter', () => { clearTimeout(this.#peeking); clearTimeout(this.#hiding); });
     this.addEventListener('mouseleave', () => this.leave());
@@ -129,7 +142,7 @@ export class WaxFloatingCard extends LitElement {
 
   set anchor(anchor) {
     this.#anchor = anchor;
-    if (this.#shown) this.place();
+    this.requestUpdate();
   }
 
   firstUpdated() {
@@ -144,11 +157,18 @@ export class WaxFloatingCard extends LitElement {
   }
 
   render() {
-    return html`${this.centered ? html`<div part="backdrop" @click=${(/** @type {Event} */ event) => this.#close(/** @type {Element} */ (event.target))}></div>` : nothing}
-      <div part="card" role="dialog" aria-label=${this.label || nothing}>
-        <button type="button" part="close-button" aria-label=${this.closeLabel || this.#localize.term('close')} @click=${(/** @type {Event} */ event) => this.#close(/** @type {Element} */ (event.currentTarget))}>×</button>
-        <slot></slot>
-      </div>`;
+    const close = html`<button type="button" part="close-button" aria-label=${this.closeLabel || this.#localize.term('close')} @click=${(/** @type {Event} */ event) => this.#close(/** @type {Element} */ (event.currentTarget))}>×</button>`;
+    // Without a mouse, in the middle with the rest dimmed
+    if (this.centered) {
+      return html`<div part="backdrop" @click=${(/** @type {Event} */ event) => this.#close(/** @type {Element} */ (event.target))}></div>
+        <div part="card" role="dialog" aria-label=${this.label || nothing}>${close}<slot></slot></div>`;
+    }
+    // With a mouse, a `wa-popup` next to the anchor: the same one for every anchor, active while it is shown
+    return html`<wa-popup exportparts="popup" ?active=${this.open} .anchor=${this.#anchor} placement=${this.placement} distance=${this.distance}
+        flip flip-padding=${FloatingCardState.MARGIN} shift shift-padding=${FloatingCardState.MARGIN} auto-size="vertical" auto-size-padding=${FloatingCardState.MARGIN} hover-bridge
+        @wa-reposition=${(/** @type {Event} */ event) => event.stopPropagation()}>
+      <div part="card" role="dialog" aria-label=${this.label || nothing}>${close}<slot></slot></div>
+    </wa-popup>`;
   }
 
   /** @param {import('lit').PropertyValues} changed */
@@ -158,7 +178,6 @@ export class WaxFloatingCard extends LitElement {
       if (this.open && !this.#shown) this.show();
       else if (!this.open && this.#shown) { this.open = true; this.#close(); }
     }
-    if (this.#shown) this.place();
   }
 
   /**
@@ -212,12 +231,12 @@ export class WaxFloatingCard extends LitElement {
     this.#pinned = pinned;
     this.peeking = !pinned;
     this.open = true;
-    if (centered) { this.style.removeProperty('top'); this.style.removeProperty('left'); }
     // After this click has finished: the click that opens it is not a click outside it
     this.#listening = setTimeout(() => document.addEventListener('click', this.#outside), 0);
     document.addEventListener('keydown', this.#escape);
-    this.updateComplete.then(() => {
-      if (this.#shown) this.dispatchEvent(new WaAfterShowEvent());
+    const shown = ++this.#showing;
+    this.#placed().then(() => {
+      if (this.#shown && shown === this.#showing) this.dispatchEvent(new WaAfterShowEvent());
     });
     return true;
   }
@@ -232,17 +251,20 @@ export class WaxFloatingCard extends LitElement {
   }
 
   /**
-   * Puts it back next to its thing after what is inside has grown (something that came later from the network). In the middle, the CSS places it.
+   * Puts it back next to its thing after what is inside has grown (something that came later from the network): it asks the `wa-popup` to reposition. In the middle, the CSS places it.
    */
   place() {
-    const anchor = this.#anchor;
-    if (!this.#shown || !anchor || this.centered) return;
-    const card = /** @type {HTMLElement} */ (this.renderRoot.querySelector('[part~="card"]'));
-    if (!card) return;
-    const { width, height } = card.getBoundingClientRect();
-    const { top, left } = FloatingCardState.position(anchor.getBoundingClientRect(), { width, height }, { width: window.innerWidth, height: window.innerHeight });
-    this.style.top = `${top + window.scrollY}px`;
-    this.style.left = `${left}px`;
+    if (!this.#shown || this.centered) return;
+    /** @type {any} */ (this.renderRoot.querySelector('wa-popup'))?.reposition();
+  }
+
+  /** @returns {Promise<void>} Once what is shown is drawn and, next to its anchor, the popup has placed it */
+  async #placed() {
+    await this.updateComplete;
+    const popup = /** @type {any} */ (this.renderRoot.querySelector('wa-popup'));
+    if (!popup) return;
+    await popup.updateComplete;
+    await new Promise(resolve => requestAnimationFrame(resolve));
   }
 
   /**

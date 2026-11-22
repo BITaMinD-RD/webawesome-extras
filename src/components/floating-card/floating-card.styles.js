@@ -3,16 +3,16 @@ import { css } from 'lit';
 
 /** The styles of `<wax-floating-card>`, in the shadow of the element: only `--wa-*` tokens, and its own custom properties always falling back to them */
 export default css`
-  :host { display: none; position: absolute; z-index: 30; width: max-content; }
-  :host([open]) { display: block; }
+  :host { display: none; }
+  :host([open]) { display: contents; }
   :host([hidden]) { display: none; }
   [part~="card"] {
     position: relative; z-index: 1;
     box-sizing: border-box;
     width: var(--floating-card-width, 400px);
     max-width: 92vw;
-    max-height: 70vh;
-    max-height: 70dvh;
+    max-height: min(70vh, var(--auto-size-available-height, 70vh));
+    max-height: min(70dvh, var(--auto-size-available-height, 70dvh));
     overflow: auto;
     padding: 12px 14px;
     border: var(--wa-border-width-s, 1px) var(--wa-border-style, solid) var(--wa-color-surface-border);
@@ -35,8 +35,7 @@ export default css`
   [part~="close-button"]:hover { color: var(--wa-color-text-normal); }
   [part~="close-button"]:focus-visible { outline: var(--wa-focus-ring); }
   /* Without a mouse: in the middle, and the rest dimmed */
-  :host([centered]) { position: fixed; inset: 0; width: auto; }
-  :host([centered][open]) { display: grid; place-items: center; }
+  :host([centered][open]) { position: fixed; inset: 0; z-index: 30; display: grid; place-items: center; }
   [part~="backdrop"] { position: absolute; inset: 0; background: var(--floating-card-backdrop, rgba(0, 0, 0, .45)); backdrop-filter: blur(2px); }
   :host([centered]) [part~="card"] {
     width: min(92vw, 560px);
