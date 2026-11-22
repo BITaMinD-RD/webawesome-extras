@@ -27,6 +27,9 @@ import '../item-list/item-list.js';
  * manager.addEventListener('wax-query', () => manager.items = filter(manager.query));
  * ```
  *
+ * @summary The filters, the search box, the "New" button and an item list, for the screens that edit things.
+ * @since 0.1.0
+ *
  * @element wax-list-manager
  *
  * @attr {string} search-placeholder - What the search box says while it is empty (the term `waxSearch` of the language of the page when empty)

@@ -210,7 +210,9 @@
             "package": "lit"
           },
           "tagName": "wax-ask-each",
-          "customElement": true
+          "customElement": true,
+          "summary": "A dialog that asks about each thing in turn, with \"yes to all\", \"no to all\" and cancel.",
+          "since": "0.1.0"
         }
       ],
       "exports": [
@@ -533,7 +535,9 @@
             "package": "lit"
           },
           "tagName": "wax-combobox",
-          "customElement": true
+          "customElement": true,
+          "summary": "A select with a search box that filters its options as you type.",
+          "since": "0.1.0"
         }
       ],
       "exports": [
@@ -857,7 +861,9 @@
             "package": "lit"
           },
           "tagName": "wax-floating-card",
-          "customElement": true
+          "customElement": true,
+          "summary": "A card next to what was clicked: it peeks with a mouse, is pinned by a click and sits in the middle without one.",
+          "since": "0.1.0"
         }
       ],
       "exports": [
@@ -1183,7 +1189,9 @@
             "package": "lit"
           },
           "tagName": "wax-item-list",
-          "customElement": true
+          "customElement": true,
+          "summary": "A list to choose from, a line per item with icon, name and note, where you select, mark, move and swipe.",
+          "since": "0.1.0"
         }
       ],
       "exports": [
@@ -1382,7 +1390,9 @@
             "package": "lit"
           },
           "tagName": "wax-list-manager",
-          "customElement": true
+          "customElement": true,
+          "summary": "The filters, the search box, the \"New\" button and an item list, for the screens that edit things.",
+          "since": "0.1.0"
         }
       ],
       "exports": [
@@ -1854,7 +1864,9 @@
             "package": "lit"
           },
           "tagName": "wax-map-picker",
-          "customElement": true
+          "customElement": true,
+          "summary": "A map to pick a point on, with sites, a route and areas; Leaflet and the tiles are loaded on demand.",
+          "since": "0.2.0"
         }
       ],
       "exports": [

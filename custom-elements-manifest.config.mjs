@@ -20,10 +20,21 @@ const onlyWaxEvents = {
   },
 };
 
+/** The analyzer keeps `@summary` but not `@since`: the version in which each element appeared goes to the manifest as `since`, from the JSDoc of its class (the docs gallery reads it) */
+const sinceOfClass = {
+  name: 'since-of-class',
+  analyzePhase({ ts, node, moduleDoc }) {
+    if (!ts.isClassDeclaration(node) || !node.name) return;
+    const since = ts.getJSDocTags(node).find(tag => tag.tagName.text === 'since');
+    const declaration = moduleDoc.declarations?.find(item => item.name === node.name.text);
+    if (since && declaration) declaration.since = String(since.comment ?? '').trim();
+  },
+};
+
 export default {
   globs: ['src/components/*/*.js'],
   exclude: ['src/components/*/*.styles.js', 'src/components/*/*.state.js', 'src/components/*/*.test.js'],
   litelement: true,
   packagejson: false,   // do not write the `customElements` field into package.json
-  plugins: [onlyWaxEvents],
+  plugins: [onlyWaxEvents, sinceOfClass],
 };

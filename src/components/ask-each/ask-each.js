@@ -24,6 +24,9 @@ import { WaxAnswerEvent } from '../../events/answer.js';
  * const answers = await askEach.ask(files);   // an array of booleans in the order of the files (true is the positive verb), or null if it was cancelled
  * ```
  *
+ * @summary A dialog that asks about each thing in turn, with "yes to all", "no to all" and cancel.
+ * @since 0.1.0
+ *
  * @element wax-ask-each
  *
  * @attr {boolean} open - It is open. Set from outside it opens or closes like a `wa-dialog` (cancelling what is being asked)

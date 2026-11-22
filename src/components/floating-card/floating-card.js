@@ -31,6 +31,9 @@ import { WaAfterHideEvent } from '@awesome.me/webawesome/dist/events/after-hide.
  *
  * It is placed with the coordinates of the page, so it has to be a child of the `body` (or of an element that is not positioned).
  *
+ * @summary A card next to what was clicked: it peeks with a mouse, is pinned by a click and sits in the middle without one.
+ * @since 0.1.0
+ *
  * @element wax-floating-card
  *
  * @attr {boolean} open - It is shown. Set from outside it shows (pinned, next to the `anchor`) or hides it, like the one of a `wa-dialog`

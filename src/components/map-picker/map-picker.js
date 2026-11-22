@@ -28,6 +28,9 @@ const NOW = { animate: false };
  * map.highlightSite('a');
  * ```
  *
+ * @summary A map to pick a point on, with sites, a route and areas; Leaflet and the tiles are loaded on demand.
+ * @since 0.2.0
+ *
  * @element wax-map-picker
  *
  * @attr {number} lat - The latitude of the point, which has a marker. Changing it (or `lon`) moves the marker and looks at it; with no point there is no marker

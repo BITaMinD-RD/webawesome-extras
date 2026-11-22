@@ -26,6 +26,9 @@ import { WaxQueryEvent } from '../../events/query.js';
  *
  * If the choices are not all there and have to be fetched as the user types, listen to `wax-query` and give the new `choices`.
  *
+ * @summary A select with a search box that filters its options as you type.
+ * @since 0.1.0
+ *
  * @element wax-combobox
  *
  * @attr {string} label - What the box is called, written above it (like the `label` of a `wa-select`); a box with no visible label needs its `<label>` or an `aria-label` around it

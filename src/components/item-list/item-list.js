@@ -38,6 +38,9 @@ import { WaxSwipeEvent } from '../../events/swipe.js';
  *   new order (`wax-move`).
  * - **Swipe** (`swipe-label`): sliding a line sideways with the finger uncovers one action (Remove, Seen) instead of doing it straight away (`wax-swipe`).
  *
+ * @summary A list to choose from, a line per item with icon, name and note, where you select, mark, move and swipe.
+ * @since 0.1.0
+ *
  * @element wax-item-list
  *
  * @attr {string} selected - The key of the selected line
