@@ -2,7 +2,7 @@
 
 All notable changes to this package are listed here. Versions follow [Semantic Versioning](https://semver.org/).
 
-## Unreleased
+## 0.3.0
 
 - The license is now LGPL-3.0-or-later instead of GPL-3.0-or-later: a page or an application that uses the elements no longer has to be under the GPL, while changes to the elements themselves stay free. `LICENSE` has the LGPL and `COPYING` the GPL it builds on.
 - `NOTICE` reserves the text and data mining of the repository against AI training (article 4(3) of Directive (EU) 2019/790), as the README and the meta tags of the docs and the demo already said; it travels with the npm package together with `COPYING`.
