@@ -62,4 +62,4 @@ To see every element working on one page with the least code, open `/demo/` from
 
 ## License
 
-GPL-3.0-or-later; the text is in [`LICENSE`](LICENSE).
+LGPL-3.0-or-later: the text is in [`LICENSE`](LICENSE), and the GPL-3.0 it builds on in [`COPYING`](COPYING). A page or an application can use the elements whatever its own license; what has to stay free are the changes to the elements themselves.

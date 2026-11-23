@@ -3,5 +3,5 @@
   "private": true,
   "type": "module",
   "description": "The elements wax-* (components/), their typed events (events/) and the autoloader (webawesome-extras.loader.js): what an application takes",
-  "license": "GPL-3.0-or-later"
+  "license": "LGPL-3.0-or-later"
 }

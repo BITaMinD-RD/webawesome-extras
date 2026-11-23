@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "type": "module",
   "description": "Components that look and work as if they were native Web Awesome ones: custom elements wax-*, built with Lit, styled with --wa-* tokens",
-  "license": "GPL-3.0-or-later",
+  "license": "LGPL-3.0-or-later",
   "keywords": [
     "web-components",
     "custom-elements",

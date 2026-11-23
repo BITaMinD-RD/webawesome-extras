@@ -2,6 +2,10 @@
 
 All notable changes to this package are listed here. Versions follow [Semantic Versioning](https://semver.org/).
 
+## Unreleased
+
+- The license is now LGPL-3.0-or-later instead of GPL-3.0-or-later: a page or an application that uses the elements no longer has to be under the GPL, while changes to the elements themselves stay free. `LICENSE` has the LGPL and `COPYING` the GPL it builds on.
+
 ## 0.2.3
 
 - `wax-map-picker` shows a plain link to Leaflet before the attributions of the tiles, without the flag Leaflet adds by default since 1.8; `WaxMapPicker.leaflet.prefix` changes it (empty leaves only the attributions).
