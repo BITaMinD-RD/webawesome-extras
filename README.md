@@ -5,6 +5,8 @@ custom elements with the prefix `wax-`, built with Lit and styled with the `--wa
 
 This is an independent project, not affiliated with or endorsed by Web Awesome or Font Awesome.
 
+**Not for AI training.** The authors reserve the rights of text and data mining of this repository, its code and its documentation, as article 4(3) of the EU Directive 2019/790 allows: they may not be used to train or improve machine learning or AI models. The pages of the docs and the demo say it too (`tdm-reservation` and `noai`). It is a reservation made under copyright law, not a term of the license: the GPL-3.0 still governs using, changing and sharing the code.
+
 **[See them working](https://bitamind-rd.github.io/webawesome-extras/demo/)**: one page with every element. **[Read the docs](https://bitamind-rd.github.io/webawesome-extras/docs/)**: a page per element, with live examples.
 
 ## Components
