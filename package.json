@@ -27,7 +27,9 @@
     "!src/**/*.test.js",
     "dist",
     "custom-elements.json",
-    "CHANGELOG.md"
+    "CHANGELOG.md",
+    "COPYING",
+    "NOTICE"
   ],
   "scripts": {
     "test": "npm run test:node && npm run test:browser",

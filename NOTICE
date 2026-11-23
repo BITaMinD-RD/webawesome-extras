@@ -1,0 +1,20 @@
+webawesome-extras
+https://github.com/BITaMinD-RD/webawesome-extras
+
+Licensed under the GNU Lesser General Public License, version 3 or (at your
+option) any later version: see LICENSE and COPYING.
+
+RESERVATION OF TEXT AND DATA MINING (NOT FOR AI TRAINING)
+
+The authors expressly reserve the rights of text and data mining of this
+repository, its source code, its documentation and its demo pages, as
+article 4(3) of Directive (EU) 2019/790 on copyright in the Digital Single
+Market allows. They may not be reproduced or extracted to train, fine-tune
+or otherwise improve machine learning or artificial intelligence models,
+nor to build datasets for that purpose, without the written permission of
+the authors.
+
+This is a reservation made under copyright law, not an additional term of
+the license: the LGPL still governs using, changing and sharing the code.
+The pages of the documentation and the demo say the same in a machine
+readable way (the tdm-reservation and robots noai meta tags).
