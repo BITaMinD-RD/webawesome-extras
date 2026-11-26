@@ -117,6 +117,11 @@ export class WaxCombobox extends LitElement {
     this._formDisabled = false;
   }
 
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    clearTimeout(this.#timer);   // out of the page it asks nobody for choices
+  }
+
   /** @returns {string} */
   get name() {
     return this.getAttribute('name') ?? '';

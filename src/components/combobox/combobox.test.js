@@ -108,6 +108,17 @@ describe('<wax-combobox>', () => {
     expect(asked.detail).to.deep.equal({ query: 'sau' });
   });
 
+  it('taken out of the page while the user types, it does not ask for choices any more', async () => {
+    const el = await make();
+    await open(el);
+    let asked = 0;
+    el.addEventListener('wax-query', () => asked++);
+    await sendKeys({ type: 'sau' });
+    el.remove();
+    await aTimeout(60);
+    expect(asked).to.equal(0);
+  });
+
   it('takes part in a form: its name and value are sent, and a required one with nothing chosen is invalid', async () => {
     const form = await fixture(html`<form><wax-combobox name="country" required placeholder="Country"></wax-combobox></form>`);
     const el = form.querySelector('wax-combobox');
