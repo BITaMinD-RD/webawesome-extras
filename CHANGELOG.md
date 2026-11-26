@@ -6,6 +6,8 @@ All notable changes to this package are listed here. Versions follow [Semantic V
 
 - `wax-floating-card` moved in the page while shown (taken out and put back, as a list sorted again does) still closes with Escape and a click outside; before it stayed open.
 
+- `wax-combobox` keeps its own `disabled` apart from the one of its fieldset or form: a disabled one stays disabled when its fieldset is enabled again; before enabling the fieldset enabled it.
+
 ## 0.3.0
 
 - The license is now LGPL-3.0-or-later instead of GPL-3.0-or-later: a page or an application that uses the elements no longer has to be under the GPL, while changes to the elements themselves stay free. `LICENSE` has the LGPL and `COPYING` the GPL it builds on.

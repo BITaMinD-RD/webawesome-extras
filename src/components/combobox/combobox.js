@@ -79,7 +79,8 @@ export class WaxCombobox extends LitElement {
     required: { type: Boolean, reflect: true },
     disabled: { type: Boolean, reflect: true },
     queryDelay: { type: Number, attribute: 'query-delay' },
-    _query: { state: true }
+    _query: { state: true },
+    _formDisabled: { state: true }
   };
 
   static styles = styles;
@@ -112,6 +113,8 @@ export class WaxCombobox extends LitElement {
     this.queryDelay = 300;
     /** @internal @type {string} What is typed in the search box */
     this._query = '';
+    /** @internal @type {boolean} Its form or fieldset is disabled: apart from `disabled`, which is the author's, so enabling the fieldset again leaves it as the author wanted */
+    this._formDisabled = false;
   }
 
   /** @returns {string} */
@@ -159,7 +162,7 @@ export class WaxCombobox extends LitElement {
   render() {
     const arranged = ComboboxState.arrange(this.#choices, this._query);
     const anyShown = arranged.some(item => item.shown);
-    return html`<wa-select part="select" label=${this.label} placeholder=${this.placeholder || this.emptyLabel || ''} ?required=${this.required} ?disabled=${this.disabled}
+    return html`<wa-select part="select" label=${this.label} placeholder=${this.placeholder || this.emptyLabel || ''} ?required=${this.required} ?disabled=${this.disabled || this._formDisabled}
         @change=${(/** @type {Event} */ event) => this.#changed(event)} @wa-show=${(/** @type {Event} */ event) => this.#opened(event)}
         @wa-after-show=${(/** @type {Event} */ event) => { if (event.target === this.#select) this.#search?.focus?.(); }}
         @wa-after-hide=${(/** @type {Event} */ event) => { if (event.target === this.#select) this.#forget(); }}>
@@ -178,7 +181,7 @@ export class WaxCombobox extends LitElement {
     const select = /** @type {any} */ (this.#select);
     if (select && select.value !== this.#value) select.value = this.#value;
     this.#syncForm();
-    if (changed.has('disabled')) this.toggleAttribute('aria-disabled', this.disabled);
+    if (changed.has('disabled') || changed.has('_formDisabled')) this.toggleAttribute('aria-disabled', this.disabled || this._formDisabled);
   }
 
   /** What the form sees: the value and whether it is valid (a required one with nothing chosen is not). The one place that says it, for when the value is set from code and for when the user chooses */
@@ -255,7 +258,7 @@ export class WaxCombobox extends LitElement {
    * @param {boolean} disabled
    */
   formDisabledCallback(disabled) {
-    this.disabled = disabled;
+    this._formDisabled = disabled;
   }
 
   /**

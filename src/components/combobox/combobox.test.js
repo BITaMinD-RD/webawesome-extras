@@ -135,6 +135,18 @@ describe('<wax-combobox>', () => {
     expect(new FormData(form).get('country')).to.equal('fr');
   });
 
+  it('a disabled fieldset disables it, and enabling the fieldset again leaves it as the author set it', async () => {
+    const form = await fixture(html`<form><fieldset><wax-combobox id="mine" disabled></wax-combobox><wax-combobox id="free"></wax-combobox></fieldset></form>`);
+    const [mine, free] = form.querySelectorAll('wax-combobox');
+    const fieldset = form.querySelector('fieldset');
+    fieldset.disabled = true;
+    await mine.updateComplete; await free.updateComplete;
+    expect([select(mine).disabled, select(free).disabled]).to.deep.equal([true, true]);
+    fieldset.disabled = false;
+    await mine.updateComplete; await free.updateComplete;
+    expect([mine.disabled, select(mine).disabled, select(free).disabled]).to.deep.equal([true, true, false]);
+  });
+
   it('is accessible', async () => {
     const el = await make();
     await expect(el).to.be.accessible();
