@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync, readdirSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
-import { classNameOf, propOfEvent, reactWrappers } from '../ReactWrappers.js';
+import { classNameOf, eventClassOf, propOfEvent, reactWrappers } from '../ReactWrappers.js';
 
 const ROOT = join(import.meta.dirname, '..', '..');
 const CEM = join(ROOT, 'node_modules', '.bin', 'cem');
@@ -19,18 +19,31 @@ test('reactWrappers: a file per custom element that maps its events to props, an
     modules: [{
       path: 'src/components/thing/thing.js',
       declarations: [
-        { kind: 'class', name: 'WaxThing', tagName: 'wax-thing', customElement: true, events: [{ name: 'wax-open' }, { name: 'wax-close' }] },
+        { kind: 'class', name: 'WaxThing', tagName: 'wax-thing', customElement: true, events: [{ name: 'wax-open' }, { name: 'wax-close' }, { name: 'wa-show' }, { name: 'change' }] },
         { kind: 'class', name: 'Helper' }
       ]
     }]
   });
-  assert.deepEqual([...files.keys()].sort(), ['index.js', 'wax-thing.js']);
+  assert.deepEqual([...files.keys()].sort(), ['index.d.ts', 'index.js', 'wax-thing.d.ts', 'wax-thing.js']);
   const wrapper = files.get('wax-thing.js');
   assert.match(wrapper, /import \{ WaxThing as Element \} from '\.\.\/\.\.\/src\/components\/thing\/thing\.js';/);
   assert.match(wrapper, /tagName: 'wax-thing'/);
   assert.match(wrapper, /onWaxOpen: 'wax-open'/);
   assert.match(wrapper, /onWaxClose: 'wax-close'/);
   assert.match(files.get('index.js'), /export \* from '\.\/wax-thing\.js';/);
+  const types = files.get('wax-thing.d.ts');
+  assert.match(types, /import type \{ WaxThing as Element \} from '\.\.\/types\/components\/thing\/thing\.js';/);
+  assert.match(types, /import type \{ WaxCloseEvent, WaxOpenEvent \} from '\.\.\/types\/events\/events\.js';/);
+  assert.match(types, /export declare const WaxThing: ReactWebComponent<Element, \{/);
+  assert.match(types, /onWaxOpen: EventName<WaxOpenEvent>;/);
+  assert.match(types, /onWaShow: EventName<WaShowEvent>;/);
+  assert.match(types, /onChange: EventName<Event>;/);
+});
+
+test('eventClassOf: a wax-* event is its class of src/events, a wa-* one the class of Web Awesome, and one of the DOM has none', () => {
+  assert.deepEqual(eventClassOf('wax-site-click'), { name: 'WaxSiteClickEvent', from: '../types/events/events.js' });
+  assert.deepEqual(eventClassOf('wa-after-hide'), { name: 'WaAfterHideEvent', from: '@awesome.me/webawesome/dist/events/after-hide.js' });
+  assert.equal(eventClassOf('change'), null);
 });
 
 test('dist/react is what scripts/react.mjs makes from the committed custom-elements.json: every file the same and none missing or extra', () => {

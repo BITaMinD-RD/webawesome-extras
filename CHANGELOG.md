@@ -12,6 +12,8 @@ All notable changes to this package are listed here. Versions follow [Semantic V
 
 - The package has TypeScript declarations, `dist/types/`, generated from the JSDoc with `tsc` (`npm run types`, part of `npm run build`); `package.json` points to them for the package, the loader and every file of `src/`.
 
+- The React wrappers have their `.d.ts`: the props of the element and an `on*` prop per event with the class of its event (`onWaxQuery` gets a `WaxQueryEvent`), so editors complete them.
+
 ## 0.3.0
 
 - The license is now LGPL-3.0-or-later instead of GPL-3.0-or-later: a page or an application that uses the elements no longer has to be under the GPL, while changes to the elements themselves stay free. `LICENSE` has the LGPL and `COPYING` the GPL it builds on.

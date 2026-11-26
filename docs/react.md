@@ -14,6 +14,8 @@ component made with `createComponent`.
 
 `dist/react/index.js` exports them all.
 
+Each wrapper has its `.d.ts` beside it, so TypeScript and the editors know its props: those of the element (from `dist/types/`) and an `on*` prop per event whose handler gets the class of its event (`onWaxQuery` a `WaxQueryEvent`, with `detail.query`).
+
 ## Using a wrapper
 
 ```jsx

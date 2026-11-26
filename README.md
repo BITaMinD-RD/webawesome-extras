@@ -50,9 +50,9 @@ To see every element working on one page with the least code, open `/demo/` from
 | `src/webawesome-extras.loader.js`, `src/webawesome-extras.js` | The autoloader, and everything at once |
 | `custom-elements.json` | The manifest, generated from the JSDoc with `@custom-elements-manifest/analyzer` |
 | `dist/types/` | The TypeScript declarations, generated from the JSDoc of `src/` with `tsc` (`tsconfig.json`) |
-| `dist/react/` | React wrappers generated from the manifest |
+| `dist/react/` | React wrappers and their `.d.ts`, generated from the manifest |
 | `docs/` | The pages, the site (`docs/index.html`) and the test that mounts every example |
-| `scripts/` | Generators (React wrappers, reference tables) and the tests that fail when they are stale |
+| `scripts/` | Generators (React wrappers and their types, reference tables) and the tests that fail when they are stale |
 
 ## Tests and build
 
