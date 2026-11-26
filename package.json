@@ -13,14 +13,24 @@
   ],
   "main": "./src/webawesome-extras.js",
   "module": "./src/webawesome-extras.js",
+  "types": "./dist/types/webawesome-extras.d.ts",
   "exports": {
-    ".": "./src/webawesome-extras.js",
-    "./loader": "./src/webawesome-extras.loader.js",
+    ".": {
+      "types": "./dist/types/webawesome-extras.d.ts",
+      "default": "./src/webawesome-extras.js"
+    },
+    "./loader": {
+      "types": "./dist/types/webawesome-extras.loader.d.ts",
+      "default": "./src/webawesome-extras.loader.js"
+    },
     "./react": "./dist/react/index.js",
     "./react/*": "./dist/react/*",
     "./custom-elements.json": "./custom-elements.json",
     "./package.json": "./package.json",
-    "./*": "./src/*"
+    "./*": {
+      "types": "./dist/types/*",
+      "default": "./src/*"
+    }
   },
   "files": [
     "src",
@@ -37,8 +47,9 @@
     "test:browser": "wtr",
     "manifest": "cem analyze --config custom-elements-manifest.config.mjs",
     "react": "node scripts/react.mjs",
+    "types": "tsc -p tsconfig.json",
     "docs": "node scripts/docs.mjs",
-    "build": "npm run manifest && npm run react && npm run docs"
+    "build": "npm run manifest && npm run types && npm run react && npm run docs"
   },
   "peerDependencies": {
     "@awesome.me/webawesome": "^3.0.0",
@@ -64,7 +75,8 @@
     "leaflet": "1.9.4",
     "lit": "^3.3.3",
     "marked": "^11.2.0",
-    "react": "^19.3.1"
+    "react": "^19.3.1",
+    "typescript": "~5.4.5"
   },
   "customElements": "custom-elements.json"
 }

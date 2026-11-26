@@ -49,6 +49,7 @@ To see every element working on one page with the least code, open `/demo/` from
 | `src/events/`, `src/utilities/` | The typed `wax-*` events; the autoloader and base path |
 | `src/webawesome-extras.loader.js`, `src/webawesome-extras.js` | The autoloader, and everything at once |
 | `custom-elements.json` | The manifest, generated from the JSDoc with `@custom-elements-manifest/analyzer` |
+| `dist/types/` | The TypeScript declarations, generated from the JSDoc of `src/` with `tsc` (`tsconfig.json`) |
 | `dist/react/` | React wrappers generated from the manifest |
 | `docs/` | The pages, the site (`docs/index.html`) and the test that mounts every example |
 | `scripts/` | Generators (React wrappers, reference tables) and the tests that fail when they are stale |
@@ -58,7 +59,7 @@ To see every element working on one page with the least code, open `/demo/` from
     npm install
     PLAYWRIGHT_BROWSERS_PATH=$PWD/node_modules/.playwright npx playwright install chromium firefox webkit    # once
     npm test             # Node tests of the rules and generated files, then browser tests in Chromium, Firefox and WebKit (they also mount every example of the docs)
-    npm run build        # manifest, React wrappers and the reference tables of the docs
+    npm run build        # manifest, TypeScript declarations, React wrappers and the reference tables of the docs
 
 ## License
 

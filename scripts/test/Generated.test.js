@@ -7,6 +7,7 @@ import { classNameOf, propOfEvent, reactWrappers } from '../ReactWrappers.js';
 
 const ROOT = join(import.meta.dirname, '..', '..');
 const CEM = join(ROOT, 'node_modules', '.bin', 'cem');
+const TSC = join(ROOT, 'node_modules', '.bin', 'tsc');
 
 test('classNameOf and propOfEvent: wax-item-list is WaxItemList and the event wax-select is the prop onWaxSelect', () => {
   assert.equal(classNameOf('wax-item-list'), 'WaxItemList');
@@ -48,6 +49,21 @@ test('custom-elements.json is what the analyzer makes from the components now', 
   try {
     execFileSync(CEM, ['analyze', '--config', 'custom-elements-manifest.config.mjs', '--outdir', relative], { cwd: ROOT, stdio: 'pipe' });
     assert.equal(readFileSync(join(out, 'custom-elements.json'), 'utf8'), readFileSync(join(ROOT, 'custom-elements.json'), 'utf8'), 'custom-elements.json is stale: run npm run manifest');
+  } finally {
+    rmSync(out, { recursive: true, force: true });
+  }
+});
+
+/** @param {string} dir @returns {string[]} The files under `dir`, relative to it */
+const filesUnder = dir => readdirSync(dir, { recursive: true, withFileTypes: true }).filter(entry => entry.isFile()).map(entry => join(entry.parentPath, entry.name).slice(dir.length + 1)).sort();
+
+test('dist/types is what tsc makes from src now: every declaration the same and none missing or extra', { skip: existsSync(TSC) ? false : 'TypeScript is not installed: run npm install' }, () => {
+  const out = join(ROOT, 'node_modules', '.cache', 'types-check');
+  try {
+    execFileSync(TSC, ['-p', 'tsconfig.json', '--outDir', out], { cwd: ROOT, stdio: 'pipe' });
+    const dir = join(ROOT, 'dist', 'types');
+    assert.deepEqual(filesUnder(dir), filesUnder(out), 'run npm run types');
+    for (const name of filesUnder(out)) assert.equal(readFileSync(join(dir, name), 'utf8'), readFileSync(join(out, name), 'utf8'), `dist/types/${name} is stale: run npm run types`);
   } finally {
     rmSync(out, { recursive: true, force: true });
   }

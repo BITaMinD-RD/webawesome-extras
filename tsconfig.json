@@ -1,0 +1,16 @@
+{
+  "//": "Only for the declarations of the package: `npm run types` writes dist/types/*.d.ts from the JSDoc of src/, so that TypeScript and the editors know the elements, their properties and their events",
+  "compilerOptions": {
+    "allowJs": true,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "target": "es2022",
+    "skipLibCheck": true,
+    "rootDir": "src",
+    "outDir": "dist/types"
+  },
+  "include": ["src/**/*.js"],
+  "exclude": ["src/**/*.test.js"]
+}
