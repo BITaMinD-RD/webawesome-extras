@@ -152,6 +152,12 @@ export class WaxFloatingCard extends LitElement {
     if (this.open && !this.#shown) this.show();   // born with `open`
   }
 
+  connectedCallback() {
+    super.connectedCallback();
+    // Moved in the page while shown (taken out and put back): it listens again for what closes it
+    if (this.#shown && !this.centered) this.#listen();
+  }
+
   disconnectedCallback() {
     super.disconnectedCallback();
     clearTimeout(this.#peeking);
@@ -238,9 +244,7 @@ export class WaxFloatingCard extends LitElement {
     this.peeking = !pinned;
     this.open = true;
     if (!centered) {
-      // After this click has finished: the click that opens it is not a click outside it. (In the middle, the `wa-dialog` does both)
-      this.#listening = setTimeout(() => document.addEventListener('click', this.#outside), 0);
-      document.addEventListener('keydown', this.#escape);
+      this.#listen();
       const shown = ++this.#showing;
       this.#placed().then(() => {
         if (this.#shown && shown === this.#showing) this.dispatchEvent(new WaAfterShowEvent());
@@ -336,6 +340,14 @@ export class WaxFloatingCard extends LitElement {
     // It has no animation, so what comes after is right after: and a card that closes to open again (`replace`) finishes closing before it begins to open
     this.dispatchEvent(new WaAfterHideEvent());
     return true;
+  }
+
+  /** Escape and a click outside close it, next to its anchor (in the middle, the `wa-dialog` does both) */
+  #listen() {
+    this.#unlisten();
+    // After this click has finished: the click that opens it is not a click outside it
+    this.#listening = setTimeout(() => document.addEventListener('click', this.#outside), 0);
+    document.addEventListener('keydown', this.#escape);
   }
 
   #unlisten() {

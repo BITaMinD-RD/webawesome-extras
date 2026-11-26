@@ -118,6 +118,19 @@ describe('<wax-floating-card>', () => {
     expect(sources).to.deep.equal([card, part(card, 'close-button'), other, card]);
   });
 
+  it('moved in the page while shown, Escape and a click outside still close it', async () => {
+    const { page, card, day, other } = await make();
+    card.toggle(day);
+    page.append(card);   // taken out and put back, as a list that is sorted again does
+    await sendKeys({ press: 'Escape' });
+    expect(card.open).to.equal(false);
+    card.toggle(day);
+    page.prepend(card);
+    await aTimeout(10);
+    other.click();
+    expect(card.open).to.equal(false);
+  });
+
   it('does not close for a click inside it', async () => {
     const { card, day } = await make();
     card.toggle(day);
