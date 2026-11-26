@@ -5,7 +5,7 @@ import { registerTranslation } from '@awesome.me/webawesome/dist/utilities/local
 const translation = {
   $code: 'es',
   $name: 'Español',
-  $dir: 'ltr',
+  $dir: /** @type {'ltr'} */ ('ltr'),
   waxCancel: 'Cancelar',
   waxDrag: 'Arrastrar para ordenar',
   waxMapUnavailable: 'El mapa no está disponible',

@@ -9,7 +9,7 @@ import { registerTranslation } from '@awesome.me/webawesome/dist/utilities/local
 const translation = {
   $code: 'en',
   $name: 'English',
-  $dir: 'ltr',
+  $dir: /** @type {'ltr'} */ ('ltr'),
   waxCancel: 'Cancel',
   waxDrag: 'Drag to sort',
   waxMapUnavailable: 'The map is not available',
